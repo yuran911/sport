@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренувальний план — Full Body</title>
+<style>
+  :root{
+    --bg: #0f1117;
+    --panel: #171a24;
+    --panel2: #1d2130;
+    --line: #2a2f40;
+    --ink: #e9ebf2;
+    --muted: #8b91a6;
+    --accent: #e8a33d;
+    --accent2: #4a90d9;
+    --green: #3cb371;
+    --red: #d9534f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink);
+  }
+  header{
+    padding: 18px 16px 10px; text-align:center; position:sticky; top:0; z-index:10;
+    background: linear-gradient(180deg, #0f1117 80%, transparent);
+  }
+  header h1{
+    margin:0; font-size: 1.3rem; letter-spacing:.5px;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  header .sub{ color:var(--muted); font-size:.8rem; margin-top:4px;}
+
+  .week-bar{
+    display:flex; gap:6px; justify-content:center; flex-wrap:wrap;
+    padding: 8px 12px 14px;
+  }
+  .week-bar button{
+    background:var(--panel); border:1px solid var(--line); color:var(--muted);
+    padding:6px 10px; border-radius:8px; font-size:.78rem; cursor:pointer;
+  }
+  .week-bar button.active{
+    background: var(--accent); color:#1a1208; border-color:var(--accent); font-weight:600;
+  }
+
+  nav.days{
+    display:flex; gap:8px; padding: 0 12px 12px; justify-content:center;
+  }
+  nav.days button{
+    flex:1; max-width:160px; background:var(--panel2); border:1px solid var(--line);
+    color:var(--ink); padding:10px 8px; border-radius:10px; font-size:.85rem; cursor:pointer;
+    font-weight:600;
+  }
+  nav.days button.active{
+    background: linear-gradient(135deg,#2a3a5c,#1d2130); border-color: var(--accent2);
+    box-shadow: 0 0 0 1px var(--accent2) inset;
+  }
+
+  main{ max-width: 720px; margin: 0 auto; padding: 0 12px 60px; }
+
+  .group-label{
+    margin: 18px 0 8px; font-size:.72rem; letter-spacing:1px; text-transform:uppercase;
+    color: var(--accent); display:flex; align-items:center; gap:6px;
+  }
+  .group-label hr{ flex:1; border:none; border-top:1px solid var(--line);}
+
+  .card{
+    background: var(--panel); border:1px solid var(--line); border-radius: 14px;
+    padding: 12px 14px; margin-bottom: 10px;
+  }
+  .card.done{ opacity:.55; }
+  .card-top{ display:flex; align-items:flex-start; gap:10px; }
+  .chk{
+    width:22px; height:22px; border-radius:6px; border:2px solid var(--muted);
+    flex:0 0 auto; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    margin-top:2px;
+  }
+  .chk.checked{ background:var(--green); border-color:var(--green); color:#0f1117; font-weight:bold;}
+  .ex-name{ font-weight:600; font-size:.95rem; }
+  .ex-meta{ color:var(--muted); font-size:.76rem; margin-top:2px; }
+  .ex-target{ color:var(--accent2); font-weight:600; }
+
+  .actions{ margin-left:auto; display:flex; gap:6px; flex:0 0 auto; }
+  .icon-btn{
+    background:var(--panel2); border:1px solid var(--line); color:var(--ink);
+    border-radius:8px; padding:6px 9px; font-size:.78rem; cursor:pointer; text-decoration:none;
+    white-space:nowrap;
+  }
+  .icon-btn:hover{ border-color:var(--accent2); }
+
+  .sets-row{ display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+  .set-input{
+    display:flex; flex-direction:column; gap:2px; flex:1; min-width:70px;
+  }
+  .set-input label{ font-size:.65rem; color:var(--muted); }
+  .set-input input{
+    width:100%; background:var(--bg); border:1px solid var(--line); color:var(--ink);
+    border-radius:6px; padding:6px 6px; font-size:.85rem; text-align:center;
+  }
+  .set-input input:focus{ outline:none; border-color:var(--accent2); }
+
+  .last-log{
+    margin-top:8px; font-size:.74rem; color: var(--muted);
+    background: var(--bg); border-radius:8px; padding:6px 8px; border:1px dashed var(--line);
+  }
+  .last-log b{ color: var(--green); }
+
+  .custom-line{
+    margin-top:8px;
+  }
+  .custom-line input{
+    width:100%; background:var(--bg); border:1px solid var(--line); color:var(--ink);
+    border-radius:6px; padding:6px 8px; font-size:.8rem;
+  }
+
+  .note-box{
+    background: rgba(232,163,61,.08); border:1px solid rgba(232,163,61,.3);
+    border-radius:10px; padding:10px 12px; font-size:.78rem; color:#d9c08a; margin: 14px 0;
+  }
+  .cardio-box{
+    background: rgba(60,179,113,.08); border:1px solid rgba(60,179,113,.3);
+    border-radius:10px; padding:10px 12px; font-size:.78rem; color:#9fe0bb; margin: 8px 0 16px;
+  }
+
+  .save-bar{
+    position: sticky; bottom:0; padding: 10px 12px 16px; background: linear-gradient(0deg,#0f1117 75%, transparent);
+    display:flex; justify-content:center;
+  }
+  .save-bar button{
+    background: var(--accent); color:#1a1208; border:none; border-radius:12px;
+    padding: 12px 28px; font-size:.95rem; font-weight:700; cursor:pointer;
+    box-shadow: 0 4px 14px rgba(232,163,61,.3);
+  }
+  .toast{
+    position: fixed; bottom: 80px; left:50%; transform:translateX(-50%);
+    background: var(--green); color:#0f1117; padding:8px 16px; border-radius:10px;
+    font-size:.85rem; font-weight:600; opacity:0; transition:opacity .3s; pointer-events:none;
+  }
+  .toast.show{ opacity:1; }
+
+  .empty-hint{ text-align:center; color:var(--muted); font-size:.8rem; padding: 30px 10px; }
+
+  .icon-btn.save-ex{ color: var(--accent); border-color: rgba(232,163,61,.4); }
+  .icon-btn.save-ex.saved{ color: var(--green); border-color: rgba(60,179,113,.4); }
+  .icon-btn.cal-btn{ color: var(--accent2); }
+
+  .modal-overlay{
+    position: fixed; inset:0; background: rgba(0,0,0,.6); z-index:50;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .modal-sheet{
+    background: var(--panel); border:1px solid var(--line); border-radius: 16px 16px 0 0;
+    width:100%; max-width: 720px; max-height: 78vh; overflow-y:auto; padding: 16px 16px 24px;
+  }
+  .modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .modal-head h3{ margin:0; font-size:1rem; }
+  .modal-close{
+    background:var(--panel2); border:1px solid var(--line); color:var(--ink);
+    border-radius:8px; width:32px; height:32px; cursor:pointer; font-size:1rem;
+  }
+  .hist-row{
+    display:flex; justify-content:space-between; gap:10px; padding:8px 10px;
+    background: var(--bg); border-radius:8px; margin-bottom:6px; font-size:.82rem;
+  }
+  .hist-row .hd{ color: var(--muted); flex:0 0 auto; }
+  .hist-row .hv{ text-align:right; }
+  .hist-empty{ color:var(--muted); font-size:.82rem; text-align:center; padding: 20px 0; }
+
+  .profile-bar{
+    display:flex; gap:8px; justify-content:center; padding: 4px 12px 10px;
+  }
+  .profile-bar button{
+    background:var(--panel2); border:1px solid var(--line); color:var(--muted);
+    padding:8px 18px; border-radius:10px; font-size:.85rem; cursor:pointer; font-weight:600;
+  }
+  .profile-bar button.active{
+    background: linear-gradient(135deg,#3a2a1a,#1d2130); border-color: var(--accent);
+    color: var(--ink); box-shadow: 0 0 0 1px var(--accent) inset;
+  }
+</style>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Тренування">
+<meta name="theme-color" content="#0f1117">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<header>
+  <h1 id="appTitle">🏋 План тренувань</h1>
+  <div class="sub" id="appSub">За книгою «Тренажерний зал. Анатомія вправ та програми тренувань»</div>
+</header>
+
+<div class="profile-bar" id="profileBar"></div>
+<div class="week-bar" id="weekBar"></div>
+<nav class="days" id="dayNav"></nav>
+
+<main id="main"></main>
+
+<div class="save-bar">
+  <button id="saveBtn">💾 Зберегти все тренування (контрольне)</button>
+</div>
+<div class="toast" id="toast">Збережено!</div>
+<div id="modalRoot"></div>
+
+<script>
+const ONERM = {
+  'Жим лежачи в тренажері Сміта (горизонтальний)': 104.5,
+  'Жим у Сміті під кутом': 107.7,
+  'Метелик (Pec-Deck)': 126.7,
+  'Горизонтальна тяга широкою ручкою': 100,
+  'Вертикальна тяга широкою ручкою': 126.7,
+  'Жим на тренажері (армійський жим)': 70,
+  'Протяжка в Сміті': 86.7,
+  'Шраги зі штангою': 180,
+  'Згинання рук зі штангою стоячи': 70,
+  'Кросовер канат': 70,
+  'Тяга у кросовері з-за голови': 55,
+  'Згинання кистей зі штангою сидячи': 63,
+};
+const PCT_BY_WEEK = {1:0.60,2:0.70,3:0.75,4:0.65,5:[0.77,0.80],6:[0.72,0.75],7:[0.80,0.82],8:0.65};
+const REPS_BY_WEEK = {1:'12–15',2:'10–12',3:'8–10',4:'12–15',5:'8–10',6:'10–12',7:'6–8',8:'12–15'};
+function round25(x){ return Math.round(x/2.5)*2.5; }
+function targetWeight(name, week){
+  if(profile !== 'man') return null;
+  if(!ONERM[name]) return null;
+  const pct = PCT_BY_WEEK[week];
+  const onerm = ONERM[name];
+  if(Array.isArray(pct)){
+    const lo = round25(onerm*pct[0]), hi = round25(onerm*pct[1]);
+    return lo===hi ? `${lo} кг` : `${lo}–${hi} кг`;
+  }
+  return `${round25(onerm*pct)} кг`;
+}
+
+function ytUrl(name){
+  const clean = name.split(' (')[0];
+  return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(clean + ' техніка виконання');
+}
+
+// ---- DATA: matching the Excel plans exactly ----
+const DAYS_MAN = [
+  { id:'d1', label:'День 1', groups: [
+    {label:'💪 ГРУДИ', items:[
+      {name:'Жим лежачи в тренажері Сміта (горизонтальний)', sets:3, reps:'10–12', page:'с.55'},
+    ]},
+    {label:'🦾 СПИНА', items:[
+      {name:'Підтягування', sets:3, reps:'8–10', page:null, bodyweight:true},
+    ]},
+    {label:'🦵 НОГИ (без змін)', items:[
+      {name:'Присідання гак', sets:3, reps:'10–12'},
+      {name:'Жим платформи (ступні низ) (ступні широко)', sets:3, reps:'10–12'},
+      {name:'Згинання ніг у тренажері', sets:3, reps:'12–15'},
+      {name:'Розгинання ніг у тренажері', sets:3, reps:'12–15'},
+      {name:'Підйом на носки стоячи у Сміті (ікри)', sets:3, reps:'15–20'},
+      {name:'Підйом на носки сидячи на тренажері (ікри)', sets:3, reps:'15–20'},
+      {name:'Підйом на платформі (ікри)', sets:3, reps:'15–20'},
+    ]},
+    {label:'💪 БІЦЕПС', items:[
+      {name:'Згинання рук зі штангою стоячи', sets:3, reps:'10–12', page:'с.167'},
+      {name:'Лавка Скотта тренажер', sets:3, reps:'10–12', page:'с.170'},
+    ]},
+    {label:'🔱 ТРИЦЕПС', items:[
+      {name:'Жим вузьким хватом', sets:3, reps:'10–12'},
+      {name:'Тяга у кросовері з-за голови', sets:3, reps:'10–12', page:'с.209'},
+    ]},
+    {label:'🔵 ПЛЕЧІ', items:[
+      {name:'Жим на тренажері (армійський жим)', sets:3, reps:'10–12', page:'с.135'},
+      {name:'Відведення однією рукою у кросовері', sets:3, reps:'12–15', page:'с.150'},
+    ]},
+    {label:'🏔 ТРАПЕЦІЯ', items:[
+      {name:'Шраги зі штангою', sets:3, reps:'12–15', page:'с.125'},
+    ]},
+    {label:'🖐 ПЕРЕДПЛІЧЧЯ', items:[
+      {name:'Згинання кистей зі штангою сидячи', sets:3, reps:'12–15'},
+    ]},
+    {label:'🔥 ПРЕС', items:[
+      {name:'Планка на передпліччях (класична)', sets:3, reps:'30–45 сек', page:'с.305', isTime:true},
+    ]},
+  ], cardio:'🏃 КАРДІО: 10–15 хв легке кардіо після тренування (вело/доріжка, пульс ~120-130) — для витривалості, не на силу.'},
+
+  { id:'d2', label:'День 2', groups:[
+    {label:'💪 ГРУДИ', items:[
+      {name:'Жим у Сміті під кутом', sets:3, reps:'10–12', page:'с.58'},
+    ]},
+    {label:'🦾 СПИНА', items:[
+      {name:'Вертикальна тяга широкою ручкою', sets:3, reps:'10–12', page:'с.92'},
+    ]},
+    {label:'🦵 НОГИ (без змін)', items:[
+      {name:'Присідання гак', sets:3, reps:'10–12'},
+      {name:'Жим платформи (ступні низ) (ступні широко)', sets:3, reps:'10–12'},
+      {name:'Згинання ніг у тренажері', sets:3, reps:'12–15'},
+      {name:'Розгинання ніг у тренажері', sets:3, reps:'12–15'},
+      {name:'Підйом на носки стоячи у Сміті (ікри)', sets:3, reps:'15–20'},
+      {name:'Підйом на носки сидячи на тренажері (ікри)', sets:3, reps:'15–20'},
+      {name:'Підйом на платформі (ікри)', sets:3, reps:'15–20'},
+    ]},
+    {label:'💪 БІЦЕПС', items:[
+      {name:'Лавка Скотта тренажер', sets:3, reps:'10–12', page:'с.170'},
+      {name:'Підйом w-штанги методом "21" (7-7-7)', sets:1, reps:'21', page:'с.34'},
+    ]},
+    {label:'🔱 ТРИЦЕПС', items:[
+      {name:'Тяга у кросовері з-за голови', sets:3, reps:'10–12', page:'с.209'},
+      {name:'Кросовер канат', sets:3, reps:'12–15'},
+    ]},
+    {label:'🔵 ПЛЕЧІ', items:[
+      {name:'Відведення однією рукою у кросовері', sets:3, reps:'12–15', page:'с.150'},
+      {name:'Протяжка в Сміті', sets:3, reps:'12–15', page:'с.144'},
+    ]},
+    {label:'🏔 ТРАПЕЦІЯ', items:[
+      {name:'Шраги у кросовері', sets:3, reps:'12–15'},
+    ]},
+    {label:'🖐 ПЕРЕДПЛІЧЧЯ', items:[
+      {name:'Зворотні згинання кистей', sets:3, reps:'12–15'},
+    ]},
+    {label:'🔥 ПРЕС', items:[
+      {name:'Скручування "велосипед"', sets:3, reps:'15–20', page:'с.301'},
+    ]},
+  ], cardio:'🏃 КАРДІО: 15 хв інтервали (1 хв швидко / 2 хв повільно) × 5 циклів — розвиток витривалості.'},
+
+  { id:'d3', label:'День 3', groups:[
+    {label:'💪 ГРУДИ', items:[
+      {name:'Метелик (Pec-Deck)', sets:3, reps:'12–15', page:'с.85'},
+    ]},
+    {label:'🦾 СПИНА', items:[
+      {name:'Горизонтальна тяга широкою ручкою', sets:3, reps:'10–12', page:'с.95'},
+    ]},
+    {label:'🦵 НОГИ (без змін)', items:[
+      {name:'Присідання гак', sets:3, reps:'10–12'},
+      {name:'Жим платформи (ступні низ) (ступні широко)', sets:3, reps:'10–12'},
+      {name:'Згинання ніг у тренажері', sets:3, reps:'12–15'},
+      {name:'Розгинання ніг у тренажері', sets:3, reps:'12–15'},
+      {name:'Підйом на носки стоячи у Сміті (ікри)', sets:3, reps:'15–20'},
+      {name:'Підйом на носки сидячи на тренажері (ікри)', sets:3, reps:'15–20'},
+      {name:'Підйом на платформі (ікри)', sets:3, reps:'15–20'},
+    ]},
+    {label:'💪 БІЦЕПС', items:[
+      {name:'Підйом w-штанги методом "21" (7-7-7)', sets:1, reps:'21', page:'с.34'},
+      {name:'Згинання рук зі штангою стоячи', sets:3, reps:'10–12', page:'с.167'},
+    ]},
+    {label:'🔱 ТРИЦЕПС', items:[
+      {name:'Кросовер канат', sets:3, reps:'12–15'},
+      {name:'Жим вузьким хватом', sets:3, reps:'10–12'},
+    ]},
+    {label:'🔵 ПЛЕЧІ', items:[
+      {name:'Протяжка в Сміті', sets:3, reps:'12–15', page:'с.144'},
+      {name:'Метелик розвернувшись (задні дельти)', sets:3, reps:'12–15', page:'с.159'},
+    ]},
+    {label:'🏔 ТРАПЕЦІЯ', items:[
+      {name:'Шраги з гантелями стоячи', sets:3, reps:'12–15'},
+    ]},
+    {label:'🖐 ПЕРЕДПЛІЧЧЯ', items:[
+      {name:'Згинання кистей з гантелями сидячи', sets:3, reps:'12–15'},
+    ]},
+    {label:'🔥 ПРЕС', items:[
+      {name:'Бічна планка', sets:3, reps:'30–45 сек/бік', page:'с.309', isTime:true},
+    ]},
+  ], cardio:'🏃 КАРДІО: 10–15 хв легке кардіо у відновлювальному темпі, можна замінити на прогулянку 30 хв.'},
+];
+
+const DAYS_WOMAN = [
+  { id:'wd1', label:'День 1', groups: [
+    {label:'🦵 НИЗ — НОГИ', items:[
+      {name:'Присідання в гакові (зворотній, п\u2019ятами на платформі)', sets:3, reps:'10–12', page:'акцент сідниці/задня поверхня, менше навантаження на коліно'},
+      {name:'Жим ногами у тренажері', sets:3, reps:'10–15', page:'с.356'},
+      {name:'Згинання ніг лежачи у тренажері', sets:3, reps:'10–15', page:'с.356'},
+      {name:'Розведення ніг сидячи (сідниці)', sets:3, reps:'12–15', page:'с.356'},
+    ]},
+    {label:'🍑 СІДНИЦІ', items:[
+      {name:'Тяга ногою в кросовері (kickback)', sets:3, reps:'15 на ногу', page:'ізоляція сідниць, без навантаження на коліно'},
+      {name:'Сідничний міст зі штангою (легка вага)', sets:3, reps:'12–15', page:'с.357,372'},
+      {name:'Румунська тяга з гантелями', sets:3, reps:'8–12', page:'коліна м\u2019які, с.356'},
+    ]},
+    {label:'🦵 ІКРИ', items:[
+      {name:'Підйоми на носки стоячи', sets:3, reps:'15–20', page:'с.356'},
+    ]},
+    {label:'🔥 ПРЕС', items:[
+      {name:'Планка на передпліччях', sets:3, reps:'30–45 сек', page:'с.356', isTime:true},
+    ]},
+  ], cardio:'🚶 Розминка: 10 хв легке кардіо + суглобова гімнастика. Заминка: 10–15 хв легке кардіо/розтяжка.'},
+
+  { id:'wd2', label:'День 2', groups:[
+    {label:'💪 ГРУДИ', items:[
+      {name:'Жим штанги лежачи (або в Сміті)', sets:3, reps:'8–12', page:'с.357'},
+    ]},
+    {label:'🦾 СПИНА', items:[
+      {name:'Тяга горизонтального блоку до поясу', sets:3, reps:'8–12', page:'с.357'},
+      {name:'Тяга верхнього блоку до грудей широким хватом', sets:3, reps:'10–12', page:'с.364'},
+    ]},
+    {label:'🔵 ПЛЕЧІ', items:[
+      {name:'Жим гантелей сидячи', sets:3, reps:'8–12', page:'с.357'},
+      {name:'Підйом рук у сторони стоячи', sets:3, reps:'12–15', page:'с.357'},
+    ]},
+    {label:'💪 РУКИ', items:[
+      {name:'Згинання рук з рукоятками верхніх блоків стоячи (біцепс)', sets:3, reps:'8–12', page:'с.357'},
+      {name:'Розгинання рук з блоку (трицепс)', sets:3, reps:'8–12', page:'с.357'},
+    ]},
+  ], cardio:'🚶 Розминка: 10 хв легке кардіо + суглобова гімнастика. Заминка: 10–15 хв легке кардіо/розтяжка.'},
+
+  { id:'wd3', label:'День 3', groups:[
+    {label:'🦵 НИЗ — НОГИ (інший кут)', items:[
+      {name:'Жим у Hammer (тренажер)', sets:3, reps:'10–12', page:'фіксована траєкторія, безпечно для колін'},
+      {name:'Жим платформи (ступні широко)', sets:3, reps:'10–12', page:'замість випадів, с.356'},
+      {name:'Зведення ніг сидячи (внутрішнє стегно)', sets:3, reps:'12–15', page:'замість болгарських присідів, с.356'},
+      {name:'Згинання ніг лежачи у тренажері', sets:3, reps:'10–15', page:'с.357'},
+    ]},
+    {label:'🍑 СІДНИЦІ', items:[
+      {name:'Тяга ногою в кросовері (kickback)', sets:3, reps:'15 на ногу', page:'ізоляція сідниць'},
+      {name:'Румунська тяга зі штангою (легка вага)', sets:3, reps:'8–12', page:'с.357'},
+      {name:'Сідничний міст зі штангою', sets:3, reps:'12–15', page:'с.357'},
+    ]},
+    {label:'🦵 ІКРИ', items:[
+      {name:'Підйоми на носки сидячи', sets:3, reps:'15–20', page:'с.357'},
+    ]},
+    {label:'🔥 ПРЕС', items:[
+      {name:'Бічна планка', sets:3, reps:'30–45 сек/бік', page:'с.357', isTime:true},
+    ]},
+  ], cardio:'🚶 Розминка: 10 хв легке кардіо + суглобова гімнастика. Заминка: 10–15 хв легке кардіо/розтяжка.'},
+];
+
+let profile = localStorage.getItem('trenuvannya-profile') || 'man';
+function getDays(){ return profile === 'woman' ? DAYS_WOMAN : DAYS_MAN; }
+
+
+let currentDay = 0;
+let currentWeek = 1;
+let checkedState = {};   // exId -> bool (session-only, resets each load is fine, but persist per day-session)
+let lastLogs = {};       // exId -> {date, sets:[{w,r}], custom?:string}
+let pendingSets = {};    // exId -> array of {w,r} being typed this session
+let savedThisSession = {}; // exId -> bool, true once saved in current visit
+
+function exId(dayId, name){ return dayId + '::' + name; }
+
+// Storage wrapper: use window.storage if available (Claude artifact env),
+// otherwise fall back to plain localStorage so the file works standalone.
+const hasClaudeStorage = (typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function');
+
+async function storageGet(key){
+  if(hasClaudeStorage){
+    try{
+      const res = await window.storage.get(key);
+      return res ? res.value : null;
+    }catch(e){ return null; }
+  }
+  return localStorage.getItem(key);
+}
+async function storageSet(key, value){
+  if(hasClaudeStorage){
+    try{ await window.storage.set(key, value); return; }catch(e){ /* fall through */ }
+  }
+  localStorage.setItem(key, value);
+}
+
+async function loadLastLogs(){
+  for(const day of getDays()){
+    for(const g of day.groups){
+      for(const it of g.items){
+        const id = exId(day.id, it.name);
+        const raw = await storageGet('lastlog:'+id);
+        if(raw){
+          try{ lastLogs[id] = JSON.parse(raw); }catch(e){ /* ignore bad data */ }
+        }
+      }
+    }
+  }
+}
+
+function fmtLast(log){
+  if(!log) return null;
+  const sets = (log.sets||[]).filter(s=>s.w || s.r).map(s=> `${s.w||'-'}/${s.r||'-'}`).join(', ');
+  return `📅 ${log.date}: ${sets || '—'}`;
+}
+
+function renderProfileBar(){
+  const pb = document.getElementById('profileBar');
+  pb.innerHTML = '';
+  const opts = [['man','🙋‍♂️ Чоловік'], ['woman','🙋‍♀️ Жінка']];
+  opts.forEach(([val,label])=>{
+    const b = document.createElement('button');
+    b.textContent = label;
+    if(profile===val) b.classList.add('active');
+    b.onclick = ()=>{
+      if(profile===val) return;
+      profile = val;
+      localStorage.setItem('trenuvannya-profile', profile);
+      currentDay = 0;
+      checkedState = {};
+      pendingSets = {};
+      savedThisSession = {};
+      lastLogs = {};
+      updateHeaderText();
+      loadLastLogs().then(renderAll);
+    };
+    pb.appendChild(b);
+  });
+
+  const weekBar = document.getElementById('weekBar');
+  weekBar.style.display = profile==='man' ? 'flex' : 'none';
+}
+
+function updateHeaderText(){
+  const title = document.getElementById('appTitle');
+  const sub = document.getElementById('appSub');
+  if(profile==='woman'){
+    title.textContent = '🏋 План тренувань';
+    sub.textContent = 'Низ/Верх сплiт • безпечно для колін • за книгою «Тренажерний зал»';
+  }else{
+    title.textContent = '🏋 Full Body — План тренувань';
+    sub.textContent = 'За книгою «Тренажерний зал. Анатомія вправ та програми тренувань»';
+  }
+}
+
+function renderWeekBar(){
+  const wb = document.getElementById('weekBar');
+  wb.innerHTML = '';
+  for(let w=1; w<=8; w++){
+    const b = document.createElement('button');
+    b.textContent = 'Тиж.'+w;
+    if(w===currentWeek) b.classList.add('active');
+    b.onclick = ()=>{ currentWeek = w; renderAll(); };
+    wb.appendChild(b);
+  }
+}
+
+function renderDayNav(){
+  const nav = document.getElementById('dayNav');
+  nav.innerHTML = '';
+  getDays().forEach((d, idx)=>{
+    const b = document.createElement('button');
+    b.textContent = d.label;
+    if(idx===currentDay) b.classList.add('active');
+    b.onclick = ()=>{ currentDay = idx; renderDayNav(); renderMain(); };
+    nav.appendChild(b);
+  });
+}
+
+function renderMain(){
+  const day = getDays()[currentDay];
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  day.groups.forEach(g=>{
+    const gl = document.createElement('div');
+    gl.className = 'group-label';
+    gl.innerHTML = `<span>${g.label}</span><hr/>`;
+    main.appendChild(gl);
+
+    g.items.forEach(it=>{
+      const id = exId(day.id, it.name);
+      const card = document.createElement('div');
+      card.className = 'card';
+      if(checkedState[id]) card.classList.add('done');
+
+      const top = document.createElement('div');
+      top.className = 'card-top';
+
+      const chk = document.createElement('div');
+      chk.className = 'chk' + (checkedState[id] ? ' checked' : '');
+      chk.textContent = checkedState[id] ? '✓' : '';
+      chk.onclick = ()=>{
+        checkedState[id] = !checkedState[id];
+        renderMain();
+      };
+      top.appendChild(chk);
+
+      const info = document.createElement('div');
+      info.style.flex = '1';
+      const tgt = targetWeight(it.name, currentWeek);
+      let metaHtml = `${it.sets}×${it.reps}`;
+      if(it.page) metaHtml += `  •  📖 ${it.page}`;
+      if(tgt) metaHtml += `  •  <span class="ex-target">🎯 ${tgt}</span>`;
+      else if(it.bodyweight) metaHtml += `  •  <span class="ex-target">🎯 власна вага</span>`;
+      info.innerHTML = `<div class="ex-name">${it.name}</div><div class="ex-meta">${metaHtml}</div>`;
+      top.appendChild(info);
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+      const vid = document.createElement('a');
+      vid.className = 'icon-btn';
+      vid.href = ytUrl(it.name);
+      vid.target = '_blank';
+      vid.textContent = '▶';
+      actions.appendChild(vid);
+
+      const calBtn = document.createElement('button');
+      calBtn.className = 'icon-btn cal-btn';
+      calBtn.textContent = '🗓';
+      calBtn.onclick = ()=> openHistory(id, it.name);
+      actions.appendChild(calBtn);
+
+      const saveExBtn = document.createElement('button');
+      saveExBtn.className = 'icon-btn save-ex' + (savedThisSession[id] ? ' saved' : '');
+      saveExBtn.textContent = savedThisSession[id] ? '✓' : '💾';
+      saveExBtn.onclick = ()=> saveExercise(id, it, day.id);
+      actions.appendChild(saveExBtn);
+
+      top.appendChild(actions);
+
+      card.appendChild(top);
+
+      // sets row
+      const setsRow = document.createElement('div');
+      setsRow.className = 'sets-row';
+      const nSets = Math.max(it.sets, 3);
+      if(!pendingSets[id]) pendingSets[id] = Array.from({length:nSets}, ()=>({w:'',r:''}));
+      for(let s=0; s<nSets; s++){
+        const wrap = document.createElement('div');
+        wrap.className = 'set-input';
+        const label = document.createElement('label');
+        label.textContent = it.isTime ? `Сет ${s+1} (сек)` : `Сет ${s+1}`;
+        wrap.appendChild(label);
+        const input = document.createElement('input');
+        input.placeholder = it.isTime ? 'сек' : (it.bodyweight ? '+кг/повт' : 'вага/повт');
+        input.value = pendingSets[id][s].raw || '';
+        input.oninput = (e)=>{
+          pendingSets[id][s].raw = e.target.value;
+        };
+        wrap.appendChild(input);
+        setsRow.appendChild(wrap);
+      }
+      card.appendChild(setsRow);
+
+      // last log
+      const last = lastLogs[id];
+      if(last){
+        const ll = document.createElement('div');
+        ll.className = 'last-log';
+        ll.innerHTML = fmtLast(last);
+        card.appendChild(ll);
+      }
+
+      main.appendChild(card);
+    });
+  });
+
+  if(day.cardio){
+    const cb = document.createElement('div');
+    cb.className = 'cardio-box';
+    cb.textContent = day.cardio;
+    main.appendChild(cb);
+  }
+
+  const note = document.createElement('div');
+  note.className = 'note-box';
+  note.innerHTML = profile==='woman'
+    ? '🦵 Обережно з колінами: працюй у комфортній амплітуді, без болю; жим ногами — не опускай платформу нижче кута 90°. 💾 біля вправи — зберегти саме її одразу (щоб не загубити), 🗓 — переглянути попередні записи. Кнопка внизу — контрольне збереження всього тренування разом.'
+    : '🦵 Ноги тренуються без змін щодня. 🎯 — цільова вага на обраний тиждень. 💾 біля вправи — зберегти саме її одразу (щоб не загубити), 🗓 — переглянути попередні записи. Кнопка внизу — контрольне збереження всього тренування разом.';
+  main.appendChild(note);
+}
+
+function renderAll(){
+  renderProfileBar();
+  renderWeekBar();
+  renderDayNav();
+  renderMain();
+}
+
+async function logExercise(id, log){
+  lastLogs[id] = log;
+  await storageSet('lastlog:'+id, JSON.stringify(log));
+  let hist = [];
+  const h = await storageGet('history:'+id);
+  if(h){
+    try{ hist = JSON.parse(h); }catch(e){ hist = []; }
+  }
+  hist.push(log);
+  if(hist.length>30) hist = hist.slice(-30);
+  await storageSet('history:'+id, JSON.stringify(hist));
+}
+
+function setsFromPending(id){
+  return (pendingSets[id]||[]).map(s=>{
+    if(!s.raw) return {w:'',r:''};
+    const parts = s.raw.split('/');
+    return {w: parts[0]?.trim()||'', r: parts[1]?.trim()||''};
+  }).filter(s=>s.w || s.r);
+}
+
+async function saveWorkout(){
+  const day = getDays()[currentDay];
+  const today = new Date().toISOString().slice(0,10);
+  let any = false;
+  for(const g of day.groups){
+    for(const it of g.items){
+      const id = exId(day.id, it.name);
+      const sets = setsFromPending(id);
+      if(sets.length){
+        any = true;
+        try{ await logExercise(id, {date: today, sets}); savedThisSession[id] = true; }
+        catch(e){ console.error('storage error', e); }
+      }
+    }
+  }
+  showToast(any ? 'Тренування збережено!' : 'Немає даних для збереження');
+  if(any) renderMain();
+}
+
+async function saveExercise(id, it, dayId){
+  const today = new Date().toISOString().slice(0,10);
+  const sets = setsFromPending(id);
+  if(!sets.length){
+    showToast('Заповніть хоча б один сет');
+    return;
+  }
+  try{
+    await logExercise(id, {date: today, sets});
+    savedThisSession[id] = true;
+    showToast(`${it.name} — збережено!`);
+    renderMain();
+  }catch(e){
+    console.error('storage error', e);
+    showToast('Помилка збереження');
+  }
+}
+
+async function getHistory(id){
+  const h = await storageGet('history:'+id);
+  if(!h) return [];
+  try{ return JSON.parse(h); }catch(e){ return []; }
+}
+
+async function openHistory(id, name){
+  const hist = await getHistory(id);
+  const root = document.getElementById('modalRoot');
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
+
+  const sheet = document.createElement('div');
+  sheet.className = 'modal-sheet';
+
+  const head = document.createElement('div');
+  head.className = 'modal-head';
+  head.innerHTML = `<h3>🗓 Історія — ${name}</h3>`;
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'modal-close';
+  closeBtn.textContent = '✕';
+  closeBtn.onclick = closeModal;
+  head.appendChild(closeBtn);
+  sheet.appendChild(head);
+
+  if(!hist.length){
+    const empty = document.createElement('div');
+    empty.className = 'hist-empty';
+    empty.textContent = 'Записів ще немає. Збережіть перше тренування цієї вправи.';
+    sheet.appendChild(empty);
+  }else{
+    [...hist].reverse().forEach(log=>{
+      const row = document.createElement('div');
+      row.className = 'hist-row';
+      const setsTxt = (log.sets||[]).map(s=>`${s.w||'-'}/${s.r||'-'}`).join(', ');
+      row.innerHTML = `<span class="hd">📅 ${log.date}</span><span class="hv">${setsTxt}</span>`;
+      sheet.appendChild(row);
+    });
+  }
+
+  overlay.appendChild(sheet);
+  root.appendChild(overlay);
+}
+
+function closeModal(){
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = '';
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2000);
+}
+
+
+document.getElementById('saveBtn').onclick = saveWorkout;
+
+(async function init(){
+  updateHeaderText();
+  try{
+    await loadLastLogs();
+  }catch(e){ console.error(e); }
+  renderAll();
+})();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(e=> console.error('SW reg failed', e));
+  });
+}
+
+</script>
+</body>
+</html>
