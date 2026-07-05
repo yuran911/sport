@@ -1,0 +1,1148 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренувальний план — Full Body</title>
+<style>
+  :root{
+    --bg: #0f1117;
+    --panel: #171a24;
+    --panel2: #1d2130;
+    --line: #2a2f40;
+    --ink: #e9ebf2;
+    --muted: #8b91a6;
+    --accent: #e8a33d;
+    --accent2: #4a90d9;
+    --green: #3cb371;
+    --red: #d9534f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg); color: var(--ink);
+  }
+  header{
+    padding: 18px 16px 10px; text-align:center; position:sticky; top:0; z-index:10;
+    background: linear-gradient(180deg, #0f1117 80%, transparent);
+  }
+  header h1{
+    margin:0; font-size: 1.3rem; letter-spacing:.5px;
+    font-family: Georgia, 'Times New Roman', serif;
+  }
+  header .sub{ color:var(--muted); font-size:.8rem; margin-top:4px;}
+
+  .week-bar{
+    display:flex; gap:6px; justify-content:center; flex-wrap:wrap;
+    padding: 8px 12px 14px;
+  }
+  .week-bar button{
+    background:var(--panel); border:1px solid var(--line); color:var(--muted);
+    padding:6px 10px; border-radius:8px; font-size:.78rem; cursor:pointer;
+  }
+  .week-bar button.active{
+    background: var(--accent); color:#1a1208; border-color:var(--accent); font-weight:600;
+  }
+
+  nav.days{
+    display:flex; gap:8px; padding: 0 12px 12px; justify-content:center;
+  }
+  nav.days button{
+    flex:1; max-width:160px; background:var(--panel2); border:1px solid var(--line);
+    color:var(--ink); padding:10px 8px; border-radius:10px; font-size:.85rem; cursor:pointer;
+    font-weight:600;
+  }
+  nav.days button.active{
+    background: linear-gradient(135deg,#2a3a5c,#1d2130); border-color: var(--accent2);
+    box-shadow: 0 0 0 1px var(--accent2) inset;
+  }
+
+  main{ max-width: 720px; margin: 0 auto; padding: 0 12px 60px; }
+
+  .group-label{
+    margin: 18px 0 8px; font-size:.72rem; letter-spacing:1px; text-transform:uppercase;
+    color: var(--accent); display:flex; align-items:center; gap:6px;
+  }
+  .group-label hr{ flex:1; border:none; border-top:1px solid var(--line);}
+
+  .card{
+    background: var(--panel); border:1px solid var(--line); border-radius: 14px;
+    padding: 12px 14px; margin-bottom: 10px;
+  }
+  .card.done{ opacity:.55; }
+  .card-top{ display:flex; align-items:flex-start; gap:10px; }
+  .chk{
+    width:22px; height:22px; border-radius:6px; border:2px solid var(--muted);
+    flex:0 0 auto; cursor:pointer; display:flex; align-items:center; justify-content:center;
+    margin-top:2px;
+  }
+  .chk.checked{ background:var(--green); border-color:var(--green); color:#0f1117; font-weight:bold;}
+  .ex-name{ font-weight:600; font-size:.95rem; }
+  .ex-meta{ color:var(--muted); font-size:.76rem; margin-top:2px; }
+  .week-progress-line{
+    color: var(--accent2); font-size:.68rem; margin-top:4px; line-height:1.5;
+    word-spacing: 2px;
+  }
+  .cur-week{ color: var(--accent); }
+  .ex-target{ color:var(--accent2); font-weight:600; }
+
+  .actions{ margin-left:auto; display:flex; gap:6px; flex:0 0 auto; }
+  .icon-btn{
+    background:var(--panel2); border:1px solid var(--line); color:var(--ink);
+    border-radius:8px; padding:6px 9px; font-size:.78rem; cursor:pointer; text-decoration:none;
+    white-space:nowrap;
+  }
+  .icon-btn:hover{ border-color:var(--accent2); }
+
+  .sets-row{ display:flex; gap:6px; margin-top:10px; flex-wrap:wrap; }
+  .set-input{
+    display:flex; flex-direction:column; gap:2px; flex:1; min-width:70px;
+  }
+  .set-input label{ font-size:.65rem; color:var(--muted); }
+  .set-input input{
+    width:100%; background:var(--bg); border:1px solid var(--line); color:var(--ink);
+    border-radius:6px; padding:6px 6px; font-size:.85rem; text-align:center;
+  }
+  .set-input input:focus{ outline:none; border-color:var(--accent2); }
+
+  .last-log{
+    margin-top:8px; font-size:.74rem; color: var(--muted);
+    background: var(--bg); border-radius:8px; padding:6px 8px; border:1px dashed var(--line);
+  }
+  .last-log b{ color: var(--green); }
+
+  .custom-line{
+    margin-top:8px;
+  }
+
+  .custom-line input{
+    width:100%; background:var(--bg); border:1px solid var(--line); color:var(--ink);
+    border-radius:6px; padding:6px 8px; font-size:.8rem;
+  }
+
+  .note-box{
+    background: rgba(232,163,61,.08); border:1px solid rgba(232,163,61,.3);
+    border-radius:10px; padding:10px 12px; font-size:.78rem; color:#d9c08a; margin: 14px 0;
+  }
+  .cardio-box{
+    background: rgba(60,179,113,.08); border:1px solid rgba(60,179,113,.3);
+    border-radius:10px; padding:10px 12px; font-size:.78rem; color:#9fe0bb; margin: 8px 0 16px;
+  }
+
+  .save-bar{
+    position: sticky; bottom:0; padding: 10px 12px 4px; background: linear-gradient(0deg,#0f1117 75%, transparent);
+    display:flex; justify-content:center;
+  }
+  .save-bar button{
+    background: var(--accent); color:#1a1208; border:none; border-radius:12px;
+    padding: 12px 28px; font-size:.95rem; font-weight:700; cursor:pointer;
+    box-shadow: 0 4px 14px rgba(232,163,61,.3);
+  }
+  .import-bar{
+    position: sticky; bottom:0; padding: 0 12px 14px;
+    display:flex; justify-content:center; background: linear-gradient(0deg,#0f1117 80%, transparent);
+  }
+  .import-bar button{
+    background: var(--panel2); color:var(--muted); border:1px solid var(--line);
+    border-radius:10px; padding:8px 18px; font-size:.8rem; cursor:pointer;
+  }
+  .import-bar button:hover{ border-color:var(--accent2); color:var(--ink); }
+
+  .alt-select{
+    width:100%; background: var(--bg); border:none;
+    border-bottom: 1px dashed var(--line); color:var(--muted);
+    font-size:.76rem; padding:4px 2px; margin-top:6px;
+    cursor:pointer; outline:none; font-style:italic;
+    -webkit-appearance:none; appearance:none;
+  }
+  .alt-select:focus{ border-bottom-color:var(--accent); color:var(--ink); }
+  .alt-select option{ background:var(--panel); color:var(--ink); }
+  .toast{
+    position: fixed; bottom: 80px; left:50%; transform:translateX(-50%);
+    background: var(--green); color:#0f1117; padding:8px 16px; border-radius:10px;
+    font-size:.85rem; font-weight:600; opacity:0; transition:opacity .3s; pointer-events:none;
+  }
+  .toast.show{ opacity:1; }
+
+  .empty-hint{ text-align:center; color:var(--muted); font-size:.8rem; padding: 30px 10px; }
+
+  .icon-btn.save-ex{ color: var(--accent); border-color: rgba(232,163,61,.4); }
+  .icon-btn.save-ex.saved{ color: var(--green); border-color: rgba(60,179,113,.4); }
+  .icon-btn.cal-btn{ color: var(--accent2); }
+
+  .modal-overlay{
+    position: fixed; inset:0; background: rgba(0,0,0,.6); z-index:50;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .modal-sheet{
+    background: var(--panel); border:1px solid var(--line); border-radius: 16px 16px 0 0;
+    width:100%; max-width: 720px; max-height: 78vh; overflow-y:auto; padding: 16px 16px 24px;
+  }
+  .modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:10px; }
+  .modal-head h3{ margin:0; font-size:1rem; }
+  .modal-close{
+    background:var(--panel2); border:1px solid var(--line); color:var(--ink);
+    border-radius:8px; width:32px; height:32px; cursor:pointer; font-size:1rem;
+  }
+  .hist-row{
+    display:flex; justify-content:space-between; gap:10px; padding:8px 10px;
+    background: var(--bg); border-radius:8px; margin-bottom:6px; font-size:.82rem;
+  }
+  .hist-row .hd{ color: var(--muted); flex:0 0 auto; }
+  .hist-row .hv{ text-align:right; }
+  .hist-empty{ color:var(--muted); font-size:.82rem; text-align:center; padding: 20px 0; }
+
+  .profile-bar{
+    display:flex; gap:8px; justify-content:center; padding: 4px 12px 10px;
+  }
+  .profile-bar button{
+    background:var(--panel2); border:1px solid var(--line); color:var(--muted);
+    padding:8px 18px; border-radius:10px; font-size:.85rem; cursor:pointer; font-weight:600;
+  }
+  .profile-bar button.active{
+    background: linear-gradient(135deg,#3a2a1a,#1d2130); border-color: var(--accent);
+    color: var(--ink); box-shadow: 0 0 0 1px var(--accent) inset;
+  }
+</style>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Тренування">
+<meta name="theme-color" content="#0f1117">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<header>
+  <h1 id="appTitle">🏋 План тренувань</h1>
+  <div class="sub" id="appSub">За книгою «Тренажерний зал. Анатомія вправ та програми тренувань»</div>
+</header>
+
+<div class="profile-bar" id="profileBar"></div>
+<div class="week-bar" id="weekBar"></div>
+<nav class="days" id="dayNav"></nav>
+
+<main id="main"></main>
+
+<div class="save-bar">
+  <button id="saveBtn">💾 Зберегти все тренування (контрольне)</button>
+</div>
+<div class="import-bar">
+  <button id="importBtn" onclick="document.getElementById('xlsxInput').click()">📂 Завантажити план (.xlsx)</button>
+  <input type="file" id="xlsxInput" accept=".xlsx" style="display:none">
+</div>
+<div class="toast" id="toast">Збережено!</div>
+<div id="modalRoot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+const ONERM = {
+  'Жим лежачи в тренажері Сміта (горизонтальний)': 104.5,
+  'Жим у Сміті під кутом': 107.7,
+  'Метелик (Pec-Deck)': 126.7,
+  'Горизонтальна тяга широкою ручкою': 100,
+  'Вертикальна тяга широкою ручкою': 126.7,
+  'Жим на тренажері (армійський жим)': 70,
+  'Протяжка в Сміті': 86.7,
+  'Шраги зі штангою': 180,
+  'Згинання рук зі штангою стоячи': 70,
+  'Кросовер канат': 70,
+  'Тяга у кросовері з-за голови': 55,
+  'Згинання кистей зі штангою сидячи': 63,
+};
+const PCT_BY_WEEK = {1:0.60,2:0.70,3:0.75,4:0.65,5:[0.77,0.80],6:[0.72,0.75],7:[0.80,0.82],8:0.65};
+const REPS_BY_WEEK = {1:'12–15',2:'10–12',3:'8–10',4:'12–15',5:'8–10',6:'10–12',7:'6–8',8:'12–15'};
+function round25(x){ return Math.round(x/2.5)*2.5; }
+function targetWeight(name, week){
+  if(profile !== 'man') return null;
+  if(!ONERM[name]) return null;
+  const pct = PCT_BY_WEEK[week];
+  const onerm = ONERM[name];
+  if(Array.isArray(pct)){
+    const lo = round25(onerm*pct[0]), hi = round25(onerm*pct[1]);
+    return lo===hi ? `${lo} кг` : `${lo}–${hi} кг`;
+  }
+  return `${round25(onerm*pct)} кг`;
+}
+
+function ytUrl(name){
+  const clean = name.split(' (')[0];
+  return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(clean + ' техніка виконання');
+}
+
+const PULLUP_WEEKLY = {1:'+0',2:'+2.5',3:'+5',4:'+0',5:'+7.5',6:'+5',7:'+10',8:'+0'};
+const PLANK_WEEKLY  = {1:'45',2:'50',3:'55',4:'45',5:'60',6:'65',7:'70',8:'50'};
+const WOMAN_REPS_WEEKLY = {1:'12–15',2:'12–15',3:'12',4:'12',5:'10–12',6:'10–12',7:'10',8:'10'};
+const WOMAN_PLANK_WEEKLY = {1:'30',2:'30',3:'30–35',4:'35',5:'35',6:'40',7:'40',8:'40'};
+
+function weeklyProgressionLine(it){
+  const name = it.name;
+  if(profile === 'man'){
+    if(ONERM[name]){
+      const parts = [];
+      for(let w=1; w<=8; w++){
+        const pct = PCT_BY_WEEK[w];
+        const onerm = ONERM[name];
+        let val;
+        if(Array.isArray(pct)){
+          const lo = round25(onerm*pct[0]), hi = round25(onerm*pct[1]);
+          val = lo===hi ? `${lo}` : `${lo}-${hi}`;
+        }else{
+          val = `${round25(onerm*pct)}`;
+        }
+        parts.push(`Т${w}:${val}`);
+      }
+      return { text: '⚖️ ' + parts.join('  ') + ' кг', highlightWeek: true };
+    }
+    if(it.bodyweight){
+      const parts = Object.keys(PULLUP_WEEKLY).map(w=>`Т${w}:${PULLUP_WEEKLY[w]}`);
+      return { text: '⚖️ ' + parts.join('  ') + ' кг (на поясі)', highlightWeek: true };
+    }
+    if(it.isTime){
+      const parts = Object.keys(PLANK_WEEKLY).map(w=>`Т${w}:${PLANK_WEEKLY[w]}`);
+      return { text: '⚖️ ' + parts.join('  ') + ' сек', highlightWeek: true };
+    }
+    // no 1RM known for this exercise — don't show a progression line
+    return null;
+  }else{
+    // woman profile — only show progression for time-based exercises (plank)
+    if(it.isTime){
+      const parts = Object.keys(WOMAN_PLANK_WEEKLY).map(w=>`Т${w}:${WOMAN_PLANK_WEEKLY[w]}`);
+      return { text: '⏱ ' + parts.join('  ') + ' сек', highlightWeek: false };
+    }
+    return null;
+  }
+}
+
+// ---- DATA: Full Body — 7 вправ на день ----
+const DAYS_MAN = [
+  { id:'d1', label:'День 1', groups:[
+    {label:'💪 Груди', items:[
+      {name:'Жим лежачи в тренажері Сміта (горизонтальний)', sets:3, reps:'10–12', page:'с.55'},
+    ]},
+    {label:'🦾 Спина', items:[
+      {name:'Підтягування', sets:3, reps:'8–10', bodyweight:true},
+    ]},
+    {label:'🦵 Ноги', items:[
+      {name:'Присідання гак', sets:3, reps:'10–12'},
+    ]},
+    {label:'💪 Біцепс', items:[
+      {name:'Згинання рук зі штангою стоячи', sets:3, reps:'10–12', page:'с.167'},
+    ]},
+    {label:'🔱 Трицепс', items:[
+      {name:'Жим вузьким хватом', sets:3, reps:'10–12'},
+    ]},
+    {label:'🏔 Трапеція', items:[
+      {name:'Шраги зі штангою', sets:3, reps:'12–15', page:'с.125'},
+    ]},
+    {label:'🔥 Прес', items:[
+      {name:'Планка на передпліччях (класична)', sets:3, reps:'30–45 сек', page:'с.305', isTime:true},
+    ]},
+  ], cardio:'🏃 КАРДІО: 10–15 хв легке кардіо (вело/доріжка, пульс ~120-130)'},
+
+  { id:'d2', label:'День 2', groups:[
+    {label:'💪 Груди', items:[
+      {name:'Жим у Сміті під кутом', sets:3, reps:'10–12', page:'с.58'},
+    ]},
+    {label:'🦾 Спина', items:[
+      {name:'Вертикальна тяга широкою ручкою', sets:3, reps:'10–12', page:'с.92'},
+    ]},
+    {label:'🦵 Ноги', items:[
+      {name:'Жим платформи (ступні низ / широко)', sets:3, reps:'10–12'},
+    ]},
+    {label:'💪 Біцепс', items:[
+      {name:'Лавка Скотта тренажер', sets:3, reps:'10–12', page:'с.170'},
+    ]},
+    {label:'🔱 Трицепс', items:[
+      {name:'Тяга у кросовері з-за голови', sets:3, reps:'10–12', page:'с.209'},
+    ]},
+    {label:'🔵 Плечі', items:[
+      {name:'Жим на тренажері (армійський жим)', sets:3, reps:'10–12', page:'с.135'},
+    ]},
+    {label:'🔥 Прес', items:[
+      {name:'Скручування "велосипед"', sets:3, reps:'15–20', page:'с.301'},
+    ]},
+  ], cardio:'🏃 КАРДІО: 15 хв інтервали (1 хв швидко / 2 хв повільно) × 5 циклів'},
+
+  { id:'d3', label:'День 3', groups:[
+    {label:'💪 Груди', items:[
+      {name:'Метелик (Pec-Deck)', sets:3, reps:'12–15', page:'с.85'},
+    ]},
+    {label:'🦾 Спина', items:[
+      {name:'Горизонтальна тяга широкою ручкою', sets:3, reps:'10–12', page:'с.95'},
+    ]},
+    {label:'🦵 Ноги', items:[
+      {name:'Підйом на носки стоячи у Сміті (ікри)', sets:3, reps:'15–20'},
+    ]},
+    {label:'💪 Біцепс', items:[
+      {name:'Підйом w-штанги методом "21" (7-7-7)', sets:1, reps:'21', page:'с.34'},
+    ]},
+    {label:'🔱 Трицепс', items:[
+      {name:'Кросовер канат', sets:3, reps:'12–15'},
+    ]},
+    {label:'🖐 Передпліччя', items:[
+      {name:'Згинання кистей зі штангою сидячи', sets:3, reps:'12–15'},
+    ]},
+    {label:'🔥 Прес', items:[
+      {name:'Бічна планка', sets:3, reps:'30–45 сек/бік', page:'с.309', isTime:true},
+    ]},
+  ], cardio:'🏃 КАРДІО: 10–15 хв легке кардіо у відновлювальному темпі'},
+]
+const DAYS_WOMAN = [
+  { id:'wd1', label:'День 1', groups:[
+    {label:'🦵 Ноги / Сідниці', items:[
+      {name:'Присідання в гакові (зворотній, п’ятами на платформі)', sets:3, reps:'10–12', page:'акцент сідниці'},
+      {name:'Жим ногами у тренажері', sets:3, reps:'10–15', page:'с.356'},
+      {name:'Розведення ніг сидячи (сідниці)', sets:3, reps:'12–15', page:'с.356'},
+    ]},
+    {label:'🍑 Сідниці / Верх / Прес', items:[
+      {name:'Тяга ногою в кросовері (kickback)', sets:3, reps:'15 на ногу', page:'ізоляція сідниць'},
+      {name:'Сідничний міст зі штангою (легка вага)', sets:3, reps:'12–15', page:'с.357'},
+      {name:'Тяга верхнього блоку до грудей широким хватом', sets:3, reps:'10–12', page:'с.364'},
+      {name:'Планка на передпліччях', sets:3, reps:'30–45 сек', page:'с.356', isTime:true},
+    ]},
+  ], cardio:'🚶 Розминка: 10 хв легке кардіо + суглобова гімнастика. Заминка: 10–15 хв.'},
+
+  { id:'wd2', label:'День 2', groups:[
+    {label:'💪 Верх тіла', items:[
+      {name:'Жим штанги лежачи (або в Сміті)', sets:3, reps:'8–12', page:'с.357'},
+      {name:'Тяга горизонтального блоку до поясу', sets:3, reps:'8–12', page:'с.357'},
+      {name:'Жим гантелей сидячи', sets:3, reps:'8–12', page:'с.357'},
+    ]},
+    {label:'💪 Руки / Ікри / Прес', items:[
+      {name:'Згинання рук з рукоятками верхніх блоків стоячи (біцепс)', sets:3, reps:'8–12', page:'с.357'},
+      {name:'Розгинання рук з блоку (трицепс)', sets:3, reps:'8–12', page:'с.357'},
+      {name:'Підйоми на носки сидячи', sets:3, reps:'15–20', page:'с.357'},
+      {name:'Скручування "велосипед"', sets:3, reps:'15–20', page:'с.301'},
+    ]},
+  ], cardio:'🚶 Розминка: 10 хв легке кардіо + суглобова гімнастика. Заминка: 10–15 хв.'},
+
+  { id:'wd3', label:'День 3', groups:[
+    {label:'🦵 Ноги / Сідниці', items:[
+      {name:'Жим платформи (ступні широко)', sets:3, reps:'10–12', page:'с.356'},
+      {name:'Зведення ніг сидячи (внутрішнє стегно)', sets:3, reps:'12–15', page:'с.356'},
+      {name:'Тяга ногою в кросовері (kickback)', sets:3, reps:'15 на ногу', page:'ізоляція сідниць'},
+    ]},
+    {label:'🍑 Сідниці / Верх / Прес', items:[
+      {name:'Румунська тяга зі штангою (легка вага)', sets:3, reps:'8–12', page:'с.357'},
+      {name:'Тяга горизонтального блоку до поясу', sets:3, reps:'8–12', page:'с.357'},
+      {name:'Підйоми на носки стоячи', sets:3, reps:'15–20', page:'с.356'},
+      {name:'Бічна планка', sets:3, reps:'30–45 сек/бік', page:'с.357', isTime:true},
+    ]},
+  ], cardio:'🚶 Розминка: 10 хв легке кардіо + суглобова гімнастика. Заминка: 10–15 хв.'},
+];
+
+let profile = localStorage.getItem('trenuvannya-profile') || 'man';
+function getDays(){ return profile === 'woman' ? DAYS_WOMAN : DAYS_MAN; }
+
+
+let currentDay = 0;
+let currentWeek = 1;
+let checkedState = {};   // exId -> bool (session-only, resets each load is fine, but persist per day-session)
+let lastLogs = {};       // exId -> {date, sets:[{w,r}], custom?:string}
+let pendingSets = {};    // exId -> array of {w,r} being typed this session
+let savedThisSession = {}; // exId -> bool, true once saved in current visit
+
+function exId(dayId, name){ return dayId + '::' + name; }
+
+// Storage wrapper: use window.storage if available (Claude artifact env),
+// otherwise fall back to plain localStorage so the file works standalone.
+const hasClaudeStorage = (typeof window.storage !== 'undefined' && window.storage && typeof window.storage.get === 'function');
+
+async function storageGet(key){
+  if(hasClaudeStorage){
+    try{
+      const res = await window.storage.get(key);
+      return res ? res.value : null;
+    }catch(e){ return null; }
+  }
+  return localStorage.getItem(key);
+}
+async function storageSet(key, value){
+  if(hasClaudeStorage){
+    try{ await window.storage.set(key, value); return; }catch(e){ /* fall through */ }
+  }
+  localStorage.setItem(key, value);
+}
+
+async function loadLastLogs(){
+  for(const day of getDays()){
+    for(const g of day.groups){
+      for(const it of g.items){
+        const id = exId(day.id, it.name);
+        const raw = await storageGet('lastlog:'+id);
+        if(raw){
+          try{ lastLogs[id] = JSON.parse(raw); }catch(e){ /* ignore bad data */ }
+        }
+      }
+    }
+  }
+}
+
+function fmtLast(log){
+  if(!log) return null;
+  const sets = (log.sets||[]).filter(s=>s.w || s.r).map(s=> `${s.w||'-'}/${s.r||'-'}`).join(', ');
+  return `📅 ${log.date}: ${sets || '—'}`;
+}
+
+function renderProfileBar(){
+  const pb = document.getElementById('profileBar');
+  pb.innerHTML = '';
+  const opts = [['man','🙋‍♂️ Чоловік'], ['woman','🙋‍♀️ Жінка']];
+  opts.forEach(([val,label])=>{
+    const b = document.createElement('button');
+    b.textContent = label;
+    if(profile===val) b.classList.add('active');
+    b.onclick = ()=>{
+      if(profile===val) return;
+      profile = val;
+      localStorage.setItem('trenuvannya-profile', profile);
+      currentDay = 0;
+      checkedState = {};
+      pendingSets = {};
+      savedThisSession = {};
+      lastLogs = {};
+      updateHeaderText();
+      loadLastLogs().then(renderAll);
+    };
+    pb.appendChild(b);
+  });
+
+  const weekBar = document.getElementById('weekBar');
+  weekBar.style.display = profile==='man' ? 'flex' : 'none';
+}
+
+function updateHeaderText(){
+  const title = document.getElementById('appTitle');
+  const sub = document.getElementById('appSub');
+  if(profile==='woman'){
+    title.textContent = '🏋 План тренувань';
+    sub.textContent = 'Низ/Верх сплiт • безпечно для колін • за книгою «Тренажерний зал»';
+  }else{
+    title.textContent = '🏋 Full Body — План тренувань';
+    sub.textContent = 'За книгою «Тренажерний зал. Анатомія вправ та програми тренувань»';
+  }
+}
+
+function renderWeekBar(){
+  const wb = document.getElementById('weekBar');
+  wb.innerHTML = '';
+  for(let w=1; w<=8; w++){
+    const b = document.createElement('button');
+    b.textContent = 'Тиж.'+w;
+    if(w===currentWeek) b.classList.add('active');
+    b.onclick = ()=>{ currentWeek = w; renderAll(); };
+    wb.appendChild(b);
+  }
+}
+
+function renderDayNav(){
+  const nav = document.getElementById('dayNav');
+  nav.innerHTML = '';
+  getDays().forEach((d, idx)=>{
+    const b = document.createElement('button');
+    b.textContent = d.label;
+    if(idx===currentDay) b.classList.add('active');
+    b.onclick = ()=>{ currentDay = idx; renderDayNav(); renderMain(); };
+    nav.appendChild(b);
+  });
+}
+
+function renderMain(){
+  const day = getDays()[currentDay];
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  day.groups.forEach(g=>{
+    const gl = document.createElement('div');
+    gl.className = 'group-label';
+    gl.innerHTML = `<span>${g.label}</span><hr/>`;
+    main.appendChild(gl);
+
+    g.items.forEach(it=>{
+      const id = exId(day.id, it.name);
+      const card = document.createElement('div');
+      card.className = 'card';
+      if(checkedState[id]) card.classList.add('done');
+
+      const top = document.createElement('div');
+      top.className = 'card-top';
+
+      const chk = document.createElement('div');
+      chk.className = 'chk' + (checkedState[id] ? ' checked' : '');
+      chk.textContent = checkedState[id] ? '✓' : '';
+      chk.onclick = ()=>{
+        checkedState[id] = !checkedState[id];
+        renderMain();
+      };
+      top.appendChild(chk);
+
+      const info = document.createElement('div');
+      info.style.flex = '1';
+      let metaHtml = `${it.sets}×${it.reps}`;
+      if(it.page) metaHtml += `  •  📖 ${it.page}`;
+      info.innerHTML = `<div class="ex-name">${it.name}</div><div class="ex-meta">${metaHtml}</div>`;
+      const prog = weeklyProgressionLine(it);
+      if(prog){
+        const progRow = document.createElement('div');
+        progRow.className = 'week-progress-line';
+        if(prog.highlightWeek){
+          progRow.innerHTML = prog.text.replace(
+            new RegExp(`Т${currentWeek}:([^\\s]+)`),
+            `<b class="cur-week">Т${currentWeek}:$1</b>`
+          );
+        }else{
+          progRow.textContent = prog.text;
+        }
+        info.appendChild(progRow);
+      }
+      top.appendChild(info);
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+      const vid = document.createElement('a');
+      vid.className = 'icon-btn';
+      vid.href = ytUrl(it.name);
+      vid.target = '_blank';
+      vid.textContent = '▶';
+      actions.appendChild(vid);
+
+      const calBtn = document.createElement('button');
+      calBtn.className = 'icon-btn cal-btn';
+      calBtn.textContent = '🗓';
+      calBtn.onclick = ()=> openHistory(id, it.name);
+      actions.appendChild(calBtn);
+
+      const saveExBtn = document.createElement('button');
+      saveExBtn.className = 'icon-btn save-ex' + (savedThisSession[id] ? ' saved' : '');
+      saveExBtn.textContent = savedThisSession[id] ? '✓' : '💾';
+      saveExBtn.onclick = ()=> saveExercise(id, it, day.id);
+      actions.appendChild(saveExBtn);
+
+      top.appendChild(actions);
+
+      card.appendChild(top);
+
+      // sets row
+      const setsRow = document.createElement('div');
+      setsRow.className = 'sets-row';
+      const nSets = Math.max(it.sets, 3);
+      if(!pendingSets[id]) pendingSets[id] = Array.from({length:nSets}, ()=>({w:'',r:''}));
+      for(let s=0; s<nSets; s++){
+        const wrap = document.createElement('div');
+        wrap.className = 'set-input';
+        const label = document.createElement('label');
+        label.textContent = it.isTime ? `Сет ${s+1} (сек)` : `Сет ${s+1}`;
+        wrap.appendChild(label);
+        const input = document.createElement('input');
+        input.placeholder = it.isTime ? 'сек' : (it.bodyweight ? '+кг/повт' : 'вага/повт');
+        input.value = pendingSets[id][s].raw || '';
+        input.oninput = (e)=>{
+          pendingSets[id][s].raw = e.target.value;
+        };
+        wrap.appendChild(input);
+        setsRow.appendChild(wrap);
+      }
+      card.appendChild(setsRow);
+
+      // рядок заміни вправи (якщо тренажер зайнятий)
+      // Dropdown заміни вправи (всі вправи поточного дня + інших днів)
+      const altSel = document.createElement('select');
+      altSel.className = 'alt-select';
+      const defOpt = document.createElement('option');
+      defOpt.value = '';
+      defOpt.textContent = '🔄 Заміна: оберіть іншу вправу якщо тренажер зайнятий';
+      defOpt.disabled = true;
+      defOpt.selected = !(pendingSets[id+'::alt'] || {}).raw;
+      altSel.appendChild(defOpt);
+      // Збираємо всі унікальні назви вправ з усіх днів поточного профілю
+      const allExNames = [];
+      getDays().forEach(d => d.groups.forEach(g => g.items.forEach(ex => {
+        if(ex.name !== it.name && !allExNames.includes(ex.name)) allExNames.push(ex.name);
+      })));
+      allExNames.sort().forEach(exName => {
+        const opt = document.createElement('option');
+        opt.value = exName;
+        opt.textContent = exName;
+        if((pendingSets[id+'::alt'] || {}).raw === exName) opt.selected = true;
+        altSel.appendChild(opt);
+      });
+      // Опція "Своя вправа" — вводить текст
+      const customOpt = document.createElement('option');
+      customOpt.value = '__custom__';
+      customOpt.textContent = '✏️ Своя вправа (вписати)...';
+      altSel.appendChild(customOpt);
+      altSel.onchange = (e)=>{
+        if(e.target.value === '__custom__'){
+          const custom = prompt('Введіть назву вправи:');
+          if(custom && custom.trim()){
+            if(!pendingSets[id+'::alt']) pendingSets[id+'::alt'] = {};
+            pendingSets[id+'::alt'].raw = custom.trim();
+            const newOpt = document.createElement('option');
+            newOpt.value = custom.trim();
+            newOpt.textContent = custom.trim();
+            newOpt.selected = true;
+            altSel.insertBefore(newOpt, customOpt);
+          }else{
+            altSel.value = (pendingSets[id+'::alt'] || {}).raw || '';
+          }
+        }else{
+          if(!pendingSets[id+'::alt']) pendingSets[id+'::alt'] = {};
+          pendingSets[id+'::alt'].raw = e.target.value;
+        }
+      };
+      card.appendChild(altSel);
+
+      // last log
+      const last = lastLogs[id];
+      if(last){
+        const ll = document.createElement('div');
+        ll.className = 'last-log';
+        ll.innerHTML = fmtLast(last);
+        card.appendChild(ll);
+      }
+
+      main.appendChild(card);
+    });
+  });
+
+  if(day.cardio){
+    const cb = document.createElement('div');
+    cb.className = 'cardio-box';
+    cb.textContent = day.cardio;
+    main.appendChild(cb);
+  }
+
+  const note = document.createElement('div');
+  note.className = 'note-box';
+  note.innerHTML = profile==='woman'
+    ? '🦵 Обережно з колінами: працюй у комфортній амплітуді, без болю; жим ногами — не опускай платформу нижче кута 90°. 💾 — зберегти вправу одразу, 🗓 — попередні записи.'
+    : '🦵 Ноги тренуються без змін щодня. ⚖️ під вправою — вага по тижнях (поточний тиждень виділений). 💾 — зберегти вправу одразу, 🗓 — попередні записи.';
+  main.appendChild(note);
+}
+
+function renderAll(){
+  renderProfileBar();
+  renderWeekBar();
+  renderDayNav();
+  renderMain();
+}
+
+// ---- Telegram sync via Cloudflare Worker (токен схований на сервері) ----
+// Після налаштування Worker замініть рядок нижче на ваш URL
+const WORKER_URL = 'https://sport-telegram.yuran9112.workers.dev';
+const TG_QUEUE_KEY = 'tg-queue-v2';
+const TG_SENT_KEY  = 'tg-sent-dates'; // захист від дублів
+
+// Два чат ID — ваш і дружини
+const CHAT_IDS = ['471234977', '278145361'];
+
+function getTgQueue(){
+  try{ return JSON.parse(localStorage.getItem(TG_QUEUE_KEY) || '[]'); }catch(e){ return []; }
+}
+function setTgQueue(q){
+  try{ localStorage.setItem(TG_QUEUE_KEY, JSON.stringify(q)); }catch(e){ }
+}
+
+// Захист від повторної відправки: зберігаємо ключ "профіль+день+дата"
+function getSentDates(){
+  try{ return JSON.parse(localStorage.getItem(TG_SENT_KEY) || '{}'); }catch(e){ return {}; }
+}
+function markSent(sentKey){
+  const s = getSentDates();
+  s[sentKey] = Date.now();
+  try{ localStorage.setItem(TG_SENT_KEY, JSON.stringify(s)); }catch(e){ }
+}
+function alreadySent(sentKey){
+  const s = getSentDates();
+  return !!s[sentKey];
+}
+
+function queueTelegramMessages(texts, sentKey){
+  const q = getTgQueue();
+  // одне повідомлення = масив (надсилається на всі chat IDs)
+  q.push({ texts, sentKey, ts: Date.now() });
+  if(q.length > 100) q.splice(0, q.length - 100);
+  setTgQueue(q);
+}
+
+async function sendToAllChats(text){
+  for(const chatId of CHAT_IDS){
+    const res = await fetch(WORKER_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ text, chat_id: chatId })
+    });
+    if(!res.ok) throw new Error('Worker HTTP ' + res.status + ' for chat ' + chatId);
+  }
+}
+
+let tgFlushing = false;
+async function flushTelegramQueue(){
+  if(tgFlushing) return;
+  tgFlushing = true;
+  try{
+    let q = getTgQueue();
+    while(q.length){
+      const item = q[0];
+      try{
+        // texts може бути масивом (окремі частини) або одним рядком
+        const textList = Array.isArray(item.texts) ? item.texts : [item.texts || item.text];
+        for(const t of textList){
+          await sendToAllChats(t);
+        }
+        if(item.sentKey) markSent(item.sentKey);
+        q.shift();
+        setTgQueue(q);
+      }catch(e){ break; } // offline — лишаємо в черзі
+    }
+  } finally { tgFlushing = false; }
+}
+
+// ---- Статистика тренування ----
+function calcStats(allSets, day){
+  let totalTonnage = 0;
+  let totalSets = 0;
+  let totalExercises = 0;
+  const records = [];
+
+  for(const g of day.groups){
+    for(const it of g.items){
+      const sets = allSets[it.name];
+      if(!sets || !sets.length) continue;
+      totalExercises++;
+      for(const s of sets){
+        totalSets++;
+        const w = parseFloat(s.w);
+        const r = parseFloat(s.r);
+        if(!isNaN(w) && !isNaN(r)) totalTonnage += w * r;
+      }
+      const id = exId(day.id, it.name);
+      const hist = [];
+      try{
+        const raw = localStorage.getItem('history:' + id);
+        if(raw) hist.push(...JSON.parse(raw));
+      }catch(e){}
+      const today = new Date().toISOString().slice(0,10);
+      let bestPrev = 0;
+      for(const entry of hist){
+        if(entry.date === today) continue;
+        for(const s of (entry.sets||[])){
+          const w = parseFloat(s.w), r = parseFloat(s.r);
+          if(!isNaN(w) && !isNaN(r)){
+            const e1rm = w * (1 + r/30);
+            if(e1rm > bestPrev) bestPrev = e1rm;
+          }
+        }
+      }
+      let todayBest = 0; let todayBestW = 0; let todayBestR = 0;
+      for(const s of sets){
+        const w = parseFloat(s.w), r = parseFloat(s.r);
+        if(!isNaN(w) && !isNaN(r)){
+          const e1rm = w * (1 + r/30);
+          if(e1rm > todayBest){ todayBest = e1rm; todayBestW = w; todayBestR = r; }
+        }
+      }
+      if(todayBest > 0 && todayBest > bestPrev && bestPrev > 0){
+        records.push(`🏆 Рекорд: ${it.name} — ${todayBestW}×${todayBestR}`);
+      }
+    }
+  }
+  return { totalTonnage: Math.round(totalTonnage), totalSets, totalExercises, records };
+}
+
+function buildWorkoutMessage(day, today, numberedLines, stats){
+  const profileLabel = profile==='woman' ? '🙋‍♀️ Жінка' : '🙋‍♂️ Чоловік';
+  const weekTxt = profile==='man' ? `  •  Тиж.${currentWeek}` : '';
+  let msg = `🏋 ${profileLabel} — ${day.label}${weekTxt}\n📅 ${today}\n`;
+  msg += '─'.repeat(30) + '\n';
+  msg += numberedLines.join('\n');
+  msg += '\n' + '─'.repeat(30) + '\n';
+  msg += `📊 Підсумок:\n`;
+  msg += `💪 Вправ: ${stats.totalExercises}\n`;
+  msg += `🔢 Підходів: ${stats.totalSets}\n`;
+  if(stats.totalTonnage > 0) msg += `📈 Тоннаж: ${stats.totalTonnage} кг\n`;
+  if(stats.records.length){
+    msg += '\n' + stats.records.join('\n') + '\n';
+  }
+  return msg;
+}
+
+async function logExercise(id, log){
+  lastLogs[id] = log;
+  await storageSet('lastlog:'+id, JSON.stringify(log));
+  let hist = [];
+  const h = await storageGet('history:'+id);
+  if(h){
+    try{ hist = JSON.parse(h); }catch(e){ hist = []; }
+  }
+  hist.push(log);
+  if(hist.length>30) hist = hist.slice(-30);
+  await storageSet('history:'+id, JSON.stringify(hist));
+}
+
+function setsFromPending(id){
+  return (pendingSets[id]||[]).map(s=>{
+    if(!s.raw) return {w:'',r:''};
+    const parts = s.raw.split('/');
+    return {w: parts[0]?.trim()||'', r: parts[1]?.trim()||''};
+  }).filter(s=>s.w || s.r);
+}
+
+async function saveWorkout(){
+  const day = getDays()[currentDay];
+  const today = new Date().toISOString().slice(0,10);
+  const sentKey = `${profile}::${day.id}::${today}`;
+
+  // Захист від повторної відправки
+  if(alreadySent(sentKey)){
+    showToast('Звіт за сьогодні вже відправлено в Telegram');
+    return;
+  }
+
+  let any = false;
+  let num = 1;
+  const numberedLines = [];
+  const allSets = {};
+  for(const g of day.groups){
+    for(const it of g.items){
+      const id = exId(day.id, it.name);
+      const sets = setsFromPending(id);
+      if(sets.length){
+        any = true;
+        try{
+          await logExercise(id, {date: today, sets});
+          savedThisSession[id] = true;
+          const setsTxt = sets.map(s=>`${s.w||'-'}/${s.r||'-'}`).join(' | ');
+          const altText = (pendingSets[id+'::alt'] || {}).raw || '';
+          const nameLine = altText ? `${it.name} → ${altText}` : it.name;
+          numberedLines.push(`${num}. ${nameLine}\n   ${setsTxt}`);
+          num++;
+          allSets[it.name] = sets;
+        }catch(e){ console.error('storage error', e); }
+      }
+    }
+  }
+  if(any){
+    const stats = calcStats(allSets, day);
+    const text = buildWorkoutMessage(day, today, numberedLines, stats);
+    queueTelegramMessages([text], sentKey);
+    flushTelegramQueue();
+  }
+  showToast(any ? 'Тренування збережено і відправлено!' : 'Немає даних для збереження');
+  if(any) renderMain();
+}
+
+async function saveExercise(id, it, dayId){
+  const today = new Date().toISOString().slice(0,10);
+  const sets = setsFromPending(id);
+  if(!sets.length){
+    showToast('Заповніть хоча б один сет');
+    return;
+  }
+  try{
+    await logExercise(id, {date: today, sets}); // лише локально
+    savedThisSession[id] = true;
+    showToast(`${it.name} — збережено локально`);
+    renderMain();
+  }catch(e){
+    console.error('storage error', e);
+    showToast('Помилка збереження');
+  }
+}
+
+async function getHistory(id){
+  const h = await storageGet('history:'+id);
+  if(!h) return [];
+  try{ return JSON.parse(h); }catch(e){ return []; }
+}
+
+async function openHistory(id, name){
+  const hist = await getHistory(id);
+  const root = document.getElementById('modalRoot');
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
+
+  const sheet = document.createElement('div');
+  sheet.className = 'modal-sheet';
+
+  const head = document.createElement('div');
+  head.className = 'modal-head';
+  head.innerHTML = `<h3>🗓 Історія — ${name}</h3>`;
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'modal-close';
+  closeBtn.textContent = '✕';
+  closeBtn.onclick = closeModal;
+  head.appendChild(closeBtn);
+  sheet.appendChild(head);
+
+  if(!hist.length){
+    const empty = document.createElement('div');
+    empty.className = 'hist-empty';
+    empty.textContent = 'Записів ще немає. Збережіть перше тренування цієї вправи.';
+    sheet.appendChild(empty);
+  }else{
+    [...hist].reverse().forEach(log=>{
+      const row = document.createElement('div');
+      row.className = 'hist-row';
+      const setsTxt = (log.sets||[]).map(s=>`${s.w||'-'}/${s.r||'-'}`).join(', ');
+      row.innerHTML = `<span class="hd">📅 ${log.date}</span><span class="hv">${setsTxt}</span>`;
+      sheet.appendChild(row);
+    });
+  }
+
+  overlay.appendChild(sheet);
+  root.appendChild(overlay);
+}
+
+function closeModal(){
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = '';
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 2000);
+}
+
+
+document.getElementById('saveBtn').onclick = saveWorkout;
+
+// ---- ІМПОРТ EXCEL ----
+function importXlsx(file){
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    try{
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, {type:'array'});
+
+      // Парсимо обидва аркуші: 'Чоловік' і 'Жінка'
+      function parseSheet(sheetName){
+        const ws = wb.Sheets[sheetName];
+        if(!ws) return null;
+        const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+        // Шукаємо рядок заголовків (де є "День")
+        let headerRow = -1;
+        for(let i=0; i<rows.length; i++){
+          if(String(rows[i][0]).toLowerCase().includes('день') ||
+             String(rows[i][0]).toLowerCase().includes('day')){
+            headerRow = i; break;
+          }
+        }
+        if(headerRow < 0) return null;
+
+        // Групуємо вправи по дням
+        const days = {1:[], 2:[], 3:[]};
+        const groups = {1:{}, 2:{}, 3:{}};
+        for(let r = headerRow+1; r < rows.length; r++){
+          const row = rows[r];
+          const day = parseInt(row[0]);
+          if(![1,2,3].includes(day)) continue;
+          const group  = String(row[1]||'').trim();
+          const name   = String(row[2]||'').trim();
+          const sets   = parseInt(row[3]) || 3;
+          const reps   = String(row[4]||'10-12').trim();
+          const page   = String(row[5]||'').trim();
+          const note   = String(row[6]||'').trim();
+          if(!name) continue;
+          const isTime = reps.includes('сек') || note.includes('час');
+          const isBody = note.includes('власна вага') || note.includes('bodyweight');
+          if(!groups[day][group]) groups[day][group] = [];
+          groups[day][group].push({name, sets, reps, page: page||undefined, isTime: isTime||undefined, bodyweight: isBody||undefined});
+        }
+
+        const prefix = sheetName === 'Жінка' ? 'w' : '';
+        return [1,2,3].map(dayNum => ({
+          id: prefix + 'd' + dayNum,
+          label: 'День ' + dayNum,
+          groups: Object.entries(groups[dayNum]).map(([label, items]) => ({label, items})),
+          cardio: sheetName === 'Жінка'
+            ? '🚶 Розминка: 10 хв легке кардіо + суглобова гімнастика.'
+            : '🏃 КАРДІО: 10–15 хв легке кардіо після тренування.'
+        }));
+      }
+
+      const manDays = parseSheet('Чоловік');
+      const womanDays = parseSheet('Жінка');
+
+      if(!manDays && !womanDays){
+        showToast('Помилка: аркуші "Чоловік" / "Жінка" не знайдено');
+        return;
+      }
+
+      // Зберігаємо у localStorage для постійності
+      if(manDays){
+        localStorage.setItem('custom-plan-man', JSON.stringify(manDays));
+      }
+      if(womanDays){
+        localStorage.setItem('custom-plan-woman', JSON.stringify(womanDays));
+      }
+
+      // Застосовуємо
+      loadCustomPlans();
+      currentDay = 0;
+      pendingSets = {};
+      savedThisSession = {};
+      checkedState = {};
+      lastLogs = {};
+      loadLastLogs().then(renderAll);
+      showToast('✅ План завантажено!');
+    }catch(err){
+      console.error(err);
+      showToast('Помилка читання файлу: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function loadCustomPlans(){
+  const man = localStorage.getItem('custom-plan-man');
+  const woman = localStorage.getItem('custom-plan-woman');
+  if(man){
+    try{
+      const parsed = JSON.parse(man);
+      // Замінюємо DAYS_MAN вміст (не можна переприсвоїти const, тому очищаємо і наповнюємо)
+      DAYS_MAN.length = 0;
+      parsed.forEach(d => DAYS_MAN.push(d));
+    }catch(e){}
+  }
+  if(woman){
+    try{
+      const parsed = JSON.parse(woman);
+      DAYS_WOMAN.length = 0;
+      parsed.forEach(d => DAYS_WOMAN.push(d));
+    }catch(e){}
+  }
+}
+
+document.getElementById('xlsxInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(file) importXlsx(file);
+  e.target.value = ''; // скидаємо щоб можна було завантажити той самий файл знову
+});
+
+
+(async function init(){
+  updateHeaderText();
+  loadCustomPlans();
+  try{
+    await loadLastLogs();
+  }catch(e){ console.error(e); }
+  renderAll();
+  flushTelegramQueue();
+})();
+
+window.addEventListener('online', flushTelegramQueue);
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', ()=>{
+    navigator.serviceWorker.register('sw.js').catch(e=> console.error('SW reg failed', e));
+  });
+}
+
+</script>
+</body>
+</html>
