@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Powerlifting RAW — Сила</title>
+<style>
+  /* ... ВСІ СТИЛІ ЯК РАНІШЕ ... */
+  /* Додаємо стиль для кнопки видалення заміни */
+  .clear-alt-btn {
+    background: var(--panel2);
+    border: 1px solid var(--red);
+    color: var(--red);
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    line-height: 1.4;
+  }
+  .clear-alt-btn:hover {
+    background: var(--red);
+    color: #ffffff;
+    border-color: var(--red);
+  }
+  .alt-wrapper {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-top: 6px;
+  }
+  .alt-wrapper .alt-select {
+    flex: 1;
+    margin-top: 0;
+  }
+</style>
+<!-- ... решта head ... -->
+</head>
+<body>
+<!-- ... ВЕСЬ HTML ЯК РАНІШЕ ... -->
+
+<script>
+// ===== ВІДЕО-ТУТОРІАЛИ =====
+const VIDEO_TUTORIALS = {
+  'Жим штанги лежачи (горизонтальний)': 'https://www.youtube.com/watch?v=4Y2Zd4TQw4k',
+  'Жим штанги лежачи (похилий)': 'https://www.youtube.com/watch?v=ZmBfXj_R0b0',
+  'Жим гантелей (горизонтальний)': 'https://www.youtube.com/watch?v=VmB1G1K7vqE',
+  'Жим гантелей (похилий)': 'https://www.youtube.com/watch?v=4B7n0W2gU2Q',
+  'Віджимання на брусах': 'https://www.youtube.com/watch?v=tMyFe-IL7Ks',
+  'Віджимання від підлоги': 'https://www.youtube.com/watch?v=IODxDxX7oi4',
+  'Метелик (Pec-Deck)': 'https://www.youtube.com/watch?v=QENKPHhQVi4',
+  'Зведення рук у кросовері': 'https://www.youtube.com/watch?v=6Z15dX5Bw_Y',
+  'Підтягування (широкий хват)': 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
+  'Підтягування (вузький хват)': 'https://www.youtube.com/watch?v=8J9I9y_Fh_Q',
+  'Тяга штанги в нахилі': 'https://www.youtube.com/watch?v=G8l_8chR5BE',
+  'Тяга верхнього блоку до грудей': 'https://www.youtube.com/watch?v=Y3B8q2p5_9w',
+  'Тяга горизонтального блоку до пояса': 'https://www.youtube.com/watch?v=9Z1r6M_vUq8',
+  'Тяга гантелі однією рукою': 'https://www.youtube.com/watch?v=wdM0mOYkHL4',
+  'Гіперекстензія': 'https://www.youtube.com/watch?v=phRkRZ5mTYQ',
+  'Станова тяга': 'https://www.youtube.com/watch?v=op9kVnS5lPw',
+  'Присідання зі штангою': 'https://www.youtube.com/watch?v=ultWZbUMPLQ',
+  'Присідання з гантелею': 'https://www.youtube.com/watch?v=4u3ybNlNn1E',
+  'Присідання в Сміті': 'https://www.youtube.com/watch?v=tR7MzPw7Y_c',
+  'Жим ногами': 'https://www.youtube.com/watch?v=IZxyjW7VPJQ',
+  'Випади (на місці)': 'https://www.youtube.com/watch?v=QOVaHw-QHCU',
+  'Румунська тяга': 'https://www.youtube.com/watch?v=JWJiLz0PpPk',
+  'Згинання ніг у тренажері': 'https://www.youtube.com/watch?v=1Tq3Qd1n6aE',
+  'Розгинання ніг у тренажері': 'https://www.youtube.com/watch?v=YyvSfVjQeL0',
+  'Сідничний міст': 'https://www.youtube.com/watch?v=wPM8icH2cF0',
+  'Підйоми на носки стоячи': 'https://www.youtube.com/watch?v=8h_mj0Rjlgw',
+  'Підйоми на носки сидячи': 'https://www.youtube.com/watch?v=0Ck1YfAjh-8',
+  'Армійський жим': 'https://www.youtube.com/watch?v=2B4U5wOz-ss',
+  'Жим гантелей сидячи': 'https://www.youtube.com/watch?v=qEwKCR5JCog',
+  'Жим Арнольда': 'https://www.youtube.com/watch?v=3ml7BH7mNTo',
+  'Махи гантелями в сторони': 'https://www.youtube.com/watch?v=3VcKaXpzqZ8',
+  'Махи в нахилі': 'https://www.youtube.com/watch?v=0tE1D23rLrM',
+  'Протяжка (тяга до підборіддя)': 'https://www.youtube.com/watch?v=cJRVVx6ZvOg',
+  'Згинання рук зі штангою стоячи': 'https://www.youtube.com/watch?v=ynPnr6TlQ9E',
+  'Згинання рук з гантелями': 'https://www.youtube.com/watch?v=ykJmrZ5v0Oo',
+  'Згинання рук на лаві Скотта': 'https://www.youtube.com/watch?v=mG4zP7K7t5k',
+  'Молот (Hammer curls)': 'https://www.youtube.com/watch?v=zC3nLlEvin4',
+  'Французький жим штангою': 'https://www.youtube.com/watch?v=dX4v7f5n09I',
+  'Французький жим гантелями': 'https://www.youtube.com/watch?v=4m7Qx8q8hHo',
+  'Розгинання на блоці (кросовер)': 'https://www.youtube.com/watch?v=6OQ9Yh5wPk8',
+  'Згинання кистей зі штангою': 'https://www.youtube.com/watch?v=twNfscW7H-4',
+  'Розгинання кистей зі штангою': 'https://www.youtube.com/watch?v=HZjYw3hfqVk',
+  'Шраги зі штангою': 'https://www.youtube.com/watch?v=cJRVVx6ZvOg',
+  'Шраги з гантелями': 'https://www.youtube.com/watch?v=1m0JbJwZjN8',
+  'Планка класична': 'https://www.youtube.com/watch?v=pSHjTRCQxIw',
+  'Планка бічна': 'https://www.youtube.com/watch?v=K2VljzCC16g',
+  'Скручування на підлозі': 'https://www.youtube.com/watch?v=Xyd_fa5zoEU',
+  'Скручування на фітболі': 'https://www.youtube.com/watch?v=1S4M9gF2N2c',
+  'Підйом ніг у висі': 'https://www.youtube.com/watch?v=JB2oyawG9KI',
+  'Підйом ніг лежачи': 'https://www.youtube.com/watch?v=1fbU_MkV7NE',
+  'Велосипед': 'https://www.youtube.com/watch?v=9FGilxCbdz8',
+  'Молитва (блочний прес)': 'https://www.youtube.com/watch?v=Q_WK2wB3ZJU',
+  'Вакуум': 'https://www.youtube.com/watch?v=ZIF6VXaHpMI'
+};
+
+// ===== ФУНКЦІЯ ОТРИМАННЯ ВІДЕО =====
+function getVideoUrl(name){
+  if(VIDEO_TUTORIALS[name]) return VIDEO_TUTORIALS[name];
+  
+  const keywords = name.split(' (')[0];
+  for(const [key, url] of Object.entries(VIDEO_TUTORIALS)){
+    if(key.includes(keywords) || keywords.includes(key)){
+      return url;
+    }
+  }
+  return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(name + ' техніка виконання');
+}
+
+// ===== ФУНКЦІЯ ВИДАЛЕННЯ ЗАМІНИ =====
+function clearAlt(id){
+  if(pendingSets[id+'::alt']){
+    delete pendingSets[id+'::alt'];
+    renderMain();
+    showToast('✅ Заміну видалено');
+  }
+}
+
+// ... ВЕСЬ ІНШИЙ КОД ЯК РАНІШЕ ...
+
+// ===== В renderMain() ЗМІНЮЄМО БЛОК ІЗ ЗАМІНОЮ =====
+// Знайдіть в коді місце де створюється altSel і замініть на:
+
+// ===== ЗАМІНА ВПРАВИ (з кнопкою видалення) =====
+const altWrapper = document.createElement('div');
+altWrapper.className = 'alt-wrapper';
+
+const altSel = document.createElement('select');
+altSel.className = 'alt-select';
+
+const defOpt = document.createElement('option');
+defOpt.value = '';
+defOpt.textContent = '🔄 Заміна: оберіть іншу вправу';
+defOpt.disabled = true;
+defOpt.selected = !(pendingSets[id+'::alt'] || {}).raw;
+altSel.appendChild(defOpt);
+
+for (const [group, exercises] of Object.entries(ALL_EXERCISES)) {
+  const optgroup = document.createElement('optgroup');
+  optgroup.label = group;
+  
+  exercises.forEach(exName => {
+    const opt = document.createElement('option');
+    opt.value = exName;
+    opt.textContent = exName;
+    if ((pendingSets[id+'::alt'] || {}).raw === exName) opt.selected = true;
+    optgroup.appendChild(opt);
+  });
+  
+  altSel.appendChild(optgroup);
+}
+
+const customOpt = document.createElement('option');
+customOpt.value = '__custom__';
+customOpt.textContent = '✏️ Своя вправа (вписати)...';
+altSel.appendChild(customOpt);
+
+altSel.onchange = (e)=>{
+  if(e.target.value === '__custom__'){
+    const custom = prompt('Введіть назву вправи:');
+    if(custom && custom.trim()){
+      if(!pendingSets[id+'::alt']) pendingSets[id+'::alt'] = {};
+      pendingSets[id+'::alt'].raw = custom.trim();
+      const newOpt = document.createElement('option');
+      newOpt.value = custom.trim();
+      newOpt.textContent = custom.trim();
+      newOpt.selected = true;
+      altSel.insertBefore(newOpt, customOpt);
+    }else{
+      altSel.value = (pendingSets[id+'::alt'] || {}).raw || '';
+    }
+  }else{
+    if(!pendingSets[id+'::alt']) pendingSets[id+'::alt'] = {};
+    pendingSets[id+'::alt'].raw = e.target.value;
+  }
+};
+
+altWrapper.appendChild(altSel);
+
+// Кнопка видалення заміни
+const clearBtn = document.createElement('button');
+clearBtn.className = 'clear-alt-btn';
+clearBtn.textContent = '✕';
+clearBtn.title = 'Видалити заміну';
+clearBtn.onclick = (e) => {
+  e.stopPropagation();
+  clearAlt(id);
+};
+altWrapper.appendChild(clearBtn);
+
+card.appendChild(altWrapper);
+
+// ===== КНОПКА "▶" З ВІДЕО =====
+const vid = document.createElement('a');
+vid.className = 'icon-btn';
+vid.href = getVideoUrl(it.name);
+vid.target = '_blank';
+vid.textContent = '▶';
+vid.title = 'Відео-туторіал';
+actions.appendChild(vid);
+
+// ... ВЕСЬ ІНШИЙ КОД ...
+</script>
+</body>
+</html>
