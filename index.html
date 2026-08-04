@@ -64,6 +64,23 @@
     text-shadow: none;
     font-weight: 700;
   }
+  header h1 .emoji-btn {
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.2s;
+    user-select: none;
+    font-size: 1.8rem;
+    background: none;
+    padding: 0 4px;
+    border: none;
+    border-radius: 0;
+  }
+  header h1 .emoji-btn:hover {
+    transform: scale(1.2);
+  }
+  header h1 .emoji-btn:active {
+    transform: scale(0.85);
+  }
   header .header-controls {
     display: flex;
     justify-content: center;
@@ -71,7 +88,7 @@
     gap: 12px;
     margin-top: 4px;
   }
-  header .emoji-btn {
+  header .theme-btn {
     cursor: pointer;
     display: inline-block;
     transition: all 0.2s;
@@ -82,11 +99,11 @@
     border-radius: 8px;
     border: 1px solid var(--line);
   }
-  header .emoji-btn:hover {
+  header .theme-btn:hover {
     transform: scale(1.1);
     border-color: var(--accent);
   }
-  header .emoji-btn:active {
+  header .theme-btn:active {
     transform: scale(0.9);
   }
   header .sub{ 
@@ -635,6 +652,7 @@
       grid-template-columns: repeat(3, 1fr);
     }
     header h1 { font-size: 1.4rem; }
+    header h1 .emoji-btn { font-size: 1.4rem; }
     .bottom-btn { padding: 4px 8px; font-size: 0.85rem; min-width: 38px; }
     .bottom-btn .label { font-size: 0.4rem; }
     .bottom-bar { padding: 6px 8px 12px; gap: 4px; }
@@ -653,10 +671,15 @@
 <body>
 
 <header>
-  <h1 id="appTitle">🏋️ План тренувань</h1>
+  <h1 id="appTitle">
+    <span onclick="clearCacheAndReload()" class="emoji-btn" title="Натисніть для оновлення кешу">
+      🏋️
+    </span>
+    План тренувань
+  </h1>
   <div class="header-controls">
     <span class="sub" id="appSub">Завантажте план з Excel</span>
-    <span onclick="toggleTheme()" class="emoji-btn" title="Перемкнути тему" id="themeToggle">🌓</span>
+    <span onclick="toggleTheme()" class="theme-btn" title="Перемкнути тему" id="themeToggle">🌓</span>
   </div>
 </header>
 
@@ -754,7 +777,7 @@ function toggleTheme() {
   }
 })();
 
-// ===== ВІДЕО-ТУТОРІАЛИ (звичайні посилання) =====
+// ===== ВІДЕО-ТУТОРІАЛИ =====
 const VIDEO_TUTORIALS = {
   'Жим штанги лежачи (горизонтальний)': 'https://www.youtube.com/watch?v=4Y2Zd4TQw4k',
   'Жим штанги лежачи (похилий)': 'https://www.youtube.com/watch?v=ZmBfXj_R0b0',
@@ -874,15 +897,10 @@ const ALL_EXERCISES = {
   ]
 };
 
-// ===== ШІ-АНАЛІЗ ДЛЯ РОЗУМНОЇ ПРОГРЕСІЇ =====
+// ===== ШІ-АНАЛІЗ =====
 function aiAnalyze(prevWeight, prevReps, targetReps, history) {
   if (!prevWeight || !prevReps) {
-    return { 
-      weight: 20, 
-      reps: targetReps, 
-      action: 'start',
-      message: '💡 Почніть з комфортної ваги' 
-    };
+    return { weight: 20, reps: targetReps, action: 'start', message: '💡 Почніть з комфортної ваги' };
   }
   
   const target = parseInt(targetReps) || 10;
@@ -1403,7 +1421,6 @@ function renderMain(){
       const actions = document.createElement('div');
       actions.className = 'actions';
       
-      // ===== КНОПКА ВІДЕО (ЗВИЧАЙНЕ ПОСИЛАННЯ) =====
       const vid = document.createElement('a');
       vid.className = 'icon-btn';
       vid.href = getVideoUrlForExercise(id, it.name);
