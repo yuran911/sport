@@ -111,7 +111,7 @@
     padding: 14px 16px; margin-bottom: 12px;
   }
   .card.done{ opacity:.5; }
-  .card-top{ display:flex; align-items:flex-start; gap:12px; }
+  .card-top{ display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap; }
   
   .ex-name{ 
     font-weight:700; 
@@ -138,6 +138,7 @@
     height: 12px;
     border-radius: 50%;
     flex-shrink: 0;
+    margin-right: 6px;
   }
   .ex-status.done {
     background: var(--green);
@@ -227,6 +228,21 @@
   }
   .set-input{
     display:flex; flex-direction:column; gap:3px;
+    position:relative;
+  }
+  .set-input .set-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 0 auto 2px;
+    transition: all 0.3s;
+  }
+  .set-input .set-status.filled {
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(60, 179, 113, 0.4);
+  }
+  .set-input .set-status.empty {
+    background: var(--line);
   }
   .set-input label{ 
     font-size:.6rem; 
@@ -431,6 +447,70 @@
   }
   .toast.show{ opacity:1; }
 
+  .recovery-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .recovery-modal .content {
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    padding: 24px 28px;
+    max-width: 480px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .recovery-modal .content h2 {
+    text-align: center;
+    color: var(--accent);
+    margin-top: 0;
+    font-size: 1.4rem;
+  }
+  .recovery-modal .content .emoji-big {
+    font-size: 3rem;
+    text-align: center;
+    display: block;
+  }
+  .recovery-modal .content ul {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+  }
+  .recovery-modal .content ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+  }
+  .recovery-modal .content ul li:last-child {
+    border-bottom: none;
+  }
+  .recovery-modal .content .close-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: #1a1208;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.2s;
+  }
+  .recovery-modal .content .close-btn:hover {
+    transform: scale(1.02);
+  }
+
   .icon-btn.save-ex{ color: var(--accent); border-color: rgba(232,163,61,.3); }
   .icon-btn.save-ex:hover{ 
     border-color: var(--accent);
@@ -502,6 +582,7 @@
     .bottom-bar { padding: 6px 8px 12px; gap: 4px; }
     .alt-wrapper .icon-btn { padding: 2px 6px; font-size: 0.7rem; }
     .clear-alt-btn { padding: 2px 6px; font-size: 0.7rem; }
+    .recovery-modal .content { padding: 16px; }
   }
 </style>
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -615,7 +696,6 @@ const VIDEO_TUTORIALS = {
   'Планка класична': 'https://www.youtube.com/watch?v=pSHjTRCQxIw'
 };
 
-// ===== ОТРИМАННЯ ВІДЕО З УРАХУВАННЯМ ЗАМІНИ =====
 function getVideoUrlForExercise(id, defaultName){
   const altText = (pendingSets[id+'::alt'] || {}).raw || '';
   const exerciseName = altText || defaultName;
@@ -714,66 +794,41 @@ const ALL_EXERCISES = {
   ]
 };
 
-// ===== ПРОГРЕСІЯ ПО ТИЖНЯХ =====
-const WEEKLY_PROGRESSION = {
-  1: { weight: 0.60, reps: '12-15' },
-  2: { weight: 0.70, reps: '10-12' },
-  3: { weight: 0.75, reps: '8-10' },
-  4: { weight: 0.65, reps: '12-15' },
-  5: { weight: [0.77, 0.80], reps: '8-10' },
-  6: { weight: [0.72, 0.75], reps: '10-12' },
-  7: { weight: [0.80, 0.82], reps: '6-8' },
-  8: { weight: 0.65, reps: '12-15' }
-};
-
-const ONERM = {
-  'Жим лежачи в тренажері Сміта (горизонтальний)': 104.5,
-  'Жим у Сміті під кутом': 107.7,
-  'Метелик (Pec-Deck)': 126.7,
-  'Горизонтальна тяга широкою ручкою': 100,
-  'Вертикальна тяга широкою ручкою': 126.7,
-  'Жим на тренажері (армійський жим)': 70,
-  'Протяжка в Сміті': 86.7,
-  'Шраги зі штангою': 180,
-  'Згинання рук зі штангою стоячи': 70,
-  'Кросовер канат': 70,
-  'Тяга у кросовері з-за голови': 55,
-  'Згинання кистей зі штангою сидячи': 63,
-};
-
-function round25(x){ return Math.round(x/2.5)*2.5; }
-
-function getWeekWeight(name, week){
-  if(!ONERM[name]) return null;
-  const prog = WEEKLY_PROGRESSION[week];
-  if(!prog) return null;
-  const onerm = ONERM[name];
-  const pct = prog.weight;
-  if(Array.isArray(pct)){
-    const lo = round25(onerm*pct[0]);
-    const hi = round25(onerm*pct[1]);
-    return lo === hi ? `${lo}` : `${lo}-${hi}`;
-  }
-  return `${round25(onerm*pct)}`;
-}
-
-function ytUrl(name){
-  const clean = name.split(' (')[0];
-  return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(clean + ' техніка виконання');
-}
-
-function weeklyProgressionLine(it){
-  const name = it.name;
-  if(profile !== 'man') return null;
-  if(!ONERM[name]) return null;
+// ===== РОЗУМНА ПРОГРЕСІЯ =====
+function calculateProgression(prevWeight, prevReps, targetReps, profileType) {
+  if (!prevWeight || !prevReps) return { weight: 20, change: 0, message: 'Почніть з комфортної ваги' };
   
-  const parts = [];
-  for(let w=1; w<=8; w++){
-    const val = getWeekWeight(name, w);
-    if(val) parts.push(`Т${w}:${val}`);
+  const target = parseInt(targetReps) || 10;
+  const reps = parseFloat(prevReps);
+  const weight = parseFloat(prevWeight);
+  
+  if (isNaN(reps) || isNaN(weight)) return { weight: weight || 20, change: 0, message: 'Вага без змін' };
+  
+  const step = profileType === 'woman' ? 1 : 2.5;
+  
+  if (reps >= target) {
+    const newWeight = Math.round((weight + step) * 2) / 2;
+    return { 
+      weight: newWeight, 
+      change: step, 
+      message: `✅ ${reps}/${target} → +${step} кг (${weight} → ${newWeight})` 
+    };
   }
-  if(parts.length === 0) return null;
-  return { text: '⚖️ ' + parts.join('  ') + ' кг', highlightWeek: true };
+  
+  if (reps < target / 2) {
+    const newWeight = Math.max(5, Math.round((weight - step) * 2) / 2);
+    return { 
+      weight: newWeight, 
+      change: -step, 
+      message: `⚠️ ${reps}/${target} → -${step} кг (${weight} → ${newWeight})` 
+    };
+  }
+  
+  return { 
+    weight: weight, 
+    change: 0, 
+    message: `📊 ${reps}/${target} → вага без змін (${weight} кг)` 
+  };
 }
 
 let profile = localStorage.getItem('trenuvannya-profile') || 'man';
@@ -878,6 +933,17 @@ function fmtLast(log){
   return `${sets}`;
 }
 
+function getLastWeight(id){
+  const log = lastLogs[id];
+  if (!log || !log.sets || log.sets.length === 0) return null;
+  for (const s of log.sets) {
+    if (s.w && s.r) {
+      return { weight: s.w, reps: s.r };
+    }
+  }
+  return null;
+}
+
 function checkExerciseStatus(id) {
   const sets = pendingSets[id] || [];
   const filledCount = sets.filter(s => s.raw && s.raw.trim() !== '').length;
@@ -905,8 +971,8 @@ function renderProfileBar(){
   const pb = document.getElementById('profileBar');
   pb.innerHTML = '';
   const opts = [
-    ['man','🙋‍♂️ Чоловік'],
-    ['woman','🙋‍♀️ Жінка']
+    ['man','🙋‍♂️ Чоловік (+2.5 кг)'],
+    ['woman','🙋‍♀️ Жінка (+1 кг)']
   ];
   opts.forEach(([val,label])=>{
     const b = document.createElement('button');
@@ -928,9 +994,9 @@ function renderProfileBar(){
 function updateHeaderText(){
   const sub = document.getElementById('appSub');
   if(profile === 'woman'){
-    sub.textContent = 'Жіночий профіль';
+    sub.textContent = 'Жіночий профіль • Крок +1 кг';
   } else {
-    sub.textContent = 'Чоловічий профіль • Прогресія по тижнях';
+    sub.textContent = 'Чоловічий профіль • Крок +2.5 кг';
   }
 }
 
@@ -1050,12 +1116,21 @@ function renderMain(){
       metaDiv.className = 'ex-meta';
       let metaText = it.sets + '×' + it.reps;
       if (it.page) metaText += '  •  📖 ' + it.page;
-      if (profile === 'man' && ONERM[it.name]) {
-        const weekWeight = getWeekWeight(it.name, currentWeek);
-        if (weekWeight) {
-          metaText += '  •  💪 ' + weekWeight + ' кг';
+      
+      const last = getLastWeight(id);
+      if (last) {
+        const targetReps = parseInt(it.reps) || 10;
+        const prog = calculateProgression(last.weight, last.reps, targetReps, profile);
+        metaText += '  •  💪 ' + prog.message;
+        metaText += '  •  🎯 ' + prog.weight + ' кг';
+        
+        if (!pendingSets[id] || pendingSets[id].length === 0) {
+          pendingSets[id] = Array.from({ length: 6 }, () => ({ w: String(prog.weight), r: '' }));
         }
+      } else {
+        metaText += '  •  💡 Почніть з комфортної ваги';
       }
+      
       metaDiv.textContent = metaText;
       info.appendChild(metaDiv);
       
@@ -1066,20 +1141,6 @@ function renderMain(){
         info.appendChild(noteDiv);
       }
 
-      const prog = weeklyProgressionLine(it);
-      if(prog){
-        const progRow = document.createElement('div');
-        progRow.className = 'week-progress-line';
-        if(prog.highlightWeek && profile === 'man'){
-          progRow.innerHTML = prog.text.replace(
-            new RegExp('Т' + currentWeek + ':([^\\s]+)'),
-            '<b class="cur-week">Т' + currentWeek + ':$1</b>'
-          );
-        }else{
-          progRow.textContent = prog.text;
-        }
-        info.appendChild(progRow);
-      }
       top.appendChild(info);
 
       const actions = document.createElement('div');
@@ -1119,6 +1180,11 @@ function renderMain(){
       for(let s=0; s<nSets; s++){
         const wrap = document.createElement('div');
         wrap.className = 'set-input';
+        
+        const statusDotSet = document.createElement('div');
+        statusDotSet.className = 'set-status ' + (pendingSets[id][s]?.raw ? 'filled' : 'empty');
+        wrap.appendChild(statusDotSet);
+        
         const label = document.createElement('label');
         label.textContent = it.isTime ? (s+1) : (s+1);
         wrap.appendChild(label);
@@ -1127,13 +1193,17 @@ function renderMain(){
         input.value = pendingSets[id][s]?.raw || '';
         input.oninput = (e)=>{
           pendingSets[id][s].raw = e.target.value;
+          const dot = wrap.querySelector('.set-status');
+          if (dot) {
+            dot.className = 'set-status ' + (e.target.value.trim() ? 'filled' : 'empty');
+          }
         };
         wrap.appendChild(input);
         setsRow.appendChild(wrap);
       }
       card.appendChild(setsRow);
 
-      // ===== ЗАМІНА ВПРАВИ (з кнопками відео та видалення) =====
+      // ===== ЗАМІНА ВПРАВИ =====
       const altWrapper = document.createElement('div');
       altWrapper.className = 'alt-wrapper';
 
@@ -1187,7 +1257,6 @@ function renderMain(){
 
       altWrapper.appendChild(altSel);
 
-      // ===== КНОПКА ВІДЕО ДЛЯ ЗАМІНЕНОЇ ВПРАВИ =====
       const altVideoBtn = document.createElement('a');
       altVideoBtn.className = 'icon-btn';
       altVideoBtn.textContent = '🎥';
@@ -1212,7 +1281,6 @@ function renderMain(){
       }
       updateAltVideo();
 
-      // Оновлюємо посилання при зміні випадаючого меню
       const originalOnchange = altSel.onchange;
       altSel.onchange = function(e) {
         originalOnchange(e);
@@ -1221,7 +1289,6 @@ function renderMain(){
 
       altWrapper.appendChild(altVideoBtn);
 
-      // ===== КНОПКА ВИДАЛЕННЯ ЗАМІНИ =====
       const clearBtn = document.createElement('button');
       clearBtn.className = 'clear-alt-btn';
       clearBtn.textContent = '✕';
@@ -1239,11 +1306,11 @@ function renderMain(){
 
       card.appendChild(altWrapper);
 
-      const last = lastLogs[id];
-      if(last){
+      const lastLog = lastLogs[id];
+      if(lastLog){
         const ll = document.createElement('div');
         ll.className = 'last-log';
-        ll.innerHTML = '📅 Минулий результат (' + last.date + '): <b>' + fmtLast(last) + '</b>';
+        ll.innerHTML = '📅 Минулий результат (' + lastLog.date + '): <b>' + fmtLast(lastLog) + '</b>';
         card.appendChild(ll);
       }
 
@@ -1253,7 +1320,7 @@ function renderMain(){
 
   const note = document.createElement('div');
   note.className = 'note-box';
-  note.innerHTML = '💪 Силова програма: 4-6 повторень для максимальної сили. 🟢 зелене = виконано, 🟡 жовте = частково, ⚪ сіре = не виконано.';
+  note.innerHTML = '💪 Розумна прогресія: виконав всі повторення → +вага | частково → вага без змін | менше половини → -вага';
   main.appendChild(note);
 }
 
@@ -1428,6 +1495,30 @@ function buildWorkoutMessage(day, today, numberedLines, stats){
   return msg;
 }
 
+function showRecoveryModal() {
+  const modal = document.createElement('div');
+  modal.className = 'recovery-modal';
+  modal.innerHTML = `
+    <div class="content">
+      <span class="emoji-big">🍖</span>
+      <h2>Час відновлюватися!</h2>
+      <p style="text-align:center;color:var(--muted);margin-bottom:16px;">
+        Тренування завершено! Щоб м'язи росли, потрібно правильно відновитися:
+      </p>
+      <ul>
+        <li>🥩 <b>Білок:</b> 30-40 г (курка, риба, яйця, протеїн)</li>
+        <li>🍚 <b>Вуглеводи:</b> 50-70 г (рис, гречка, банани)</li>
+        <li>💧 <b>Вода:</b> 500-700 мл (мінеральна або з лимоном)</li>
+        <li>🥑 <b>Жири:</b> авокадо або горіхи (15-20 г)</li>
+        <li>🫐 <b>Антиоксиданти:</b> ягоди або зелень для зменшення запалення</li>
+        <li>😴 <b>Сон:</b> 7-9 годин — найкращий анаболік!</li>
+      </ul>
+      <button class="close-btn" onclick="this.closest('.recovery-modal').remove()">✅ Зрозуміло!</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
 async function logExercise(id, log){
   lastLogs[id] = log;
   await storageSet('lastlog:'+id, JSON.stringify(log));
@@ -1506,8 +1597,11 @@ async function sendWorkoutReport(force = false){
     
     queueTelegramMessages([text], sentKey, chatIds);
     flushTelegramQueue();
-    showToast(force ? '🔄 Звіт перевідправлено!' : 'Тренування збережено і відправлено!');
+    showToast(force ? '🔄 Звіт перевідправлено!' : '💪 Тренування збережено!');
     if(!force) renderMain();
+    
+    setTimeout(() => showRecoveryModal(), 500);
+    
     return true;
   } else {
     showToast('Немає даних для збереження');
