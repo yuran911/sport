@@ -96,7 +96,6 @@
     box-shadow: 0 0 0 2px var(--accent2) inset;
     color: #ffffff;
   }
-  /* Підсвітка дня, коли було останнє тренування */
   nav.days button.last-workout {
     border-color: var(--green) !important;
     box-shadow: 0 0 20px rgba(60, 179, 113, 0.3) !important;
@@ -146,6 +145,19 @@
     font-size:.75rem;
     margin-top:2px;
     font-style: italic;
+  }
+
+  /* Стиль для ШІ-рекомендації */
+  .ex-ai-suggestion {
+    background: rgba(232,163,61,0.15);
+    border: 1px solid rgba(232,163,61,0.3);
+    border-radius: 8px;
+    padding: 4px 12px;
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-top: 4px;
+    display: inline-block;
+    font-weight: 600;
   }
   
   .ex-status {
@@ -800,41 +812,159 @@ const ALL_EXERCISES = {
   ]
 };
 
-// ===== РОЗУМНА ПРОГРЕСІЯ (крок 1.25 кг) =====
-function calculateProgression(prevWeight, prevReps, targetReps) {
-  if (!prevWeight || !prevReps) return { weight: 20, change: 0, message: 'Почніть з комфортної ваги' };
+// ===== ШІ-АНАЛІЗ ДЛЯ РОЗУМНОЇ ПРОГРЕСІЇ =====
+function aiAnalyze(prevWeight, prevReps, targetReps, history) {
+  // Якщо немає минулого результату
+  if (!prevWeight || !prevReps) {
+    return { 
+      weight: 20, 
+      reps: targetReps, 
+      action: 'start',
+      message: '💡 Почніть з комфортної ваги' 
+    };
+  }
   
   const target = parseInt(targetReps) || 10;
   const reps = parseFloat(prevReps);
   const weight = parseFloat(prevWeight);
   
-  if (isNaN(reps) || isNaN(weight)) return { weight: weight || 20, change: 0, message: 'Вага без змін' };
+  if (isNaN(reps) || isNaN(weight)) {
+    return { weight: weight || 20, reps: target, action: 'none', message: 'Вага без змін' };
+  }
   
   const step = 1.25;
+  const bigStep = 2.5;
   
+  // Аналізуємо історію тренувань
+  let consecutiveSuccess = 0;
+  let consecutiveFail = 0;
+  let consecutiveOver = 0;
+  
+  if (history && history.length > 0) {
+    const recent = history.slice(-6);
+    for (const entry of recent) {
+      if (!entry.sets || entry.sets.length === 0) continue;
+      let totalReps = 0;
+      let count = 0;
+      for (const s of entry.sets) {
+        if (s.r) {
+          totalReps += parseFloat(s.r) || 0;
+          count++;
+        }
+      }
+      const avgReps = count > 0 ? totalReps / count : 0;
+      if (avgReps >= target) {
+        consecutiveSuccess++;
+        if (avgReps > target + 2) consecutiveOver++;
+        consecutiveFail = 0;
+      } else {
+        consecutiveFail++;
+        consecutiveSuccess = 0;
+        consecutiveOver = 0;
+      }
+    }
+  }
+  
+  // ===== ШІ-РІШЕННЯ =====
+  
+  // 1. Якщо 3 рази поспіль не виконав норму → знімаємо 2.5 кг
+  if (consecutiveFail >= 3) {
+    const newWeight = Math.max(2.5, Math.round((weight - bigStep) / step) * step);
+    return {
+      weight: newWeight,
+      reps: target,
+      action: 'down_big',
+      message: '⚠️ 3 рази поспіль не виконано норму → -2.5 кг (' + weight + ' → ' + newWeight + ')'
+    };
+  }
+  
+  // 2. Якщо 2 рази поспіль виконав з запасом (>норми на 2+) → додаємо 2.5 кг
+  if (consecutiveOver >= 2) {
+    const newWeight = Math.round((weight + bigStep) / step) * step;
+    return {
+      weight: newWeight,
+      reps: target,
+      action: 'up_big',
+      message: '🔥 2 рази поспіль з запасом → +2.5 кг (' + weight + ' → ' + newWeight + ')'
+    };
+  }
+  
+  // 3. Якщо виконав всі повторення → додаємо 1.25 кг
   if (reps >= target) {
     const newWeight = Math.round((weight + step) / step) * step;
-    return { 
-      weight: newWeight, 
-      change: step, 
-      message: '✅ ' + reps + '/' + target + ' → +' + step + ' кг (' + weight + ' → ' + newWeight + ')' 
+    // Якщо виконав рівно, але важко — пропонуємо зменшити повторення
+    if (reps === target && history && history.length > 0) {
+      const lastEntry = history[history.length - 1];
+      if (lastEntry && lastEntry.sets) {
+        const filledSets = lastEntry.sets.filter(s => s.w && s.r).length;
+        if (filledSets < 3) {
+          return {
+            weight: weight,
+            reps: Math.max(4, target - 2),
+            action: 'down_reps',
+            message: '🧠 Виконано ' + reps + '/' + target + ', але важко → зменшуємо повторення до ' + Math.max(4, target - 2)
+          };
+        }
+      }
+    }
+    return {
+      weight: newWeight,
+      reps: target,
+      action: 'up',
+      message: '✅ Виконано ' + reps + '/' + target + ' → +1.25 кг (' + weight + ' → ' + newWeight + ')'
     };
   }
   
+  // 4. Якщо виконав більше половини → вага без змін
+  if (reps >= target / 2) {
+    return {
+      weight: weight,
+      reps: target,
+      action: 'none',
+      message: '📊 Виконано ' + reps + '/' + target + ' → вага без змін (' + weight + ' кг)'
+    };
+  }
+  
+  // 5. Якщо менше половини → знімаємо 1.25 кг
   if (reps < target / 2) {
     const newWeight = Math.max(2.5, Math.round((weight - step) / step) * step);
-    return { 
-      weight: newWeight, 
-      change: -step, 
-      message: '⚠️ ' + reps + '/' + target + ' → -' + step + ' кг (' + weight + ' → ' + newWeight + ')' 
+    if (reps < 3) {
+      return {
+        weight: newWeight,
+        reps: Math.min(target + 3, 15),
+        action: 'up_reps',
+        message: '🔄 Виконано лише ' + reps + '/' + target + ' → -1.25 кг і +3 повторення для техніки'
+      };
+    }
+    return {
+      weight: newWeight,
+      reps: target,
+      action: 'down',
+      message: '⚠️ Виконано ' + reps + '/' + target + ' → -1.25 кг (' + weight + ' → ' + newWeight + ')'
     };
   }
   
-  return { 
-    weight: weight, 
-    change: 0, 
-    message: '📊 ' + reps + '/' + target + ' → вага без змін (' + weight + ' кг)' 
-  };
+  return { weight: weight, reps: target, action: 'none', message: '📊 Вага без змін' };
+}
+
+// Функція для отримання історії вправи
+function getHistoryForExercise(id) {
+  const hist = [];
+  const h = localStorage.getItem('history:' + id);
+  if (h) {
+    try { 
+      const parsed = JSON.parse(h);
+      if (Array.isArray(parsed)) {
+        for (const entry of parsed) {
+          if (entry.sets && entry.sets.length > 0) {
+            const hasData = entry.sets.some(s => s.w && s.r);
+            if (hasData) hist.push(entry);
+          }
+        }
+      }
+    } catch(e) { /* ignore */ }
+  }
+  return hist;
 }
 
 // ===== 20+ ВИПАДКОВИХ ПОВІДОМЛЕНЬ ДЛЯ ВІДНОВЛЕННЯ =====
@@ -1020,7 +1150,6 @@ function getDayProgress(day) {
   return { total, done, percent: total > 0 ? Math.round((done / total) * 100) : 0 };
 }
 
-// ===== ОСТАННЄ ТРЕНУВАННЯ (для підсвітки дня) =====
 function getLastWorkoutDay() {
   let lastDate = '';
   let lastDayId = null;
@@ -1132,7 +1261,6 @@ function renderDayNav(){
     b.textContent = d.label.replace(/ — .*$/, '');
     if(idx===currentDay) b.classList.add('active');
     
-    // Підсвітка дня, коли було останнє тренування
     if (d.id === lastDayId && idx !== currentDay) {
       b.classList.add('last-workout');
     }
@@ -1212,13 +1340,19 @@ function renderMain(){
       let metaText = it.sets + '×' + it.reps;
       if (it.page) metaText += '  •  📖 ' + it.page;
       
-      // Показуємо минулий результат ТІЛЬКИ в рядку meta (без підстановки в поля)
+      // ===== ШІ-АНАЛІЗ =====
       const last = getLastWeight(id);
+      const history = getHistoryForExercise(id);
+      let aiResult = null;
+      let targetReps = parseInt(it.reps) || 10;
+      
       if (last) {
-        const targetReps = parseInt(it.reps) || 10;
-        const prog = calculateProgression(last.weight, last.reps, targetReps);
-        metaText += '  •  💪 ' + prog.message;
-        metaText += '  •  🎯 ' + prog.weight + ' кг';
+        aiResult = aiAnalyze(last.weight, last.reps, targetReps, history);
+        metaText += '  •  🧠 ' + aiResult.message;
+        metaText += '  •  🎯 ' + aiResult.weight + ' кг × ' + aiResult.reps;
+        if (aiResult.action === 'down_reps' || aiResult.action === 'up_reps') {
+          metaText += '  •  📝 Змінити повторення на ' + aiResult.reps;
+        }
       } else {
         metaText += '  •  💡 Почніть з комфортної ваги';
       }
@@ -1231,6 +1365,19 @@ function renderMain(){
         noteDiv.className = 'ex-note';
         noteDiv.textContent = '💡 ' + it.note;
         info.appendChild(noteDiv);
+      }
+      
+      // Показуємо ШІ-рекомендацію окремим блоком
+      if (aiResult && aiResult.action !== 'none' && aiResult.action !== 'start') {
+        const aiBadge = document.createElement('div');
+        aiBadge.className = 'ex-ai-suggestion';
+        let emoji = '🧠';
+        if (aiResult.action === 'up' || aiResult.action === 'up_big') emoji = '📈';
+        if (aiResult.action === 'down' || aiResult.action === 'down_big') emoji = '📉';
+        if (aiResult.action === 'down_reps') emoji = '🔽';
+        if (aiResult.action === 'up_reps') emoji = '🔼';
+        aiBadge.textContent = emoji + ' ' + aiResult.message;
+        info.appendChild(aiBadge);
       }
 
       top.appendChild(info);
@@ -1265,7 +1412,6 @@ function renderMain(){
       setsRow.className = 'sets-row';
       const nSets = 6;
       
-      // ПОЛЯ ПОРОЖНІ — без підстановки минулих результатів
       if(!pendingSets[id]) {
         pendingSets[id] = Array.from({ length: nSets }, () => ({ w: '', r: '' }));
       }
@@ -1413,7 +1559,7 @@ function renderMain(){
 
   const note = document.createElement('div');
   note.className = 'note-box';
-  note.innerHTML = '💪 Розумна прогресія (крок 1.25 кг): виконав всі повторення → +1.25 кг | частково → вага без змін | менше половини → -1.25 кг';
+  note.innerHTML = '🧠 ШІ-аналіз: аналізує ваші результати і пропонує: +вага, -вага, змінити повторення. 🟢 зелене = виконано, 🟡 жовте = частково, ⚪ сіре = не виконано.';
   main.appendChild(note);
 }
 
