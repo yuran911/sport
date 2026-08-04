@@ -971,8 +971,8 @@ function renderProfileBar(){
   const pb = document.getElementById('profileBar');
   pb.innerHTML = '';
   const opts = [
-    ['man','🙋‍♂️ Чоловік (+2.5 кг)'],
-    ['woman','🙋‍♀️ Жінка (+1 кг)']
+    ['man','🙋‍♂️ Чоловік'],
+    ['woman','🙋‍♀️ Жінка']
   ];
   opts.forEach(([val,label])=>{
     const b = document.createElement('button');
@@ -994,9 +994,9 @@ function renderProfileBar(){
 function updateHeaderText(){
   const sub = document.getElementById('appSub');
   if(profile === 'woman'){
-    sub.textContent = 'Жіночий профіль • Крок +1 кг';
+    sub.textContent = 'Жіночий профіль';
   } else {
-    sub.textContent = 'Чоловічий профіль • Крок +2.5 кг';
+    sub.textContent = 'Чоловічий профіль';
   }
 }
 
@@ -1901,6 +1901,7 @@ async function syncHistoryFromTelegram() {
   showToast('⏳ Завантаження історії з Telegram...');
   
   try {
+    // Отримуємо всі повідомлення з чатів
     const url = 'https://api.telegram.org/bot' + TELEGRAM_TOKEN + '/getUpdates';
     const response = await fetch(url, {
       method: 'GET',
@@ -1919,11 +1920,15 @@ async function syncHistoryFromTelegram() {
     let parsedCount = 0;
     const results = data.result || [];
     
+    // Перебираємо всі повідомлення
     for (const update of results) {
       const msg = update.message || update.edited_message;
       if (!msg || !msg.text) continue;
       
       const text = msg.text;
+      
+      // Шукаємо звіти за форматом
+      // 🏋 🙋‍♂️ Чоловік — День 1  •  Тиж.1
       const profileMatch = text.match(/🏋\s*(🙋‍♂️ Чоловік|🙋‍♀️ Жінка)\s*[—\-]\s*(День\s*\d+)/i);
       if (!profileMatch) continue;
       
@@ -1934,13 +1939,16 @@ async function syncHistoryFromTelegram() {
       const dayNum = parseInt(dayMatch[1]);
       const date = new Date(msg.date * 1000).toISOString().slice(0,10);
       
+      // Парсимо вправи
       const lines = text.split('\n');
       let currentExercise = null;
       let sets = [];
       
       for (const line of lines) {
+        // Шукаємо номер вправи: "1. Назва вправи"
         const exMatch = line.match(/^(\d+)\.\s*(.+?)(?:\s*→\s*(.+))?$/);
         if (exMatch) {
+          // Зберігаємо попередню вправу
           if (currentExercise && sets.length > 0) {
             const prefix = profileType === 'woman' ? 'wd' : 'd';
             const id = prefix + dayNum + '::' + currentExercise;
@@ -1952,6 +1960,7 @@ async function syncHistoryFromTelegram() {
           continue;
         }
         
+        // Шукаємо сети: "   60/10 | 65/10 | 70/10"
         const setsMatch = line.match(/^\s*([\d\-/]+\s*\|?\s*)+$/);
         if (setsMatch && currentExercise) {
           const parts = line.trim().split('|').map(s => s.trim());
@@ -1968,6 +1977,7 @@ async function syncHistoryFromTelegram() {
         }
       }
       
+      // Зберігаємо останню вправу
       if (currentExercise && sets.length > 0) {
         const prefix = profileType === 'woman' ? 'wd' : 'd';
         const id = prefix + dayNum + '::' + currentExercise;
@@ -1976,6 +1986,7 @@ async function syncHistoryFromTelegram() {
       }
     }
     
+    // Перезавантажуємо логи
     await loadLastLogs();
     renderAll();
     showToast('✅ Завантажено ' + parsedCount + ' записів з Telegram!');
