@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Тренувальний план</title>
 <style>
-  /* ===== СВІТЛА ТЕМА (за замовчуванням) ===== */
   :root{
     --bg: #f4f5f7;
     --panel: #ffffff;
@@ -23,7 +22,6 @@
     --toast-bg: #3cb371;
     --toast-color: #ffffff;
   }
-  /* ===== ТЕМНА ТЕМА ===== */
   [data-theme="dark"] {
     --bg: #0a0c15;
     --panel: #141824;
@@ -570,54 +568,6 @@
     transform: scale(1.02);
   }
 
-  /* ===== ВІДЕО-МОДАЛКА ===== */
-  .video-modal {
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.92);
-    z-index: 9999;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-  }
-  .video-modal .video-container {
-    position: relative;
-    width: 100%;
-    max-width: 800px;
-    background: var(--panel);
-    border-radius: 16px;
-    overflow: hidden;
-    border: 1px solid var(--line);
-  }
-  .video-modal .video-container iframe {
-    width: 100%;
-    height: 400px;
-    border: none;
-  }
-  .video-modal .video-close {
-    position: absolute;
-    top: 10px;
-    right: 14px;
-    background: rgba(0,0,0,0.7);
-    color: #fff;
-    border: none;
-    border-radius: 50%;
-    width: 40px;
-    height: 40px;
-    font-size: 1.5rem;
-    cursor: pointer;
-    z-index: 10;
-    transition: all 0.2s;
-  }
-  .video-modal .video-close:hover {
-    background: var(--red);
-    transform: scale(1.1);
-  }
-  @media (max-width: 480px) {
-    .video-modal .video-container iframe { height: 250px; }
-  }
-
   .icon-btn.save-ex{ color: var(--accent); border-color: rgba(232,163,61,.3); }
   .icon-btn.save-ex:hover{ 
     border-color: var(--accent);
@@ -692,7 +642,6 @@
     .clear-alt-btn { padding: 2px 6px; font-size: 0.7rem; }
     .recovery-modal .content { padding: 16px; }
     nav.days button.last-workout::after { font-size: 0.5rem; top: -4px; right: -4px; }
-    .video-modal .video-container iframe { height: 200px; }
   }
 </style>
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -787,14 +736,12 @@ function toggleTheme() {
   html.setAttribute('data-theme', newTheme);
   localStorage.setItem('theme', newTheme);
   document.querySelector('#themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌓';
-  // Оновлюємо theme-color для браузера
   const meta = document.querySelector('meta[name="theme-color"]');
   if (meta) {
     meta.content = newTheme === 'dark' ? '#0a0c15' : '#f4f5f7';
   }
 }
 
-// Завантажуємо тему при старті
 (function loadTheme() {
   const saved = localStorage.getItem('theme');
   if (saved) {
@@ -807,60 +754,41 @@ function toggleTheme() {
   }
 })();
 
-// ===== ВІДЕО-МОДАЛКА =====
-function openVideoModal(url) {
-  const modal = document.createElement('div');
-  modal.className = 'video-modal';
-  modal.innerHTML = `
-    <div class="video-container">
-      <button class="video-close" onclick="this.closest('.video-modal').remove()">✕</button>
-      <iframe src="${url}?autoplay=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
-    </div>
-  `;
-  document.body.appendChild(modal);
-  // Закриття по кліку на фон
-  modal.addEventListener('click', (e) => {
-    if (e.target === modal) modal.remove();
-  });
-}
-
-// ===== ВІДЕО-ТУТОРІАЛИ =====
+// ===== ВІДЕО-ТУТОРІАЛИ (звичайні посилання) =====
 const VIDEO_TUTORIALS = {
-  'Жим штанги лежачи (горизонтальний)': 'https://www.youtube.com/embed/4Y2Zd4TQw4k',
-  'Жим штанги лежачи (похилий)': 'https://www.youtube.com/embed/ZmBfXj_R0b0',
-  'Жим гантелей (горизонтальний)': 'https://www.youtube.com/embed/VmB1G1K7vqE',
-  'Віджимання на брусах': 'https://www.youtube.com/embed/tMyFe-IL7Ks',
-  'Підтягування (широкий хват)': 'https://www.youtube.com/embed/eGo4IYlbE5g',
-  'Тяга штанги в нахилі': 'https://www.youtube.com/embed/G8l_8chR5BE',
-  'Присідання зі штангою': 'https://www.youtube.com/embed/ultWZbUMPLQ',
-  'Станова тяга': 'https://www.youtube.com/embed/op9kVnS5lPw',
-  'Жим ногами': 'https://www.youtube.com/embed/IZxyjW7VPJQ',
-  'Згинання рук зі штангою стоячи': 'https://www.youtube.com/embed/ynPnr6TlQ9E',
-  'Французький жим штангою': 'https://www.youtube.com/embed/dX4v7f5n09I',
-  'Шраги зі штангою': 'https://www.youtube.com/embed/cJRVVx6ZvOg',
-  'Метелик (Pec-Deck)': 'https://www.youtube.com/embed/QENKPHhQVi4',
-  'Тяга верхнього блоку до грудей': 'https://www.youtube.com/embed/Y3B8q2p5_9w',
-  'Тяга горизонтального блоку до пояса': 'https://www.youtube.com/embed/9Z1r6M_vUq8',
-  'Армійський жим': 'https://www.youtube.com/embed/2B4U5wOz-ss',
-  'Махи гантелями в сторони': 'https://www.youtube.com/embed/3VcKaXpzqZ8',
-  'Планка класична': 'https://www.youtube.com/embed/pSHjTRCQxIw'
+  'Жим штанги лежачи (горизонтальний)': 'https://www.youtube.com/watch?v=4Y2Zd4TQw4k',
+  'Жим штанги лежачи (похилий)': 'https://www.youtube.com/watch?v=ZmBfXj_R0b0',
+  'Жим гантелей (горизонтальний)': 'https://www.youtube.com/watch?v=VmB1G1K7vqE',
+  'Віджимання на брусах': 'https://www.youtube.com/watch?v=tMyFe-IL7Ks',
+  'Підтягування (широкий хват)': 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
+  'Тяга штанги в нахилі': 'https://www.youtube.com/watch?v=G8l_8chR5BE',
+  'Присідання зі штангою': 'https://www.youtube.com/watch?v=ultWZbUMPLQ',
+  'Станова тяга': 'https://www.youtube.com/watch?v=op9kVnS5lPw',
+  'Жим ногами': 'https://www.youtube.com/watch?v=IZxyjW7VPJQ',
+  'Згинання рук зі штангою стоячи': 'https://www.youtube.com/watch?v=ynPnr6TlQ9E',
+  'Французький жим штангою': 'https://www.youtube.com/watch?v=dX4v7f5n09I',
+  'Шраги зі штангою': 'https://www.youtube.com/watch?v=cJRVVx6ZvOg',
+  'Метелик (Pec-Deck)': 'https://www.youtube.com/watch?v=QENKPHhQVi4',
+  'Тяга верхнього блоку до грудей': 'https://www.youtube.com/watch?v=Y3B8q2p5_9w',
+  'Тяга горизонтального блоку до пояса': 'https://www.youtube.com/watch?v=9Z1r6M_vUq8',
+  'Армійський жим': 'https://www.youtube.com/watch?v=2B4U5wOz-ss',
+  'Махи гантелями в сторони': 'https://www.youtube.com/watch?v=3VcKaXpzqZ8',
+  'Планка класична': 'https://www.youtube.com/watch?v=pSHjTRCQxIw'
 };
 
-function getVideoUrl(id, defaultName){
+function getVideoUrlForExercise(id, defaultName){
   const altText = (pendingSets[id+'::alt'] || {}).raw || '';
   const exerciseName = altText || defaultName;
   
   if(VIDEO_TUTORIALS[exerciseName]) return VIDEO_TUTORIALS[exerciseName];
   
-  // Якщо немає точного збігу — шукаємо за ключовими словами
   const keywords = exerciseName.split(' (')[0];
   for(const [key, url] of Object.entries(VIDEO_TUTORIALS)){
     if(key.includes(keywords) || keywords.includes(key)){
       return url;
     }
   }
-  // Якщо нічого не знайдено — пошук на YouTube (embed не працює з пошуком, тому повертаємо посилання)
-  return 'https://www.youtube.com/embed?search_query=' + encodeURIComponent(exerciseName + ' техніка виконання');
+  return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(exerciseName + ' техніка виконання');
 }
 
 function clearAlt(id){
@@ -948,7 +876,6 @@ const ALL_EXERCISES = {
 
 // ===== ШІ-АНАЛІЗ ДЛЯ РОЗУМНОЇ ПРОГРЕСІЇ =====
 function aiAnalyze(prevWeight, prevReps, targetReps, history) {
-  // history — масив останніх результатів для цієї вправи
   if (!prevWeight || !prevReps) {
     return { 
       weight: 20, 
@@ -969,16 +896,14 @@ function aiAnalyze(prevWeight, prevReps, targetReps, history) {
   const step = 1.25;
   const bigStep = 2.5;
   
-  // Рахуємо кількість разів поспіль, коли виконав норму або не виконав
   let consecutiveSuccess = 0;
   let consecutiveFail = 0;
   let consecutiveOver = 0;
   
   if (history && history.length > 0) {
-    const recent = history.slice(-6); // дивимось останні 6 тренувань
+    const recent = history.slice(-6);
     for (const entry of recent) {
       if (!entry.sets || entry.sets.length === 0) continue;
-      // Беремо середнє повторення за сет
       let totalReps = 0;
       let count = 0;
       for (const s of entry.sets) {
@@ -1000,9 +925,6 @@ function aiAnalyze(prevWeight, prevReps, targetReps, history) {
     }
   }
   
-  // ===== ШІ-РІШЕННЯ =====
-  
-  // 1. Якщо 3 рази поспіль не виконав норму → знімаємо 2.5 кг
   if (consecutiveFail >= 3) {
     const newWeight = Math.max(2.5, Math.round((weight - bigStep) / step) * step);
     return {
@@ -1013,7 +935,6 @@ function aiAnalyze(prevWeight, prevReps, targetReps, history) {
     };
   }
   
-  // 2. Якщо 2 рази поспіль виконав з запасом (>норми на 2+) → додаємо 2.5 кг
   if (consecutiveOver >= 2) {
     const newWeight = Math.round((weight + bigStep) / step) * step;
     return {
@@ -1024,14 +945,11 @@ function aiAnalyze(prevWeight, prevReps, targetReps, history) {
     };
   }
   
-  // 3. Якщо виконав всі повторення → додаємо 1.25 кг
   if (reps >= target) {
     const newWeight = Math.round((weight + step) / step) * step;
-    // Якщо виконав рівно, але важко — пропонуємо зменшити повторення
     if (reps === target && history && history.length > 0) {
       const lastEntry = history[history.length - 1];
       if (lastEntry && lastEntry.sets) {
-        // Перевіряємо чи було важко (менше 3 сетів заповнено)
         const filledSets = lastEntry.sets.filter(s => s.w && s.r).length;
         if (filledSets < 3) {
           return {
@@ -1051,7 +969,6 @@ function aiAnalyze(prevWeight, prevReps, targetReps, history) {
     };
   }
   
-  // 4. Якщо виконав більше половини → вага без змін
   if (reps >= target / 2) {
     return {
       weight: weight,
@@ -1061,10 +978,8 @@ function aiAnalyze(prevWeight, prevReps, targetReps, history) {
     };
   }
   
-  // 5. Якщо менше половини → знімаємо 1.25 кг
   if (reps < target / 2) {
     const newWeight = Math.max(2.5, Math.round((weight - step) / step) * step);
-    // Якщо зовсім мало (менше 3) — пропонуємо збільшити повторення
     if (reps < 3) {
       return {
         weight: newWeight,
@@ -1084,7 +999,7 @@ function aiAnalyze(prevWeight, prevReps, targetReps, history) {
   return { weight: weight, reps: target, action: 'none', message: '📊 Вага без змін' };
 }
 
-// ===== 20+ ВИПАДКОВИХ ПОВІДОМЛЕНЬ ДЛЯ ВІДНОВЛЕННЯ =====
+// ===== 20+ ВИПАДКОВИХ ПОВІДОМЛЕНЬ =====
 const RECOVERY_MESSAGES = [
   { title: '🍖 Час мʼясного бенкету!', items: ['🥩 Білок: 30-40 г (стейк, курка, риба)', '🍚 Вуглеводи: рис або гречка (50-70 г)', '💧 Вода: 500 мл з лимоном', '🥑 Жири: авокадо або горіхи', '😴 Сон: 7-9 годин'] },
   { title: '🥗 Легке відновлення', items: ['🥚 Білок: омлет з 3-4 яєць', '🍞 Вуглеводи: тост з авокадо', '🥤 Протеїновий коктейль одразу після тренування', '🫐 Ягоди для антиоксидантів', '💧 Вода: 600-800 мл'] },
@@ -1112,19 +1027,14 @@ const RECOVERY_MESSAGES = [
 
 function showRecoveryModal() {
   const random = RECOVERY_MESSAGES[Math.floor(Math.random() * RECOVERY_MESSAGES.length)];
-  
   const modal = document.createElement('div');
   modal.className = 'recovery-modal';
   modal.innerHTML = `
     <div class="content">
       <span class="emoji-big">${random.title.split(' ')[0]}</span>
       <h2>${random.title}</h2>
-      <p style="text-align:center;color:var(--muted);margin-bottom:16px;">
-        Тренування завершено! Щоб м'язи росли:
-      </p>
-      <ul>
-        ${random.items.map(item => `<li>${item}</li>`).join('')}
-      </ul>
+      <p style="text-align:center;color:var(--muted);margin-bottom:16px;">Тренування завершено! Щоб м'язи росли:</p>
+      <ul>${random.items.map(item => `<li>${item}</li>`).join('')}</ul>
       <button class="close-btn" onclick="this.closest('.recovery-modal').remove()">✅ Зрозуміло!</button>
     </div>
   `;
@@ -1195,14 +1105,10 @@ function loadAllData(profileType) {
 function exId(dayId, name){ return dayId + '::' + name; }
 
 async function storageGet(key){
-  try {
-    return localStorage.getItem(key);
-  } catch(e) { return null; }
+  try { return localStorage.getItem(key); } catch(e) { return null; }
 }
 async function storageSet(key, value){
-  try {
-    localStorage.setItem(key, value);
-  } catch(e) { /* fall through */ }
+  try { localStorage.setItem(key, value); } catch(e) { /* fall through */ }
 }
 
 async function loadLastLogs(){
@@ -1253,7 +1159,6 @@ function getHistoryForExercise(id) {
       if (Array.isArray(parsed)) {
         for (const entry of parsed) {
           if (entry.sets && entry.sets.length > 0) {
-            // Перевіряємо чи є хоч один сет з даними
             const hasData = entry.sets.some(s => s.w && s.r);
             if (hasData) hist.push(entry);
           }
@@ -1290,15 +1195,12 @@ function getDayProgress(day) {
 function getLastWorkoutDay() {
   let lastDate = '';
   let lastDayId = null;
-  
   const days = getDays();
   if (!days || days.length === 0) return null;
-  
   for (const day of days) {
     if (!day || !day.groups) continue;
     let hasData = false;
     let latestDate = '';
-    
     for (const g of day.groups) {
       for (const it of g.items) {
         const id = exId(day.id, it.name);
@@ -1309,13 +1211,11 @@ function getLastWorkoutDay() {
         }
       }
     }
-    
     if (hasData && latestDate > lastDate) {
       lastDate = latestDate;
       lastDayId = day.id;
     }
   }
-  
   return lastDayId;
 }
 
@@ -1345,21 +1245,13 @@ function renderProfileBar(){
 
 function updateHeaderText(){
   const sub = document.getElementById('appSub');
-  if(profile === 'woman'){
-    sub.textContent = 'Жіночий профіль';
-  } else {
-    sub.textContent = 'Чоловічий профіль';
-  }
+  sub.textContent = profile === 'woman' ? 'Жіночий профіль' : 'Чоловічий профіль';
 }
 
 function renderWeekBar(){
   const wb = document.getElementById('weekBar');
   wb.innerHTML = '';
-  if (profile === 'woman') {
-    wb.style.display = 'none';
-    return;
-  }
-  if (DAYS_MAN.length === 0) {
+  if (profile === 'woman' || DAYS_MAN.length === 0) {
     wb.style.display = 'none';
     return;
   }
@@ -1390,18 +1282,12 @@ function renderDayNav(){
     nav.innerHTML = '<div style="color:var(--muted);text-align:center;padding:10px;">⚠️ Завантажте план з Excel</div>';
     return;
   }
-  
   const lastDayId = getLastWorkoutDay();
-  
   days.forEach((d, idx)=>{
     const b = document.createElement('button');
     b.textContent = d.label.replace(/ — .*$/, '');
     if(idx===currentDay) b.classList.add('active');
-    
-    if (d.id === lastDayId && idx !== currentDay) {
-      b.classList.add('last-workout');
-    }
-    
+    if (d.id === lastDayId && idx !== currentDay) b.classList.add('last-workout');
     b.onclick = ()=>{ currentDay = idx; renderDayNav(); renderMain(); };
     nav.appendChild(b);
   });
@@ -1453,8 +1339,7 @@ function renderMain(){
       const status = checkExerciseStatus(id);
       const statusDot = document.createElement('span');
       statusDot.className = 'ex-status ' + status;
-      statusDot.title = status === 'done' ? '✅ Виконано!' : 
-                         status === 'partial' ? '🟡 Частково' : '⬜ Не виконано';
+      statusDot.title = status === 'done' ? '✅ Виконано!' : status === 'partial' ? '🟡 Частково' : '⬜ Не виконано';
 
       const info = document.createElement('div');
       info.style.flex = '1';
@@ -1464,12 +1349,10 @@ function renderMain(){
       nameWrapper.style.alignItems = 'center';
       nameWrapper.style.gap = '6px';
       nameWrapper.appendChild(statusDot);
-      
       const nameSpan = document.createElement('span');
       nameSpan.className = 'ex-name';
       nameSpan.textContent = it.name;
       nameWrapper.appendChild(nameSpan);
-      
       info.appendChild(nameWrapper);
       
       const metaDiv = document.createElement('div');
@@ -1477,7 +1360,6 @@ function renderMain(){
       let metaText = it.sets + '×' + it.reps;
       if (it.page) metaText += '  •  📖 ' + it.page;
       
-      // ===== ШІ-АНАЛІЗ =====
       const last = getLastWeight(id);
       const history = getHistoryForExercise(id);
       let aiResult = null;
@@ -1487,8 +1369,6 @@ function renderMain(){
         aiResult = aiAnalyze(last.weight, last.reps, targetReps, history);
         metaText += '  •  🧠 ' + aiResult.message;
         metaText += '  •  🎯 ' + aiResult.weight + ' кг × ' + aiResult.reps;
-        
-        // Підказуємо користувачеві що робити
         if (aiResult.action === 'down_reps' || aiResult.action === 'up_reps') {
           metaText += '  •  📝 Змінити повторення на ' + aiResult.reps;
         }
@@ -1506,7 +1386,6 @@ function renderMain(){
         info.appendChild(noteDiv);
       }
       
-      // Показуємо ШІ-рекомендацію окремим блоком
       if (aiResult && aiResult.action !== 'none' && aiResult.action !== 'start') {
         const aiBadge = document.createElement('div');
         aiBadge.className = 'ex-ai-suggestion';
@@ -1524,20 +1403,13 @@ function renderMain(){
       const actions = document.createElement('div');
       actions.className = 'actions';
       
-      // ===== КНОПКА ВІДЕО (з модалкою) =====
-      const vid = document.createElement('button');
+      // ===== КНОПКА ВІДЕО (ЗВИЧАЙНЕ ПОСИЛАННЯ) =====
+      const vid = document.createElement('a');
       vid.className = 'icon-btn';
+      vid.href = getVideoUrlForExercise(id, it.name);
+      vid.target = '_blank';
       vid.textContent = '▶';
-      vid.title = 'Відео-туторіал';
-      vid.onclick = (e) => {
-        e.preventDefault();
-        const url = getVideoUrl(id, it.name);
-        if (url) {
-          openVideoModal(url);
-        } else {
-          showToast('⚠️ Відео не знайдено');
-        }
-      };
+      vid.title = 'Відео-туторіал для вправи';
       actions.appendChild(vid);
 
       const calBtn = document.createElement('button');
@@ -1566,11 +1438,9 @@ function renderMain(){
       for(let s=0; s<nSets; s++){
         const wrap = document.createElement('div');
         wrap.className = 'set-input';
-        
         const statusDotSet = document.createElement('div');
         statusDotSet.className = 'set-status ' + (pendingSets[id][s]?.raw ? 'filled' : 'empty');
         wrap.appendChild(statusDotSet);
-        
         const label = document.createElement('label');
         label.textContent = it.isTime ? (s+1) : (s+1);
         wrap.appendChild(label);
@@ -1643,25 +1513,23 @@ function renderMain(){
 
       altWrapper.appendChild(altSel);
 
-      const altVideoBtn = document.createElement('button');
+      const altVideoBtn = document.createElement('a');
       altVideoBtn.className = 'icon-btn';
       altVideoBtn.textContent = '🎥';
       altVideoBtn.title = 'Відео для заміненої вправи';
+      altVideoBtn.target = '_blank';
       altVideoBtn.style.fontSize = '0.8rem';
       altVideoBtn.style.padding = '4px 8px';
       
       function updateAltVideo() {
         const altName = (pendingSets[id+'::alt'] || {}).raw || '';
         if (altName) {
-          altVideoBtn.onclick = () => {
-            const url = getVideoUrl(id, it.name);
-            if (url) openVideoModal(url);
-          };
+          altVideoBtn.href = getVideoUrlForExercise(id, it.name);
           altVideoBtn.style.opacity = '1';
           altVideoBtn.style.pointerEvents = 'auto';
           altVideoBtn.title = '🎥 Відео для: ' + altName;
         } else {
-          altVideoBtn.onclick = () => showToast('⚠️ Спочатку оберіть заміну');
+          altVideoBtn.href = '#';
           altVideoBtn.style.opacity = '0.3';
           altVideoBtn.style.pointerEvents = 'none';
           altVideoBtn.title = 'Спочатку оберіть заміну';
@@ -1762,11 +1630,7 @@ async function sendToTelegram(chatId, text){
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      chat_id: chatId,
-      text: text,
-      parse_mode: 'HTML'
-    })
+    body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' })
   });
   if (!response.ok) {
     const error = await response.text();
@@ -1776,9 +1640,7 @@ async function sendToTelegram(chatId, text){
 }
 
 async function sendToChats(text, chatIds){
-  const results = await Promise.allSettled(
-    chatIds.map(chatId => sendToTelegram(chatId, text))
-  );
+  const results = await Promise.allSettled(chatIds.map(chatId => sendToTelegram(chatId, text)));
   const failed = results.filter(r => r.status === 'rejected');
   if (failed.length > 0) {
     console.warn('❌ Не вдалося відправити в ' + failed.length + ' чатів');
@@ -1809,9 +1671,7 @@ async function flushTelegramQueue(){
         break;
       }
     }
-  } finally { 
-    tgFlushing = false; 
-  }
+  } finally { tgFlushing = false; }
 }
 
 // ===== СТАТИСТИКА =====
@@ -1963,9 +1823,7 @@ async function sendWorkoutReport(force = false){
     flushTelegramQueue();
     showToast(force ? '🔄 Звіт перевідправлено!' : '💪 Тренування збережено!');
     if(!force) renderMain();
-    
     setTimeout(() => showRecoveryModal(), 500);
-    
     return true;
   } else {
     showToast('Немає даних для збереження');
@@ -2110,60 +1968,37 @@ function importXlsx(file){
 
       function parseSheet(sheetName, prefix){
         const ws = wb.Sheets[sheetName];
-        if(!ws) {
-          console.warn('Аркуш "' + sheetName + '" не знайдено');
-          return null;
-        }
+        if(!ws) { console.warn('Аркуш "' + sheetName + '" не знайдено'); return null; }
         const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
-        
         let headerRow = -1;
         for(let i=0; i<rows.length; i++){
           const row = rows[i];
           if(!row || row.length === 0) continue;
           const firstCell = String(row[0] || '').toLowerCase();
           if(firstCell.includes('день')){
-            headerRow = i;
-            break;
+            headerRow = i; break;
           }
         }
-        
-        if(headerRow === -1){
-          console.warn('Не знайдено заголовки в аркуші "' + sheetName + '"');
-          return null;
-        }
+        if(headerRow === -1){ console.warn('Не знайдено заголовки в аркуші "' + sheetName + '"'); return null; }
 
         const days = {1:[], 2:[], 3:[]};
         const groups = {1:{}, 2:{}, 3:{}};
-        
         for(let r = headerRow + 1; r < rows.length; r++){
           const row = rows[r];
           if(!row || row.length === 0) continue;
-          
           const day = parseInt(row[0]);
           if(![1,2,3].includes(day)) continue;
-          
           const group = String(row[1] || '').trim();
           const name = String(row[2] || '').trim();
           const sets = parseInt(row[3]) || 3;
           const reps = String(row[4] || '10-12').trim();
           const page = String(row[5] || '').trim();
           const note = String(row[6] || '').trim();
-          
           if(!name) continue;
-          
           const isTime = reps.includes('сек') || note.includes('час');
           const isBody = note.includes('власна вага') || note.includes('bodyweight');
-          
           if(!groups[day][group]) groups[day][group] = [];
-          groups[day][group].push({
-            name: name,
-            sets: sets,
-            reps: reps,
-            page: page || undefined,
-            isTime: isTime || undefined,
-            bodyweight: isBody || undefined,
-            note: note || undefined
-          });
+          groups[day][group].push({ name, sets, reps, page: page || undefined, isTime: isTime || undefined, bodyweight: isBody || undefined, note: note || undefined });
         }
 
         const result = [1,2,3].map(dayNum => {
@@ -2174,10 +2009,8 @@ function importXlsx(file){
             groups: Object.entries(dayGroups).map(([label, items]) => ({label, items}))
           };
         });
-        
         const hasData = result.some(d => d.groups.length > 0);
         if(!hasData) return null;
-        
         return result;
       }
 
@@ -2192,13 +2025,10 @@ function importXlsx(file){
       if(manDays){
         localStorage.setItem('custom-plan-man', JSON.stringify(manDays));
         DAYS_MAN = manDays;
-        console.log('✅ Завантажено чоловічий план:', DAYS_MAN.length, 'днів');
       }
-      
       if(womanDays){
         localStorage.setItem('custom-plan-woman', JSON.stringify(womanDays));
         DAYS_WOMAN = womanDays;
-        console.log('✅ Завантажено жіночий план:', DAYS_WOMAN.length, 'днів');
       }
 
       if(profile === 'man' && DAYS_MAN.length === 0 && DAYS_WOMAN.length > 0){
@@ -2221,7 +2051,6 @@ function importXlsx(file){
         const womanCount = DAYS_WOMAN.length || 0;
         showToast('✅ План завантажено! Чоловік: ' + manCount + ' днів, Жінка: ' + womanCount + ' днів');
       });
-      
     }catch(err){
       console.error('Помилка імпорту:', err);
       showToast('❌ Помилка читання файлу: ' + err.message);
@@ -2235,28 +2064,19 @@ function loadCustomPlans(){
     const man = localStorage.getItem('custom-plan-man');
     if(man){
       const parsed = JSON.parse(man);
-      if(parsed && parsed.length > 0){
-        DAYS_MAN = parsed;
-      }
+      if(parsed && parsed.length > 0) DAYS_MAN = parsed;
     }
-    
     const woman = localStorage.getItem('custom-plan-woman');
     if(woman){
       const parsed = JSON.parse(woman);
-      if(parsed && parsed.length > 0){
-        DAYS_WOMAN = parsed;
-      }
+      if(parsed && parsed.length > 0) DAYS_WOMAN = parsed;
     }
-  } catch(e) {
-    console.error('Помилка завантаження збереженого плану:', e);
-  }
+  } catch(e) { console.error('Помилка завантаження збереженого плану:', e); }
 }
 
 document.getElementById('xlsxInput').addEventListener('change', (e)=>{
   const file = e.target.files[0];
-  if(file) {
-    importXlsx(file);
-  }
+  if(file) importXlsx(file);
   e.target.value = '';
 });
 
@@ -2265,11 +2085,7 @@ document.getElementById('xlsxInput').addEventListener('change', (e)=>{
   loadCustomPlans();
   loadAllData(profile);
   updateHeaderText();
-  
-  try{
-    await loadLastLogs();
-  }catch(e){ console.error(e); }
-  
+  try{ await loadLastLogs(); }catch(e){ console.error(e); }
   renderAll();
   flushTelegramQueue();
 })();
