@@ -5,7 +5,26 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Тренувальний план</title>
 <style>
+  /* ===== СВІТЛА ТЕМА (за замовчуванням) ===== */
   :root{
+    --bg: #f4f5f7;
+    --panel: #ffffff;
+    --panel2: #e8eaed;
+    --line: #d0d2d6;
+    --ink: #1a1d2e;
+    --muted: #5a6270;
+    --accent: #e8a33d;
+    --accent2: #4a90d9;
+    --green: #3cb371;
+    --red: #d9534f;
+    --shadow: 0 2px 12px rgba(0,0,0,0.08);
+    --card-bg: #ffffff;
+    --input-bg: #f4f5f7;
+    --toast-bg: #3cb371;
+    --toast-color: #ffffff;
+  }
+  /* ===== ТЕМНА ТЕМА ===== */
+  [data-theme="dark"] {
     --bg: #0a0c15;
     --panel: #141824;
     --panel2: #1a2030;
@@ -16,45 +35,66 @@
     --accent2: #4a90d9;
     --green: #3cb371;
     --red: #d9534f;
+    --shadow: 0 2px 12px rgba(0,0,0,0.4);
+    --card-bg: #141824;
+    --input-bg: #0d0f1a;
+    --toast-bg: #3cb371;
+    --toast-color: #0a0c15;
   }
+
   *{box-sizing:border-box;}
   body{
     margin:0;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: var(--bg);
-    color: #ffffff;
+    color: var(--ink);
     font-size: 16px;
     line-height: 1.6;
     min-height: 100vh;
+    transition: background 0.3s, color 0.3s;
   }
   header{
     padding: 18px 16px 10px; text-align:center; position:sticky; top:0; z-index:10;
-    background: linear-gradient(180deg, #0a0c15 80%, transparent);
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+    transition: background 0.3s;
   }
   header h1{
     margin:0; font-size: 1.8rem; letter-spacing:.5px;
     font-family: Georgia, 'Times New Roman', serif;
-    color: #ffffff;
-    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
+    color: var(--ink);
+    text-shadow: none;
     font-weight: 700;
   }
-  header h1 .emoji-btn {
+  header .header-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 4px;
+  }
+  header .emoji-btn {
     cursor: pointer;
     display: inline-block;
     transition: all 0.2s;
     user-select: none;
+    font-size: 1.4rem;
+    background: var(--panel2);
+    padding: 4px 10px;
+    border-radius: 8px;
+    border: 1px solid var(--line);
   }
-  header h1 .emoji-btn:hover {
-    transform: scale(1.3);
-    text-shadow: 0 0 30px rgba(232,163,61,0.6);
+  header .emoji-btn:hover {
+    transform: scale(1.1);
+    border-color: var(--accent);
   }
-  header h1 .emoji-btn:active {
-    transform: scale(0.85);
+  header .emoji-btn:active {
+    transform: scale(0.9);
   }
   header .sub{ 
-    color: #d8ddf0; 
-    font-size: 1rem; 
-    margin-top:6px;
+    color: var(--muted); 
+    font-size: 0.9rem; 
+    margin-top:4px;
     font-weight: 400;
   }
 
@@ -63,15 +103,14 @@
     padding: 8px 12px 14px;
   }
   .week-bar button{
-    background:var(--panel); border:1px solid var(--line); color: #d8ddf0;
+    background:var(--panel2); border:1px solid var(--line); color: var(--muted);
     padding:8px 14px; border-radius:8px; font-size:.85rem; cursor:pointer;
     transition: all 0.2s;
     font-weight: 500;
   }
   .week-bar button:hover{
-    background: var(--panel2);
     border-color: var(--accent2);
-    color: #ffffff;
+    color: var(--ink);
   }
   .week-bar button.active{
     background: var(--accent); color:#1a1208; border-color:var(--accent); font-weight:700;
@@ -82,21 +121,20 @@
   }
   nav.days button{
     flex:1; max-width:160px; background:var(--panel2); border:1px solid var(--line);
-    color:#d8ddf0; padding:12px 8px; border-radius:10px; font-size:.9rem; cursor:pointer;
+    color:var(--muted); padding:12px 8px; border-radius:10px; font-size:.9rem; cursor:pointer;
     font-weight:600;
     transition: all 0.2s;
   }
   nav.days button:hover{
     background: var(--panel);
     border-color: var(--accent);
-    color: #ffffff;
+    color: var(--ink);
   }
   nav.days button.active{
     background: linear-gradient(135deg,#2a3a5c,#1d2130); border-color: var(--accent2);
     box-shadow: 0 0 0 2px var(--accent2) inset;
     color: #ffffff;
   }
-  /* Підсвітка дня, коли було останнє тренування */
   nav.days button.last-workout {
     border-color: var(--green) !important;
     box-shadow: 0 0 20px rgba(60, 179, 113, 0.3) !important;
@@ -123,8 +161,10 @@
   .group-label hr{ flex:1; border:none; border-top:2px solid var(--line);}
 
   .card{
-    background: var(--panel); border:1px solid var(--line); border-radius: 14px;
+    background: var(--card-bg); border:1px solid var(--line); border-radius: 14px;
     padding: 14px 16px; margin-bottom: 12px;
+    box-shadow: var(--shadow);
+    transition: background 0.3s, box-shadow 0.3s;
   }
   .card.done{ opacity:.5; }
   .card-top{ display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap; }
@@ -132,11 +172,11 @@
   .ex-name{ 
     font-weight:700; 
     font-size:1.05rem; 
-    color: #ffffff; 
+    color: var(--ink);
     margin-bottom: 2px;
   }
   .ex-meta{ 
-    color: #b8c4e0; 
+    color: var(--muted); 
     font-size:.85rem; 
     margin-top:2px;
     font-weight: 400;
@@ -146,6 +186,17 @@
     font-size:.75rem;
     margin-top:2px;
     font-style: italic;
+  }
+  .ex-ai-suggestion {
+    background: rgba(232,163,61,0.12);
+    border: 1px solid rgba(232,163,61,0.25);
+    border-radius: 8px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    color: var(--accent);
+    margin-top: 4px;
+    display: inline-block;
+    font-weight: 600;
   }
   
   .ex-status {
@@ -223,7 +274,7 @@
 
   .actions{ margin-left:auto; display:flex; gap:8px; flex:0 0 auto; }
   .icon-btn{
-    background:var(--panel2); border:1px solid var(--line); color:#d8ddf0;
+    background:var(--panel2); border:1px solid var(--line); color:var(--muted);
     border-radius:8px; padding:8px 12px; font-size:.85rem; cursor:pointer; text-decoration:none;
     white-space:nowrap;
     transition: all 0.2s;
@@ -231,7 +282,7 @@
   }
   .icon-btn:hover{ 
     border-color:var(--accent2); 
-    color: #ffffff;
+    color: var(--ink);
     background: var(--panel);
     transform: scale(1.05);
   }
@@ -262,13 +313,13 @@
   }
   .set-input label{ 
     font-size:.6rem; 
-    color: #b8c4e0;
+    color: var(--muted);
     font-weight: 600;
     letter-spacing: 0.3px;
     text-align:center;
   }
   .set-input input{
-    width:100%; background: #0d0f1a; border:1px solid var(--line); color: #ffffff;
+    width:100%; background: var(--input-bg); border:1px solid var(--line); color: var(--ink);
     border-radius:6px; padding:6px 4px; font-size:.8rem; text-align:center;
     transition: all 0.2s;
     font-weight: 500;
@@ -277,7 +328,6 @@
     outline:none; 
     border-color:var(--accent2);
     box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.25);
-    background: #131625;
   }
   .set-input input::placeholder{
     color: #6a7290;
@@ -286,8 +336,8 @@
   }
 
   .last-log{
-    margin-top:10px; font-size:.85rem; color: #d8ddf0;
-    background: #0d0f1a; border-radius:8px; padding:8px 12px; border:1px solid var(--line);
+    margin-top:10px; font-size:.85rem; color: var(--muted);
+    background: var(--input-bg); border-radius:8px; padding:8px 12px; border:1px solid var(--line);
   }
   .last-log b{ color: var(--green); font-weight: 700; }
 
@@ -328,8 +378,8 @@
   }
 
   .alt-select{
-    width:100%; background: #0d0f1a; border:1px solid var(--line);
-    color: #b8c4e0; border-radius:6px;
+    width:100%; background: var(--input-bg); border:1px solid var(--line);
+    color: var(--ink); border-radius:6px;
     font-size:.85rem; padding:6px 10px;
     cursor:pointer; outline:none;
     -webkit-appearance:none; appearance:none;
@@ -337,12 +387,11 @@
   }
   .alt-select:focus{ 
     border-color:var(--accent); 
-    color:#ffffff;
     box-shadow: 0 0 0 2px rgba(232,163,61,0.15);
   }
   .alt-select option{ 
     background:var(--panel); 
-    color:#ffffff;
+    color:var(--ink);
     padding: 4px;
   }
   .alt-select optgroup{
@@ -355,7 +404,7 @@
   .alt-select optgroup option{
     padding-left: 12px;
     font-weight: 400;
-    color: #d8ddf0;
+    color: var(--muted);
   }
 
   .note-box{
@@ -396,7 +445,7 @@
   }
   .bottom-btn:hover {
     border-color: var(--accent2);
-    color: #ffffff;
+    color: var(--ink);
     background: var(--panel);
     transform: scale(1.05);
   }
@@ -411,7 +460,7 @@
     text-transform: uppercase;
   }
   .bottom-btn:hover .label {
-    color: #ffffff;
+    color: var(--ink);
   }
   .bottom-btn.save-btn {
     border-color: rgba(232,163,61,0.3);
@@ -448,7 +497,7 @@
 
   .toast{
     position: fixed; bottom: 80px; left:50%; transform:translateX(-50%);
-    background: var(--green); color:#0a0c15; padding:12px 24px; border-radius:12px;
+    background: var(--toast-bg); color: var(--toast-color); padding:12px 24px; border-radius:12px;
     font-size:1rem; font-weight:700; opacity:0; transition:opacity .3s; pointer-events:none;
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     z-index: 200;
@@ -474,6 +523,7 @@
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;
+    color: var(--ink);
   }
   .recovery-modal .content h2 {
     text-align: center;
@@ -498,6 +548,7 @@
     align-items: center;
     gap: 10px;
     font-size: 0.95rem;
+    color: var(--ink);
   }
   .recovery-modal .content ul li:last-child {
     border-bottom: none;
@@ -519,6 +570,54 @@
     transform: scale(1.02);
   }
 
+  /* ===== ВІДЕО-МОДАЛКА ===== */
+  .video-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .video-modal .video-container {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    background: var(--panel);
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid var(--line);
+  }
+  .video-modal .video-container iframe {
+    width: 100%;
+    height: 400px;
+    border: none;
+  }
+  .video-modal .video-close {
+    position: absolute;
+    top: 10px;
+    right: 14px;
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    border: none;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    font-size: 1.5rem;
+    cursor: pointer;
+    z-index: 10;
+    transition: all 0.2s;
+  }
+  .video-modal .video-close:hover {
+    background: var(--red);
+    transform: scale(1.1);
+  }
+  @media (max-width: 480px) {
+    .video-modal .video-container iframe { height: 250px; }
+  }
+
   .icon-btn.save-ex{ color: var(--accent); border-color: rgba(232,163,61,.3); }
   .icon-btn.save-ex:hover{ 
     border-color: var(--accent);
@@ -535,16 +634,17 @@
   .modal-sheet{
     background: var(--panel); border:1px solid var(--line); border-radius: 16px 16px 0 0;
     width:100%; max-width: 720px; max-height: 78vh; overflow-y:auto; padding: 20px 20px 28px;
+    color: var(--ink);
   }
   .modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
   .modal-head h3{ 
     margin:0; 
     font-size:1.1rem; 
-    color: #ffffff;
+    color: var(--ink);
     font-weight: 700;
   }
   .modal-close{
-    background:var(--panel2); border:1px solid var(--line); color:#d8ddf0;
+    background:var(--panel2); border:1px solid var(--line); color:var(--muted);
     border-radius:8px; width:36px; height:36px; cursor:pointer; font-size:1.2rem;
     transition: all 0.2s;
     font-weight: bold;
@@ -556,23 +656,23 @@
   }
   .hist-row{
     display:flex; justify-content:space-between; gap:12px; padding:10px 14px;
-    background: #0d0f1a; border-radius:8px; margin-bottom:8px; font-size:.9rem;
+    background: var(--input-bg); border-radius:8px; margin-bottom:8px; font-size:.9rem;
   }
-  .hist-row .hd{ color: #b8c4e0; flex:0 0 auto; font-weight: 500; }
-  .hist-row .hv{ color: #ffffff; text-align:right; font-weight: 600; }
-  .hist-empty{ color:#b8c4e0; font-size:.9rem; text-align:center; padding: 24px 0; }
+  .hist-row .hd{ color: var(--muted); flex:0 0 auto; font-weight: 500; }
+  .hist-row .hv{ color: var(--ink); text-align:right; font-weight: 600; }
+  .hist-empty{ color:var(--muted); font-size:.9rem; text-align:center; padding: 24px 0; }
 
   .profile-bar{
     display:flex; gap:10px; justify-content:center; padding: 6px 12px 12px;
   }
   .profile-bar button{
-    background:var(--panel2); border:1px solid var(--line); color:#b8c4e0;
+    background:var(--panel2); border:1px solid var(--line); color:var(--muted);
     padding:10px 22px; border-radius:10px; font-size:.9rem; cursor:pointer; font-weight:600;
     transition: all 0.2s;
   }
   .profile-bar button:hover{
     border-color: var(--accent);
-    color: #ffffff;
+    color: var(--ink);
     background: var(--panel);
   }
   .profile-bar button.active{
@@ -592,24 +692,23 @@
     .clear-alt-btn { padding: 2px 6px; font-size: 0.7rem; }
     .recovery-modal .content { padding: 16px; }
     nav.days button.last-workout::after { font-size: 0.5rem; top: -4px; right: -4px; }
+    .video-modal .video-container iframe { height: 200px; }
   }
 </style>
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Тренування">
-<meta name="theme-color" content="#0a0c15">
+<meta name="theme-color" content="#f4f5f7">
 <link rel="manifest" href="manifest.json">
 </head>
 <body>
 
 <header>
-  <h1 id="appTitle">
-    <span onclick="clearCacheAndReload()" class="emoji-btn" title="Натисніть для оновлення кешу">
-      🏋️
-    </span>
-    План тренувань
-  </h1>
-  <div class="sub" id="appSub">Завантажте план з Excel</div>
+  <h1 id="appTitle">🏋️ План тренувань</h1>
+  <div class="header-controls">
+    <span class="sub" id="appSub">Завантажте план з Excel</span>
+    <span onclick="toggleTheme()" class="emoji-btn" title="Перемкнути тему" id="themeToggle">🌓</span>
+  </div>
 </header>
 
 <div class="profile-bar" id="profileBar"></div>
@@ -680,41 +779,88 @@ function clearCacheAndReload() {
   }
 }
 
+// ===== ТЕМНА/СВІТЛА ТЕМА =====
+function toggleTheme() {
+  const html = document.documentElement;
+  const current = html.getAttribute('data-theme');
+  const newTheme = current === 'dark' ? 'light' : 'dark';
+  html.setAttribute('data-theme', newTheme);
+  localStorage.setItem('theme', newTheme);
+  document.querySelector('#themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌓';
+  // Оновлюємо theme-color для браузера
+  const meta = document.querySelector('meta[name="theme-color"]');
+  if (meta) {
+    meta.content = newTheme === 'dark' ? '#0a0c15' : '#f4f5f7';
+  }
+}
+
+// Завантажуємо тему при старті
+(function loadTheme() {
+  const saved = localStorage.getItem('theme');
+  if (saved) {
+    document.documentElement.setAttribute('data-theme', saved);
+    document.querySelector('#themeToggle').textContent = saved === 'dark' ? '☀️' : '🌓';
+    const meta = document.querySelector('meta[name="theme-color"]');
+    if (meta) {
+      meta.content = saved === 'dark' ? '#0a0c15' : '#f4f5f7';
+    }
+  }
+})();
+
+// ===== ВІДЕО-МОДАЛКА =====
+function openVideoModal(url) {
+  const modal = document.createElement('div');
+  modal.className = 'video-modal';
+  modal.innerHTML = `
+    <div class="video-container">
+      <button class="video-close" onclick="this.closest('.video-modal').remove()">✕</button>
+      <iframe src="${url}?autoplay=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  // Закриття по кліку на фон
+  modal.addEventListener('click', (e) => {
+    if (e.target === modal) modal.remove();
+  });
+}
+
 // ===== ВІДЕО-ТУТОРІАЛИ =====
 const VIDEO_TUTORIALS = {
-  'Жим штанги лежачи (горизонтальний)': 'https://www.youtube.com/watch?v=4Y2Zd4TQw4k',
-  'Жим штанги лежачи (похилий)': 'https://www.youtube.com/watch?v=ZmBfXj_R0b0',
-  'Жим гантелей (горизонтальний)': 'https://www.youtube.com/watch?v=VmB1G1K7vqE',
-  'Віджимання на брусах': 'https://www.youtube.com/watch?v=tMyFe-IL7Ks',
-  'Підтягування (широкий хват)': 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
-  'Тяга штанги в нахилі': 'https://www.youtube.com/watch?v=G8l_8chR5BE',
-  'Присідання зі штангою': 'https://www.youtube.com/watch?v=ultWZbUMPLQ',
-  'Станова тяга': 'https://www.youtube.com/watch?v=op9kVnS5lPw',
-  'Жим ногами': 'https://www.youtube.com/watch?v=IZxyjW7VPJQ',
-  'Згинання рук зі штангою стоячи': 'https://www.youtube.com/watch?v=ynPnr6TlQ9E',
-  'Французький жим штангою': 'https://www.youtube.com/watch?v=dX4v7f5n09I',
-  'Шраги зі штангою': 'https://www.youtube.com/watch?v=cJRVVx6ZvOg',
-  'Метелик (Pec-Deck)': 'https://www.youtube.com/watch?v=QENKPHhQVi4',
-  'Тяга верхнього блоку до грудей': 'https://www.youtube.com/watch?v=Y3B8q2p5_9w',
-  'Тяга горизонтального блоку до пояса': 'https://www.youtube.com/watch?v=9Z1r6M_vUq8',
-  'Армійський жим': 'https://www.youtube.com/watch?v=2B4U5wOz-ss',
-  'Махи гантелями в сторони': 'https://www.youtube.com/watch?v=3VcKaXpzqZ8',
-  'Планка класична': 'https://www.youtube.com/watch?v=pSHjTRCQxIw'
+  'Жим штанги лежачи (горизонтальний)': 'https://www.youtube.com/embed/4Y2Zd4TQw4k',
+  'Жим штанги лежачи (похилий)': 'https://www.youtube.com/embed/ZmBfXj_R0b0',
+  'Жим гантелей (горизонтальний)': 'https://www.youtube.com/embed/VmB1G1K7vqE',
+  'Віджимання на брусах': 'https://www.youtube.com/embed/tMyFe-IL7Ks',
+  'Підтягування (широкий хват)': 'https://www.youtube.com/embed/eGo4IYlbE5g',
+  'Тяга штанги в нахилі': 'https://www.youtube.com/embed/G8l_8chR5BE',
+  'Присідання зі штангою': 'https://www.youtube.com/embed/ultWZbUMPLQ',
+  'Станова тяга': 'https://www.youtube.com/embed/op9kVnS5lPw',
+  'Жим ногами': 'https://www.youtube.com/embed/IZxyjW7VPJQ',
+  'Згинання рук зі штангою стоячи': 'https://www.youtube.com/embed/ynPnr6TlQ9E',
+  'Французький жим штангою': 'https://www.youtube.com/embed/dX4v7f5n09I',
+  'Шраги зі штангою': 'https://www.youtube.com/embed/cJRVVx6ZvOg',
+  'Метелик (Pec-Deck)': 'https://www.youtube.com/embed/QENKPHhQVi4',
+  'Тяга верхнього блоку до грудей': 'https://www.youtube.com/embed/Y3B8q2p5_9w',
+  'Тяга горизонтального блоку до пояса': 'https://www.youtube.com/embed/9Z1r6M_vUq8',
+  'Армійський жим': 'https://www.youtube.com/embed/2B4U5wOz-ss',
+  'Махи гантелями в сторони': 'https://www.youtube.com/embed/3VcKaXpzqZ8',
+  'Планка класична': 'https://www.youtube.com/embed/pSHjTRCQxIw'
 };
 
-function getVideoUrlForExercise(id, defaultName){
+function getVideoUrl(id, defaultName){
   const altText = (pendingSets[id+'::alt'] || {}).raw || '';
   const exerciseName = altText || defaultName;
   
   if(VIDEO_TUTORIALS[exerciseName]) return VIDEO_TUTORIALS[exerciseName];
   
+  // Якщо немає точного збігу — шукаємо за ключовими словами
   const keywords = exerciseName.split(' (')[0];
   for(const [key, url] of Object.entries(VIDEO_TUTORIALS)){
     if(key.includes(keywords) || keywords.includes(key)){
       return url;
     }
   }
-  return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(exerciseName + ' техніка виконання');
+  // Якщо нічого не знайдено — пошук на YouTube (embed не працює з пошуком, тому повертаємо посилання)
+  return 'https://www.youtube.com/embed?search_query=' + encodeURIComponent(exerciseName + ' техніка виконання');
 }
 
 function clearAlt(id){
@@ -800,41 +946,142 @@ const ALL_EXERCISES = {
   ]
 };
 
-// ===== РОЗУМНА ПРОГРЕСІЯ (крок 1.25 кг) =====
-function calculateProgression(prevWeight, prevReps, targetReps) {
-  if (!prevWeight || !prevReps) return { weight: 20, change: 0, message: 'Почніть з комфортної ваги' };
+// ===== ШІ-АНАЛІЗ ДЛЯ РОЗУМНОЇ ПРОГРЕСІЇ =====
+function aiAnalyze(prevWeight, prevReps, targetReps, history) {
+  // history — масив останніх результатів для цієї вправи
+  if (!prevWeight || !prevReps) {
+    return { 
+      weight: 20, 
+      reps: targetReps, 
+      action: 'start',
+      message: '💡 Почніть з комфортної ваги' 
+    };
+  }
   
   const target = parseInt(targetReps) || 10;
   const reps = parseFloat(prevReps);
   const weight = parseFloat(prevWeight);
   
-  if (isNaN(reps) || isNaN(weight)) return { weight: weight || 20, change: 0, message: 'Вага без змін' };
+  if (isNaN(reps) || isNaN(weight)) {
+    return { weight: weight || 20, reps: target, action: 'none', message: 'Вага без змін' };
+  }
   
   const step = 1.25;
+  const bigStep = 2.5;
   
+  // Рахуємо кількість разів поспіль, коли виконав норму або не виконав
+  let consecutiveSuccess = 0;
+  let consecutiveFail = 0;
+  let consecutiveOver = 0;
+  
+  if (history && history.length > 0) {
+    const recent = history.slice(-6); // дивимось останні 6 тренувань
+    for (const entry of recent) {
+      if (!entry.sets || entry.sets.length === 0) continue;
+      // Беремо середнє повторення за сет
+      let totalReps = 0;
+      let count = 0;
+      for (const s of entry.sets) {
+        if (s.r) {
+          totalReps += parseFloat(s.r) || 0;
+          count++;
+        }
+      }
+      const avgReps = count > 0 ? totalReps / count : 0;
+      if (avgReps >= target) {
+        consecutiveSuccess++;
+        if (avgReps > target + 2) consecutiveOver++;
+        consecutiveFail = 0;
+      } else {
+        consecutiveFail++;
+        consecutiveSuccess = 0;
+        consecutiveOver = 0;
+      }
+    }
+  }
+  
+  // ===== ШІ-РІШЕННЯ =====
+  
+  // 1. Якщо 3 рази поспіль не виконав норму → знімаємо 2.5 кг
+  if (consecutiveFail >= 3) {
+    const newWeight = Math.max(2.5, Math.round((weight - bigStep) / step) * step);
+    return {
+      weight: newWeight,
+      reps: target,
+      action: 'down_big',
+      message: '⚠️ ШІ: 3 рази поспіль не виконано норму → -2.5 кг (' + weight + ' → ' + newWeight + ')'
+    };
+  }
+  
+  // 2. Якщо 2 рази поспіль виконав з запасом (>норми на 2+) → додаємо 2.5 кг
+  if (consecutiveOver >= 2) {
+    const newWeight = Math.round((weight + bigStep) / step) * step;
+    return {
+      weight: newWeight,
+      reps: target,
+      action: 'up_big',
+      message: '🔥 ШІ: 2 рази поспіль з запасом → +2.5 кг (' + weight + ' → ' + newWeight + ')'
+    };
+  }
+  
+  // 3. Якщо виконав всі повторення → додаємо 1.25 кг
   if (reps >= target) {
     const newWeight = Math.round((weight + step) / step) * step;
-    return { 
-      weight: newWeight, 
-      change: step, 
-      message: '✅ ' + reps + '/' + target + ' → +' + step + ' кг (' + weight + ' → ' + newWeight + ')' 
+    // Якщо виконав рівно, але важко — пропонуємо зменшити повторення
+    if (reps === target && history && history.length > 0) {
+      const lastEntry = history[history.length - 1];
+      if (lastEntry && lastEntry.sets) {
+        // Перевіряємо чи було важко (менше 3 сетів заповнено)
+        const filledSets = lastEntry.sets.filter(s => s.w && s.r).length;
+        if (filledSets < 3) {
+          return {
+            weight: weight,
+            reps: Math.max(4, target - 2),
+            action: 'down_reps',
+            message: '🧠 ШІ: виконано ' + reps + '/' + target + ', але важко → зменшуємо повторення до ' + Math.max(4, target - 2)
+          };
+        }
+      }
+    }
+    return {
+      weight: newWeight,
+      reps: target,
+      action: 'up',
+      message: '✅ ШІ: виконано ' + reps + '/' + target + ' → +1.25 кг (' + weight + ' → ' + newWeight + ')'
     };
   }
   
+  // 4. Якщо виконав більше половини → вага без змін
+  if (reps >= target / 2) {
+    return {
+      weight: weight,
+      reps: target,
+      action: 'none',
+      message: '📊 ШІ: виконано ' + reps + '/' + target + ' → вага без змін (' + weight + ' кг)'
+    };
+  }
+  
+  // 5. Якщо менше половини → знімаємо 1.25 кг
   if (reps < target / 2) {
     const newWeight = Math.max(2.5, Math.round((weight - step) / step) * step);
-    return { 
-      weight: newWeight, 
-      change: -step, 
-      message: '⚠️ ' + reps + '/' + target + ' → -' + step + ' кг (' + weight + ' → ' + newWeight + ')' 
+    // Якщо зовсім мало (менше 3) — пропонуємо збільшити повторення
+    if (reps < 3) {
+      return {
+        weight: newWeight,
+        reps: Math.min(target + 3, 15),
+        action: 'up_reps',
+        message: '🔄 ШІ: виконано лише ' + reps + '/' + target + ' → -1.25 кг і +3 повторення для техніки'
+      };
+    }
+    return {
+      weight: newWeight,
+      reps: target,
+      action: 'down',
+      message: '⚠️ ШІ: виконано ' + reps + '/' + target + ' → -1.25 кг (' + weight + ' → ' + newWeight + ')'
     };
   }
   
-  return { 
-    weight: weight, 
-    change: 0, 
-    message: '📊 ' + reps + '/' + target + ' → вага без змін (' + weight + ' кг)' 
-  };
+  return { weight: weight, reps: target, action: 'none', message: '📊 Вага без змін' };
 }
 
 // ===== 20+ ВИПАДКОВИХ ПОВІДОМЛЕНЬ ДЛЯ ВІДНОВЛЕННЯ =====
@@ -997,6 +1244,26 @@ function getLastWeight(id){
   return null;
 }
 
+function getHistoryForExercise(id) {
+  const hist = [];
+  const h = localStorage.getItem('history:' + id);
+  if (h) {
+    try { 
+      const parsed = JSON.parse(h);
+      if (Array.isArray(parsed)) {
+        for (const entry of parsed) {
+          if (entry.sets && entry.sets.length > 0) {
+            // Перевіряємо чи є хоч один сет з даними
+            const hasData = entry.sets.some(s => s.w && s.r);
+            if (hasData) hist.push(entry);
+          }
+        }
+      }
+    } catch(e) { /* ignore */ }
+  }
+  return hist;
+}
+
 function checkExerciseStatus(id) {
   const sets = pendingSets[id] || [];
   const filledCount = sets.filter(s => s.raw && s.raw.trim() !== '').length;
@@ -1020,7 +1287,6 @@ function getDayProgress(day) {
   return { total, done, percent: total > 0 ? Math.round((done / total) * 100) : 0 };
 }
 
-// ===== ОСТАННЄ ТРЕНУВАННЯ (для підсвітки дня) =====
 function getLastWorkoutDay() {
   let lastDate = '';
   let lastDayId = null;
@@ -1132,7 +1398,6 @@ function renderDayNav(){
     b.textContent = d.label.replace(/ — .*$/, '');
     if(idx===currentDay) b.classList.add('active');
     
-    // Підсвітка дня, коли було останнє тренування
     if (d.id === lastDayId && idx !== currentDay) {
       b.classList.add('last-workout');
     }
@@ -1212,13 +1477,21 @@ function renderMain(){
       let metaText = it.sets + '×' + it.reps;
       if (it.page) metaText += '  •  📖 ' + it.page;
       
-      // Показуємо минулий результат ТІЛЬКИ в рядку meta (без підстановки в поля)
+      // ===== ШІ-АНАЛІЗ =====
       const last = getLastWeight(id);
+      const history = getHistoryForExercise(id);
+      let aiResult = null;
+      let targetReps = parseInt(it.reps) || 10;
+      
       if (last) {
-        const targetReps = parseInt(it.reps) || 10;
-        const prog = calculateProgression(last.weight, last.reps, targetReps);
-        metaText += '  •  💪 ' + prog.message;
-        metaText += '  •  🎯 ' + prog.weight + ' кг';
+        aiResult = aiAnalyze(last.weight, last.reps, targetReps, history);
+        metaText += '  •  🧠 ' + aiResult.message;
+        metaText += '  •  🎯 ' + aiResult.weight + ' кг × ' + aiResult.reps;
+        
+        // Підказуємо користувачеві що робити
+        if (aiResult.action === 'down_reps' || aiResult.action === 'up_reps') {
+          metaText += '  •  📝 Змінити повторення на ' + aiResult.reps;
+        }
       } else {
         metaText += '  •  💡 Почніть з комфортної ваги';
       }
@@ -1232,18 +1505,39 @@ function renderMain(){
         noteDiv.textContent = '💡 ' + it.note;
         info.appendChild(noteDiv);
       }
+      
+      // Показуємо ШІ-рекомендацію окремим блоком
+      if (aiResult && aiResult.action !== 'none' && aiResult.action !== 'start') {
+        const aiBadge = document.createElement('div');
+        aiBadge.className = 'ex-ai-suggestion';
+        let emoji = '🧠';
+        if (aiResult.action === 'up' || aiResult.action === 'up_big') emoji = '📈';
+        if (aiResult.action === 'down' || aiResult.action === 'down_big') emoji = '📉';
+        if (aiResult.action === 'down_reps') emoji = '🔽';
+        if (aiResult.action === 'up_reps') emoji = '🔼';
+        aiBadge.textContent = emoji + ' ' + aiResult.message;
+        info.appendChild(aiBadge);
+      }
 
       top.appendChild(info);
 
       const actions = document.createElement('div');
       actions.className = 'actions';
       
-      const vid = document.createElement('a');
+      // ===== КНОПКА ВІДЕО (з модалкою) =====
+      const vid = document.createElement('button');
       vid.className = 'icon-btn';
-      vid.href = getVideoUrlForExercise(id, it.name);
-      vid.target = '_blank';
       vid.textContent = '▶';
-      vid.title = 'Відео-туторіал для вправи';
+      vid.title = 'Відео-туторіал';
+      vid.onclick = (e) => {
+        e.preventDefault();
+        const url = getVideoUrl(id, it.name);
+        if (url) {
+          openVideoModal(url);
+        } else {
+          showToast('⚠️ Відео не знайдено');
+        }
+      };
       actions.appendChild(vid);
 
       const calBtn = document.createElement('button');
@@ -1265,7 +1559,6 @@ function renderMain(){
       setsRow.className = 'sets-row';
       const nSets = 6;
       
-      // ПОЛЯ ПОРОЖНІ — без підстановки минулих результатів
       if(!pendingSets[id]) {
         pendingSets[id] = Array.from({ length: nSets }, () => ({ w: '', r: '' }));
       }
@@ -1350,23 +1643,25 @@ function renderMain(){
 
       altWrapper.appendChild(altSel);
 
-      const altVideoBtn = document.createElement('a');
+      const altVideoBtn = document.createElement('button');
       altVideoBtn.className = 'icon-btn';
       altVideoBtn.textContent = '🎥';
       altVideoBtn.title = 'Відео для заміненої вправи';
-      altVideoBtn.target = '_blank';
       altVideoBtn.style.fontSize = '0.8rem';
       altVideoBtn.style.padding = '4px 8px';
       
       function updateAltVideo() {
         const altName = (pendingSets[id+'::alt'] || {}).raw || '';
         if (altName) {
-          altVideoBtn.href = getVideoUrlForExercise(id, it.name);
+          altVideoBtn.onclick = () => {
+            const url = getVideoUrl(id, it.name);
+            if (url) openVideoModal(url);
+          };
           altVideoBtn.style.opacity = '1';
           altVideoBtn.style.pointerEvents = 'auto';
           altVideoBtn.title = '🎥 Відео для: ' + altName;
         } else {
-          altVideoBtn.href = '#';
+          altVideoBtn.onclick = () => showToast('⚠️ Спочатку оберіть заміну');
           altVideoBtn.style.opacity = '0.3';
           altVideoBtn.style.pointerEvents = 'none';
           altVideoBtn.title = 'Спочатку оберіть заміну';
@@ -1413,7 +1708,7 @@ function renderMain(){
 
   const note = document.createElement('div');
   note.className = 'note-box';
-  note.innerHTML = '💪 Розумна прогресія (крок 1.25 кг): виконав всі повторення → +1.25 кг | частково → вага без змін | менше половини → -1.25 кг';
+  note.innerHTML = '🧠 ШІ-аналіз: аналізує ваші результати і пропонує: +вага, -вага, змінити повторення. 🟢 зелене = виконано, 🟡 жовте = частково, ⚪ сіре = не виконано.';
   main.appendChild(note);
 }
 
@@ -1424,7 +1719,7 @@ function renderAll(){
   renderMain();
 }
 
-// ---- TELEGRAM SYNC (тільки відправка) ----
+// ---- TELEGRAM SYNC ----
 const TELEGRAM_TOKEN = '8910047408:AAH-l-AMBmlQmTPuWpBAhDXS59RNyaZ8xPM';
 const CHAT_ID_MAIN = '471234977';
 const CHAT_ID_WOMAN = '278145361';
