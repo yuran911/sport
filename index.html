@@ -6,23 +6,6 @@
 <title>Тренувальний план</title>
 <style>
   :root{
-    --bg: #f4f5f7;
-    --panel: #ffffff;
-    --panel2: #e8eaed;
-    --line: #d0d2d6;
-    --ink: #1a1d2e;
-    --muted: #5a6270;
-    --accent: #e8a33d;
-    --accent2: #4a90d9;
-    --green: #3cb371;
-    --red: #d9534f;
-    --shadow: 0 2px 12px rgba(0,0,0,0.08);
-    --card-bg: #ffffff;
-    --input-bg: #f4f5f7;
-    --toast-bg: #3cb371;
-    --toast-color: #ffffff;
-  }
-  [data-theme="dark"] {
     --bg: #0a0c15;
     --panel: #141824;
     --panel2: #1a2030;
@@ -33,35 +16,26 @@
     --accent2: #4a90d9;
     --green: #3cb371;
     --red: #d9534f;
-    --shadow: 0 2px 12px rgba(0,0,0,0.4);
-    --card-bg: #141824;
-    --input-bg: #0d0f1a;
-    --toast-bg: #3cb371;
-    --toast-color: #0a0c15;
   }
-
   *{box-sizing:border-box;}
   body{
     margin:0;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
     background: var(--bg);
-    color: var(--ink);
+    color: #ffffff;
     font-size: 16px;
     line-height: 1.6;
     min-height: 100vh;
-    transition: background 0.3s, color 0.3s;
   }
   header{
     padding: 18px 16px 10px; text-align:center; position:sticky; top:0; z-index:10;
-    background: var(--bg);
-    border-bottom: 1px solid var(--line);
-    transition: background 0.3s;
+    background: linear-gradient(180deg, #0a0c15 80%, transparent);
   }
   header h1{
     margin:0; font-size: 1.8rem; letter-spacing:.5px;
     font-family: Georgia, 'Times New Roman', serif;
-    color: var(--ink);
-    text-shadow: none;
+    color: #ffffff;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.6);
     font-weight: 700;
   }
   header h1 .emoji-btn {
@@ -69,47 +43,18 @@
     display: inline-block;
     transition: all 0.2s;
     user-select: none;
-    font-size: 1.8rem;
-    background: none;
-    padding: 0 4px;
-    border: none;
-    border-radius: 0;
   }
   header h1 .emoji-btn:hover {
-    transform: scale(1.2);
+    transform: scale(1.3);
+    text-shadow: 0 0 30px rgba(232,163,61,0.6);
   }
   header h1 .emoji-btn:active {
     transform: scale(0.85);
   }
-  header .header-controls {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    margin-top: 4px;
-  }
-  header .theme-btn {
-    cursor: pointer;
-    display: inline-block;
-    transition: all 0.2s;
-    user-select: none;
-    font-size: 1.4rem;
-    background: var(--panel2);
-    padding: 4px 10px;
-    border-radius: 8px;
-    border: 1px solid var(--line);
-  }
-  header .theme-btn:hover {
-    transform: scale(1.1);
-    border-color: var(--accent);
-  }
-  header .theme-btn:active {
-    transform: scale(0.9);
-  }
   header .sub{ 
-    color: var(--muted); 
-    font-size: 0.9rem; 
-    margin-top:4px;
+    color: #d8ddf0; 
+    font-size: 1rem; 
+    margin-top:6px;
     font-weight: 400;
   }
 
@@ -118,14 +63,15 @@
     padding: 8px 12px 14px;
   }
   .week-bar button{
-    background:var(--panel2); border:1px solid var(--line); color: var(--muted);
+    background:var(--panel); border:1px solid var(--line); color: #d8ddf0;
     padding:8px 14px; border-radius:8px; font-size:.85rem; cursor:pointer;
     transition: all 0.2s;
     font-weight: 500;
   }
   .week-bar button:hover{
+    background: var(--panel2);
     border-color: var(--accent2);
-    color: var(--ink);
+    color: #ffffff;
   }
   .week-bar button.active{
     background: var(--accent); color:#1a1208; border-color:var(--accent); font-weight:700;
@@ -136,20 +82,21 @@
   }
   nav.days button{
     flex:1; max-width:160px; background:var(--panel2); border:1px solid var(--line);
-    color:var(--muted); padding:12px 8px; border-radius:10px; font-size:.9rem; cursor:pointer;
+    color:#d8ddf0; padding:12px 8px; border-radius:10px; font-size:.9rem; cursor:pointer;
     font-weight:600;
     transition: all 0.2s;
   }
   nav.days button:hover{
     background: var(--panel);
     border-color: var(--accent);
-    color: var(--ink);
+    color: #ffffff;
   }
   nav.days button.active{
     background: linear-gradient(135deg,#2a3a5c,#1d2130); border-color: var(--accent2);
     box-shadow: 0 0 0 2px var(--accent2) inset;
     color: #ffffff;
   }
+  /* Підсвітка дня, коли було останнє тренування */
   nav.days button.last-workout {
     border-color: var(--green) !important;
     box-shadow: 0 0 20px rgba(60, 179, 113, 0.3) !important;
@@ -176,10 +123,8 @@
   .group-label hr{ flex:1; border:none; border-top:2px solid var(--line);}
 
   .card{
-    background: var(--card-bg); border:1px solid var(--line); border-radius: 14px;
+    background: var(--panel); border:1px solid var(--line); border-radius: 14px;
     padding: 14px 16px; margin-bottom: 12px;
-    box-shadow: var(--shadow);
-    transition: background 0.3s, box-shadow 0.3s;
   }
   .card.done{ opacity:.5; }
   .card-top{ display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap; }
@@ -187,11 +132,11 @@
   .ex-name{ 
     font-weight:700; 
     font-size:1.05rem; 
-    color: var(--ink);
+    color: #ffffff; 
     margin-bottom: 2px;
   }
   .ex-meta{ 
-    color: var(--muted); 
+    color: #b8c4e0; 
     font-size:.85rem; 
     margin-top:2px;
     font-weight: 400;
@@ -201,17 +146,6 @@
     font-size:.75rem;
     margin-top:2px;
     font-style: italic;
-  }
-  .ex-ai-suggestion {
-    background: rgba(232,163,61,0.12);
-    border: 1px solid rgba(232,163,61,0.25);
-    border-radius: 8px;
-    padding: 4px 10px;
-    font-size: 0.75rem;
-    color: var(--accent);
-    margin-top: 4px;
-    display: inline-block;
-    font-weight: 600;
   }
   
   .ex-status {
@@ -289,7 +223,7 @@
 
   .actions{ margin-left:auto; display:flex; gap:8px; flex:0 0 auto; }
   .icon-btn{
-    background:var(--panel2); border:1px solid var(--line); color:var(--muted);
+    background:var(--panel2); border:1px solid var(--line); color:#d8ddf0;
     border-radius:8px; padding:8px 12px; font-size:.85rem; cursor:pointer; text-decoration:none;
     white-space:nowrap;
     transition: all 0.2s;
@@ -297,7 +231,7 @@
   }
   .icon-btn:hover{ 
     border-color:var(--accent2); 
-    color: var(--ink);
+    color: #ffffff;
     background: var(--panel);
     transform: scale(1.05);
   }
@@ -328,13 +262,13 @@
   }
   .set-input label{ 
     font-size:.6rem; 
-    color: var(--muted);
+    color: #b8c4e0;
     font-weight: 600;
     letter-spacing: 0.3px;
     text-align:center;
   }
   .set-input input{
-    width:100%; background: var(--input-bg); border:1px solid var(--line); color: var(--ink);
+    width:100%; background: #0d0f1a; border:1px solid var(--line); color: #ffffff;
     border-radius:6px; padding:6px 4px; font-size:.8rem; text-align:center;
     transition: all 0.2s;
     font-weight: 500;
@@ -343,6 +277,7 @@
     outline:none; 
     border-color:var(--accent2);
     box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.25);
+    background: #131625;
   }
   .set-input input::placeholder{
     color: #6a7290;
@@ -351,8 +286,8 @@
   }
 
   .last-log{
-    margin-top:10px; font-size:.85rem; color: var(--muted);
-    background: var(--input-bg); border-radius:8px; padding:8px 12px; border:1px solid var(--line);
+    margin-top:10px; font-size:.85rem; color: #d8ddf0;
+    background: #0d0f1a; border-radius:8px; padding:8px 12px; border:1px solid var(--line);
   }
   .last-log b{ color: var(--green); font-weight: 700; }
 
@@ -393,8 +328,8 @@
   }
 
   .alt-select{
-    width:100%; background: var(--input-bg); border:1px solid var(--line);
-    color: var(--ink); border-radius:6px;
+    width:100%; background: #0d0f1a; border:1px solid var(--line);
+    color: #b8c4e0; border-radius:6px;
     font-size:.85rem; padding:6px 10px;
     cursor:pointer; outline:none;
     -webkit-appearance:none; appearance:none;
@@ -402,11 +337,12 @@
   }
   .alt-select:focus{ 
     border-color:var(--accent); 
+    color:#ffffff;
     box-shadow: 0 0 0 2px rgba(232,163,61,0.15);
   }
   .alt-select option{ 
     background:var(--panel); 
-    color:var(--ink);
+    color:#ffffff;
     padding: 4px;
   }
   .alt-select optgroup{
@@ -419,7 +355,7 @@
   .alt-select optgroup option{
     padding-left: 12px;
     font-weight: 400;
-    color: var(--muted);
+    color: #d8ddf0;
   }
 
   .note-box{
@@ -460,7 +396,7 @@
   }
   .bottom-btn:hover {
     border-color: var(--accent2);
-    color: var(--ink);
+    color: #ffffff;
     background: var(--panel);
     transform: scale(1.05);
   }
@@ -475,7 +411,7 @@
     text-transform: uppercase;
   }
   .bottom-btn:hover .label {
-    color: var(--ink);
+    color: #ffffff;
   }
   .bottom-btn.save-btn {
     border-color: rgba(232,163,61,0.3);
@@ -512,7 +448,7 @@
 
   .toast{
     position: fixed; bottom: 80px; left:50%; transform:translateX(-50%);
-    background: var(--toast-bg); color: var(--toast-color); padding:12px 24px; border-radius:12px;
+    background: var(--green); color:#0a0c15; padding:12px 24px; border-radius:12px;
     font-size:1rem; font-weight:700; opacity:0; transition:opacity .3s; pointer-events:none;
     box-shadow: 0 4px 20px rgba(0,0,0,0.4);
     z-index: 200;
@@ -538,7 +474,6 @@
     width: 100%;
     max-height: 80vh;
     overflow-y: auto;
-    color: var(--ink);
   }
   .recovery-modal .content h2 {
     text-align: center;
@@ -563,7 +498,6 @@
     align-items: center;
     gap: 10px;
     font-size: 0.95rem;
-    color: var(--ink);
   }
   .recovery-modal .content ul li:last-child {
     border-bottom: none;
@@ -601,17 +535,16 @@
   .modal-sheet{
     background: var(--panel); border:1px solid var(--line); border-radius: 16px 16px 0 0;
     width:100%; max-width: 720px; max-height: 78vh; overflow-y:auto; padding: 20px 20px 28px;
-    color: var(--ink);
   }
   .modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
   .modal-head h3{ 
     margin:0; 
     font-size:1.1rem; 
-    color: var(--ink);
+    color: #ffffff;
     font-weight: 700;
   }
   .modal-close{
-    background:var(--panel2); border:1px solid var(--line); color:var(--muted);
+    background:var(--panel2); border:1px solid var(--line); color:#d8ddf0;
     border-radius:8px; width:36px; height:36px; cursor:pointer; font-size:1.2rem;
     transition: all 0.2s;
     font-weight: bold;
@@ -623,23 +556,23 @@
   }
   .hist-row{
     display:flex; justify-content:space-between; gap:12px; padding:10px 14px;
-    background: var(--input-bg); border-radius:8px; margin-bottom:8px; font-size:.9rem;
+    background: #0d0f1a; border-radius:8px; margin-bottom:8px; font-size:.9rem;
   }
-  .hist-row .hd{ color: var(--muted); flex:0 0 auto; font-weight: 500; }
-  .hist-row .hv{ color: var(--ink); text-align:right; font-weight: 600; }
-  .hist-empty{ color:var(--muted); font-size:.9rem; text-align:center; padding: 24px 0; }
+  .hist-row .hd{ color: #b8c4e0; flex:0 0 auto; font-weight: 500; }
+  .hist-row .hv{ color: #ffffff; text-align:right; font-weight: 600; }
+  .hist-empty{ color:#b8c4e0; font-size:.9rem; text-align:center; padding: 24px 0; }
 
   .profile-bar{
     display:flex; gap:10px; justify-content:center; padding: 6px 12px 12px;
   }
   .profile-bar button{
-    background:var(--panel2); border:1px solid var(--line); color:var(--muted);
+    background:var(--panel2); border:1px solid var(--line); color:#b8c4e0;
     padding:10px 22px; border-radius:10px; font-size:.9rem; cursor:pointer; font-weight:600;
     transition: all 0.2s;
   }
   .profile-bar button:hover{
     border-color: var(--accent);
-    color: var(--ink);
+    color: #ffffff;
     background: var(--panel);
   }
   .profile-bar button.active{
@@ -652,7 +585,6 @@
       grid-template-columns: repeat(3, 1fr);
     }
     header h1 { font-size: 1.4rem; }
-    header h1 .emoji-btn { font-size: 1.4rem; }
     .bottom-btn { padding: 4px 8px; font-size: 0.85rem; min-width: 38px; }
     .bottom-btn .label { font-size: 0.4rem; }
     .bottom-bar { padding: 6px 8px 12px; gap: 4px; }
@@ -665,7 +597,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Тренування">
-<meta name="theme-color" content="#f4f5f7">
+<meta name="theme-color" content="#0a0c15">
 <link rel="manifest" href="manifest.json">
 </head>
 <body>
@@ -677,10 +609,7 @@
     </span>
     План тренувань
   </h1>
-  <div class="header-controls">
-    <span class="sub" id="appSub">Завантажте план з Excel</span>
-    <span onclick="toggleTheme()" class="theme-btn" title="Перемкнути тему" id="themeToggle">🌓</span>
-  </div>
+  <div class="sub" id="appSub">Завантажте план з Excel</div>
 </header>
 
 <div class="profile-bar" id="profileBar"></div>
@@ -750,32 +679,6 @@ function clearCacheAndReload() {
     window.location.href = url.href;
   }
 }
-
-// ===== ТЕМНА/СВІТЛА ТЕМА =====
-function toggleTheme() {
-  const html = document.documentElement;
-  const current = html.getAttribute('data-theme');
-  const newTheme = current === 'dark' ? 'light' : 'dark';
-  html.setAttribute('data-theme', newTheme);
-  localStorage.setItem('theme', newTheme);
-  document.querySelector('#themeToggle').textContent = newTheme === 'dark' ? '☀️' : '🌓';
-  const meta = document.querySelector('meta[name="theme-color"]');
-  if (meta) {
-    meta.content = newTheme === 'dark' ? '#0a0c15' : '#f4f5f7';
-  }
-}
-
-(function loadTheme() {
-  const saved = localStorage.getItem('theme');
-  if (saved) {
-    document.documentElement.setAttribute('data-theme', saved);
-    document.querySelector('#themeToggle').textContent = saved === 'dark' ? '☀️' : '🌓';
-    const meta = document.querySelector('meta[name="theme-color"]');
-    if (meta) {
-      meta.content = saved === 'dark' ? '#0a0c15' : '#f4f5f7';
-    }
-  }
-})();
 
 // ===== ВІДЕО-ТУТОРІАЛИ =====
 const VIDEO_TUTORIALS = {
@@ -897,127 +800,44 @@ const ALL_EXERCISES = {
   ]
 };
 
-// ===== ШІ-АНАЛІЗ =====
-function aiAnalyze(prevWeight, prevReps, targetReps, history) {
-  if (!prevWeight || !prevReps) {
-    return { weight: 20, reps: targetReps, action: 'start', message: '💡 Почніть з комфортної ваги' };
-  }
+// ===== РОЗУМНА ПРОГРЕСІЯ (крок 1.25 кг) =====
+function calculateProgression(prevWeight, prevReps, targetReps) {
+  if (!prevWeight || !prevReps) return { weight: 20, change: 0, message: 'Почніть з комфортної ваги' };
   
   const target = parseInt(targetReps) || 10;
   const reps = parseFloat(prevReps);
   const weight = parseFloat(prevWeight);
   
-  if (isNaN(reps) || isNaN(weight)) {
-    return { weight: weight || 20, reps: target, action: 'none', message: 'Вага без змін' };
-  }
+  if (isNaN(reps) || isNaN(weight)) return { weight: weight || 20, change: 0, message: 'Вага без змін' };
   
   const step = 1.25;
-  const bigStep = 2.5;
-  
-  let consecutiveSuccess = 0;
-  let consecutiveFail = 0;
-  let consecutiveOver = 0;
-  
-  if (history && history.length > 0) {
-    const recent = history.slice(-6);
-    for (const entry of recent) {
-      if (!entry.sets || entry.sets.length === 0) continue;
-      let totalReps = 0;
-      let count = 0;
-      for (const s of entry.sets) {
-        if (s.r) {
-          totalReps += parseFloat(s.r) || 0;
-          count++;
-        }
-      }
-      const avgReps = count > 0 ? totalReps / count : 0;
-      if (avgReps >= target) {
-        consecutiveSuccess++;
-        if (avgReps > target + 2) consecutiveOver++;
-        consecutiveFail = 0;
-      } else {
-        consecutiveFail++;
-        consecutiveSuccess = 0;
-        consecutiveOver = 0;
-      }
-    }
-  }
-  
-  if (consecutiveFail >= 3) {
-    const newWeight = Math.max(2.5, Math.round((weight - bigStep) / step) * step);
-    return {
-      weight: newWeight,
-      reps: target,
-      action: 'down_big',
-      message: '⚠️ ШІ: 3 рази поспіль не виконано норму → -2.5 кг (' + weight + ' → ' + newWeight + ')'
-    };
-  }
-  
-  if (consecutiveOver >= 2) {
-    const newWeight = Math.round((weight + bigStep) / step) * step;
-    return {
-      weight: newWeight,
-      reps: target,
-      action: 'up_big',
-      message: '🔥 ШІ: 2 рази поспіль з запасом → +2.5 кг (' + weight + ' → ' + newWeight + ')'
-    };
-  }
   
   if (reps >= target) {
     const newWeight = Math.round((weight + step) / step) * step;
-    if (reps === target && history && history.length > 0) {
-      const lastEntry = history[history.length - 1];
-      if (lastEntry && lastEntry.sets) {
-        const filledSets = lastEntry.sets.filter(s => s.w && s.r).length;
-        if (filledSets < 3) {
-          return {
-            weight: weight,
-            reps: Math.max(4, target - 2),
-            action: 'down_reps',
-            message: '🧠 ШІ: виконано ' + reps + '/' + target + ', але важко → зменшуємо повторення до ' + Math.max(4, target - 2)
-          };
-        }
-      }
-    }
-    return {
-      weight: newWeight,
-      reps: target,
-      action: 'up',
-      message: '✅ ШІ: виконано ' + reps + '/' + target + ' → +1.25 кг (' + weight + ' → ' + newWeight + ')'
-    };
-  }
-  
-  if (reps >= target / 2) {
-    return {
-      weight: weight,
-      reps: target,
-      action: 'none',
-      message: '📊 ШІ: виконано ' + reps + '/' + target + ' → вага без змін (' + weight + ' кг)'
+    return { 
+      weight: newWeight, 
+      change: step, 
+      message: '✅ ' + reps + '/' + target + ' → +' + step + ' кг (' + weight + ' → ' + newWeight + ')' 
     };
   }
   
   if (reps < target / 2) {
     const newWeight = Math.max(2.5, Math.round((weight - step) / step) * step);
-    if (reps < 3) {
-      return {
-        weight: newWeight,
-        reps: Math.min(target + 3, 15),
-        action: 'up_reps',
-        message: '🔄 ШІ: виконано лише ' + reps + '/' + target + ' → -1.25 кг і +3 повторення для техніки'
-      };
-    }
-    return {
-      weight: newWeight,
-      reps: target,
-      action: 'down',
-      message: '⚠️ ШІ: виконано ' + reps + '/' + target + ' → -1.25 кг (' + weight + ' → ' + newWeight + ')'
+    return { 
+      weight: newWeight, 
+      change: -step, 
+      message: '⚠️ ' + reps + '/' + target + ' → -' + step + ' кг (' + weight + ' → ' + newWeight + ')' 
     };
   }
   
-  return { weight: weight, reps: target, action: 'none', message: '📊 Вага без змін' };
+  return { 
+    weight: weight, 
+    change: 0, 
+    message: '📊 ' + reps + '/' + target + ' → вага без змін (' + weight + ' кг)' 
+  };
 }
 
-// ===== 20+ ВИПАДКОВИХ ПОВІДОМЛЕНЬ =====
+// ===== 20+ ВИПАДКОВИХ ПОВІДОМЛЕНЬ ДЛЯ ВІДНОВЛЕННЯ =====
 const RECOVERY_MESSAGES = [
   { title: '🍖 Час мʼясного бенкету!', items: ['🥩 Білок: 30-40 г (стейк, курка, риба)', '🍚 Вуглеводи: рис або гречка (50-70 г)', '💧 Вода: 500 мл з лимоном', '🥑 Жири: авокадо або горіхи', '😴 Сон: 7-9 годин'] },
   { title: '🥗 Легке відновлення', items: ['🥚 Білок: омлет з 3-4 яєць', '🍞 Вуглеводи: тост з авокадо', '🥤 Протеїновий коктейль одразу після тренування', '🫐 Ягоди для антиоксидантів', '💧 Вода: 600-800 мл'] },
@@ -1045,14 +865,19 @@ const RECOVERY_MESSAGES = [
 
 function showRecoveryModal() {
   const random = RECOVERY_MESSAGES[Math.floor(Math.random() * RECOVERY_MESSAGES.length)];
+  
   const modal = document.createElement('div');
   modal.className = 'recovery-modal';
   modal.innerHTML = `
     <div class="content">
       <span class="emoji-big">${random.title.split(' ')[0]}</span>
       <h2>${random.title}</h2>
-      <p style="text-align:center;color:var(--muted);margin-bottom:16px;">Тренування завершено! Щоб м'язи росли:</p>
-      <ul>${random.items.map(item => `<li>${item}</li>`).join('')}</ul>
+      <p style="text-align:center;color:var(--muted);margin-bottom:16px;">
+        Тренування завершено! Щоб м'язи росли:
+      </p>
+      <ul>
+        ${random.items.map(item => `<li>${item}</li>`).join('')}
+      </ul>
       <button class="close-btn" onclick="this.closest('.recovery-modal').remove()">✅ Зрозуміло!</button>
     </div>
   `;
@@ -1123,10 +948,14 @@ function loadAllData(profileType) {
 function exId(dayId, name){ return dayId + '::' + name; }
 
 async function storageGet(key){
-  try { return localStorage.getItem(key); } catch(e) { return null; }
+  try {
+    return localStorage.getItem(key);
+  } catch(e) { return null; }
 }
 async function storageSet(key, value){
-  try { localStorage.setItem(key, value); } catch(e) { /* fall through */ }
+  try {
+    localStorage.setItem(key, value);
+  } catch(e) { /* fall through */ }
 }
 
 async function loadLastLogs(){
@@ -1168,25 +997,6 @@ function getLastWeight(id){
   return null;
 }
 
-function getHistoryForExercise(id) {
-  const hist = [];
-  const h = localStorage.getItem('history:' + id);
-  if (h) {
-    try { 
-      const parsed = JSON.parse(h);
-      if (Array.isArray(parsed)) {
-        for (const entry of parsed) {
-          if (entry.sets && entry.sets.length > 0) {
-            const hasData = entry.sets.some(s => s.w && s.r);
-            if (hasData) hist.push(entry);
-          }
-        }
-      }
-    } catch(e) { /* ignore */ }
-  }
-  return hist;
-}
-
 function checkExerciseStatus(id) {
   const sets = pendingSets[id] || [];
   const filledCount = sets.filter(s => s.raw && s.raw.trim() !== '').length;
@@ -1210,15 +1020,19 @@ function getDayProgress(day) {
   return { total, done, percent: total > 0 ? Math.round((done / total) * 100) : 0 };
 }
 
+// ===== ОСТАННЄ ТРЕНУВАННЯ (для підсвітки дня) =====
 function getLastWorkoutDay() {
   let lastDate = '';
   let lastDayId = null;
+  
   const days = getDays();
   if (!days || days.length === 0) return null;
+  
   for (const day of days) {
     if (!day || !day.groups) continue;
     let hasData = false;
     let latestDate = '';
+    
     for (const g of day.groups) {
       for (const it of g.items) {
         const id = exId(day.id, it.name);
@@ -1229,11 +1043,13 @@ function getLastWorkoutDay() {
         }
       }
     }
+    
     if (hasData && latestDate > lastDate) {
       lastDate = latestDate;
       lastDayId = day.id;
     }
   }
+  
   return lastDayId;
 }
 
@@ -1263,13 +1079,21 @@ function renderProfileBar(){
 
 function updateHeaderText(){
   const sub = document.getElementById('appSub');
-  sub.textContent = profile === 'woman' ? 'Жіночий профіль' : 'Чоловічий профіль';
+  if(profile === 'woman'){
+    sub.textContent = 'Жіночий профіль';
+  } else {
+    sub.textContent = 'Чоловічий профіль';
+  }
 }
 
 function renderWeekBar(){
   const wb = document.getElementById('weekBar');
   wb.innerHTML = '';
-  if (profile === 'woman' || DAYS_MAN.length === 0) {
+  if (profile === 'woman') {
+    wb.style.display = 'none';
+    return;
+  }
+  if (DAYS_MAN.length === 0) {
     wb.style.display = 'none';
     return;
   }
@@ -1300,12 +1124,19 @@ function renderDayNav(){
     nav.innerHTML = '<div style="color:var(--muted);text-align:center;padding:10px;">⚠️ Завантажте план з Excel</div>';
     return;
   }
+  
   const lastDayId = getLastWorkoutDay();
+  
   days.forEach((d, idx)=>{
     const b = document.createElement('button');
     b.textContent = d.label.replace(/ — .*$/, '');
     if(idx===currentDay) b.classList.add('active');
-    if (d.id === lastDayId && idx !== currentDay) b.classList.add('last-workout');
+    
+    // Підсвітка дня, коли було останнє тренування
+    if (d.id === lastDayId && idx !== currentDay) {
+      b.classList.add('last-workout');
+    }
+    
     b.onclick = ()=>{ currentDay = idx; renderDayNav(); renderMain(); };
     nav.appendChild(b);
   });
@@ -1357,7 +1188,8 @@ function renderMain(){
       const status = checkExerciseStatus(id);
       const statusDot = document.createElement('span');
       statusDot.className = 'ex-status ' + status;
-      statusDot.title = status === 'done' ? '✅ Виконано!' : status === 'partial' ? '🟡 Частково' : '⬜ Не виконано';
+      statusDot.title = status === 'done' ? '✅ Виконано!' : 
+                         status === 'partial' ? '🟡 Частково' : '⬜ Не виконано';
 
       const info = document.createElement('div');
       info.style.flex = '1';
@@ -1367,10 +1199,12 @@ function renderMain(){
       nameWrapper.style.alignItems = 'center';
       nameWrapper.style.gap = '6px';
       nameWrapper.appendChild(statusDot);
+      
       const nameSpan = document.createElement('span');
       nameSpan.className = 'ex-name';
       nameSpan.textContent = it.name;
       nameWrapper.appendChild(nameSpan);
+      
       info.appendChild(nameWrapper);
       
       const metaDiv = document.createElement('div');
@@ -1378,18 +1212,13 @@ function renderMain(){
       let metaText = it.sets + '×' + it.reps;
       if (it.page) metaText += '  •  📖 ' + it.page;
       
+      // Показуємо минулий результат ТІЛЬКИ в рядку meta (без підстановки в поля)
       const last = getLastWeight(id);
-      const history = getHistoryForExercise(id);
-      let aiResult = null;
-      let targetReps = parseInt(it.reps) || 10;
-      
       if (last) {
-        aiResult = aiAnalyze(last.weight, last.reps, targetReps, history);
-        metaText += '  •  🧠 ' + aiResult.message;
-        metaText += '  •  🎯 ' + aiResult.weight + ' кг × ' + aiResult.reps;
-        if (aiResult.action === 'down_reps' || aiResult.action === 'up_reps') {
-          metaText += '  •  📝 Змінити повторення на ' + aiResult.reps;
-        }
+        const targetReps = parseInt(it.reps) || 10;
+        const prog = calculateProgression(last.weight, last.reps, targetReps);
+        metaText += '  •  💪 ' + prog.message;
+        metaText += '  •  🎯 ' + prog.weight + ' кг';
       } else {
         metaText += '  •  💡 Почніть з комфортної ваги';
       }
@@ -1402,18 +1231,6 @@ function renderMain(){
         noteDiv.className = 'ex-note';
         noteDiv.textContent = '💡 ' + it.note;
         info.appendChild(noteDiv);
-      }
-      
-      if (aiResult && aiResult.action !== 'none' && aiResult.action !== 'start') {
-        const aiBadge = document.createElement('div');
-        aiBadge.className = 'ex-ai-suggestion';
-        let emoji = '🧠';
-        if (aiResult.action === 'up' || aiResult.action === 'up_big') emoji = '📈';
-        if (aiResult.action === 'down' || aiResult.action === 'down_big') emoji = '📉';
-        if (aiResult.action === 'down_reps') emoji = '🔽';
-        if (aiResult.action === 'up_reps') emoji = '🔼';
-        aiBadge.textContent = emoji + ' ' + aiResult.message;
-        info.appendChild(aiBadge);
       }
 
       top.appendChild(info);
@@ -1448,6 +1265,7 @@ function renderMain(){
       setsRow.className = 'sets-row';
       const nSets = 6;
       
+      // ПОЛЯ ПОРОЖНІ — без підстановки минулих результатів
       if(!pendingSets[id]) {
         pendingSets[id] = Array.from({ length: nSets }, () => ({ w: '', r: '' }));
       }
@@ -1455,9 +1273,11 @@ function renderMain(){
       for(let s=0; s<nSets; s++){
         const wrap = document.createElement('div');
         wrap.className = 'set-input';
+        
         const statusDotSet = document.createElement('div');
         statusDotSet.className = 'set-status ' + (pendingSets[id][s]?.raw ? 'filled' : 'empty');
         wrap.appendChild(statusDotSet);
+        
         const label = document.createElement('label');
         label.textContent = it.isTime ? (s+1) : (s+1);
         wrap.appendChild(label);
@@ -1579,7 +1399,6 @@ function renderMain(){
 
       card.appendChild(altWrapper);
 
-      // ===== ПОКАЗУЄМО МИНУЛИЙ РЕЗУЛЬТАТ =====
       const lastLog = lastLogs[id];
       if(lastLog){
         const ll = document.createElement('div');
@@ -1594,7 +1413,7 @@ function renderMain(){
 
   const note = document.createElement('div');
   note.className = 'note-box';
-  note.innerHTML = '🧠 ШІ-аналіз: аналізує ваші результати і пропонує: +вага, -вага, змінити повторення. 🟢 зелене = виконано, 🟡 жовте = частково, ⚪ сіре = не виконано.';
+  note.innerHTML = '💪 Розумна прогресія (крок 1.25 кг): виконав всі повторення → +1.25 кг | частково → вага без змін | менше половини → -1.25 кг';
   main.appendChild(note);
 }
 
@@ -1605,7 +1424,7 @@ function renderAll(){
   renderMain();
 }
 
-// ---- TELEGRAM SYNC ----
+// ---- TELEGRAM SYNC (тільки відправка) ----
 const TELEGRAM_TOKEN = '8910047408:AAH-l-AMBmlQmTPuWpBAhDXS59RNyaZ8xPM';
 const CHAT_ID_MAIN = '471234977';
 const CHAT_ID_WOMAN = '278145361';
@@ -1648,7 +1467,11 @@ async function sendToTelegram(chatId, text){
   const response = await fetch(url, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ chat_id: chatId, text: text, parse_mode: 'HTML' })
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: text,
+      parse_mode: 'HTML'
+    })
   });
   if (!response.ok) {
     const error = await response.text();
@@ -1658,7 +1481,9 @@ async function sendToTelegram(chatId, text){
 }
 
 async function sendToChats(text, chatIds){
-  const results = await Promise.allSettled(chatIds.map(chatId => sendToTelegram(chatId, text)));
+  const results = await Promise.allSettled(
+    chatIds.map(chatId => sendToTelegram(chatId, text))
+  );
   const failed = results.filter(r => r.status === 'rejected');
   if (failed.length > 0) {
     console.warn('❌ Не вдалося відправити в ' + failed.length + ' чатів');
@@ -1689,7 +1514,9 @@ async function flushTelegramQueue(){
         break;
       }
     }
-  } finally { tgFlushing = false; }
+  } finally { 
+    tgFlushing = false; 
+  }
 }
 
 // ===== СТАТИСТИКА =====
@@ -1841,7 +1668,9 @@ async function sendWorkoutReport(force = false){
     flushTelegramQueue();
     showToast(force ? '🔄 Звіт перевідправлено!' : '💪 Тренування збережено!');
     if(!force) renderMain();
+    
     setTimeout(() => showRecoveryModal(), 500);
+    
     return true;
   } else {
     showToast('Немає даних для збереження');
@@ -1986,37 +1815,60 @@ function importXlsx(file){
 
       function parseSheet(sheetName, prefix){
         const ws = wb.Sheets[sheetName];
-        if(!ws) { console.warn('Аркуш "' + sheetName + '" не знайдено'); return null; }
+        if(!ws) {
+          console.warn('Аркуш "' + sheetName + '" не знайдено');
+          return null;
+        }
         const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+        
         let headerRow = -1;
         for(let i=0; i<rows.length; i++){
           const row = rows[i];
           if(!row || row.length === 0) continue;
           const firstCell = String(row[0] || '').toLowerCase();
           if(firstCell.includes('день')){
-            headerRow = i; break;
+            headerRow = i;
+            break;
           }
         }
-        if(headerRow === -1){ console.warn('Не знайдено заголовки в аркуші "' + sheetName + '"'); return null; }
+        
+        if(headerRow === -1){
+          console.warn('Не знайдено заголовки в аркуші "' + sheetName + '"');
+          return null;
+        }
 
         const days = {1:[], 2:[], 3:[]};
         const groups = {1:{}, 2:{}, 3:{}};
+        
         for(let r = headerRow + 1; r < rows.length; r++){
           const row = rows[r];
           if(!row || row.length === 0) continue;
+          
           const day = parseInt(row[0]);
           if(![1,2,3].includes(day)) continue;
+          
           const group = String(row[1] || '').trim();
           const name = String(row[2] || '').trim();
           const sets = parseInt(row[3]) || 3;
           const reps = String(row[4] || '10-12').trim();
           const page = String(row[5] || '').trim();
           const note = String(row[6] || '').trim();
+          
           if(!name) continue;
+          
           const isTime = reps.includes('сек') || note.includes('час');
           const isBody = note.includes('власна вага') || note.includes('bodyweight');
+          
           if(!groups[day][group]) groups[day][group] = [];
-          groups[day][group].push({ name, sets, reps, page: page || undefined, isTime: isTime || undefined, bodyweight: isBody || undefined, note: note || undefined });
+          groups[day][group].push({
+            name: name,
+            sets: sets,
+            reps: reps,
+            page: page || undefined,
+            isTime: isTime || undefined,
+            bodyweight: isBody || undefined,
+            note: note || undefined
+          });
         }
 
         const result = [1,2,3].map(dayNum => {
@@ -2027,8 +1879,10 @@ function importXlsx(file){
             groups: Object.entries(dayGroups).map(([label, items]) => ({label, items}))
           };
         });
+        
         const hasData = result.some(d => d.groups.length > 0);
         if(!hasData) return null;
+        
         return result;
       }
 
@@ -2043,10 +1897,13 @@ function importXlsx(file){
       if(manDays){
         localStorage.setItem('custom-plan-man', JSON.stringify(manDays));
         DAYS_MAN = manDays;
+        console.log('✅ Завантажено чоловічий план:', DAYS_MAN.length, 'днів');
       }
+      
       if(womanDays){
         localStorage.setItem('custom-plan-woman', JSON.stringify(womanDays));
         DAYS_WOMAN = womanDays;
+        console.log('✅ Завантажено жіночий план:', DAYS_WOMAN.length, 'днів');
       }
 
       if(profile === 'man' && DAYS_MAN.length === 0 && DAYS_WOMAN.length > 0){
@@ -2069,6 +1926,7 @@ function importXlsx(file){
         const womanCount = DAYS_WOMAN.length || 0;
         showToast('✅ План завантажено! Чоловік: ' + manCount + ' днів, Жінка: ' + womanCount + ' днів');
       });
+      
     }catch(err){
       console.error('Помилка імпорту:', err);
       showToast('❌ Помилка читання файлу: ' + err.message);
@@ -2082,19 +1940,28 @@ function loadCustomPlans(){
     const man = localStorage.getItem('custom-plan-man');
     if(man){
       const parsed = JSON.parse(man);
-      if(parsed && parsed.length > 0) DAYS_MAN = parsed;
+      if(parsed && parsed.length > 0){
+        DAYS_MAN = parsed;
+      }
     }
+    
     const woman = localStorage.getItem('custom-plan-woman');
     if(woman){
       const parsed = JSON.parse(woman);
-      if(parsed && parsed.length > 0) DAYS_WOMAN = parsed;
+      if(parsed && parsed.length > 0){
+        DAYS_WOMAN = parsed;
+      }
     }
-  } catch(e) { console.error('Помилка завантаження збереженого плану:', e); }
+  } catch(e) {
+    console.error('Помилка завантаження збереженого плану:', e);
+  }
 }
 
 document.getElementById('xlsxInput').addEventListener('change', (e)=>{
   const file = e.target.files[0];
-  if(file) importXlsx(file);
+  if(file) {
+    importXlsx(file);
+  }
   e.target.value = '';
 });
 
@@ -2103,7 +1970,11 @@ document.getElementById('xlsxInput').addEventListener('change', (e)=>{
   loadCustomPlans();
   loadAllData(profile);
   updateHeaderText();
-  try{ await loadLastLogs(); }catch(e){ console.error(e); }
+  
+  try{
+    await loadLastLogs();
+  }catch(e){ console.error(e); }
+  
   renderAll();
   flushTelegramQueue();
 })();
