@@ -114,19 +114,25 @@
 
   main{ max-width: 720px; margin: 0 auto; padding: 0 12px 16px; }
 
-  /* ===== НАЗВИ ГРУП - БЕЗ ЖОДНИХ ІКОНОК ===== */
+  /* ===== НЕОНОВИЙ ЗЕЛЕНИЙ НАПИС ДЛЯ ГРУП ===== */
   .group-label{
     margin: 28px 0 14px;
-    padding: 10px 0 8px;
-    border-bottom: 2px solid var(--accent2);
+    padding: 8px 0;
+    text-align: center;
   }
   .group-label .group-name {
+    display: inline-block;
+    padding: 6px 24px;
+    border-radius: 12px;
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-    font-size: 1.1rem;
+    font-size: 1.15rem;
     font-weight: 700;
-    letter-spacing: 1px;
+    letter-spacing: 2px;
     text-transform: uppercase;
-    color: #7ab8ff;
+    color: #00ff88;
+    text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88, 0 0 40px rgba(0,255,136,0.3), 0 0 80px rgba(0,255,136,0.1);
+    background: rgba(0,255,136,0.06);
+    border: 1px solid rgba(0,255,136,0.15);
   }
 
   .card{
@@ -682,7 +688,7 @@
     .clear-alt-btn { padding: 2px 6px; font-size: 0.7rem; }
     .recovery-modal .content { padding: 16px; }
     nav.days button.last-workout::after { font-size: 0.5rem; top: -4px; right: -4px; }
-    .group-label .group-name { font-size: 0.9rem; }
+    .group-label .group-name { font-size: 0.9rem; padding: 4px 14px; }
   }
 </style>
 <meta name="apple-mobile-web-app-capable" content="yes">
@@ -771,6 +777,25 @@ function clearCacheAndReload() {
   }
 }
 
+// ===== СМАЙЛИКИ ДЛЯ ГРУП =====
+const GROUP_EMOJIS = {
+  'ГРУДИ': '💪',
+  'СПИНА': '🔙',
+  'НОГИ': '🦵',
+  'СІДНИЦІ': '🍑',
+  'БІЦЕПС': '💪',
+  'ТРИЦЕПС': '💪',
+  'ТРАПЕЦІЯ': '🔺',
+  'ПЛЕЧІ': '🏋️',
+  'ПРЕС': '🔥',
+  'РУКИ': '✊'
+};
+
+function getGroupEmoji(groupName) {
+  const upperName = groupName.toUpperCase().trim();
+  return GROUP_EMOJIS[upperName] || '💪';
+}
+
 // ===== ВІДЕО-ТУТОРІАЛИ =====
 const VIDEO_TUTORIALS = {
   'Жим штанги лежачи (горизонтальний)': 'https://www.youtube.com/watch?v=4Y2Zd4TQw4k',
@@ -816,7 +841,7 @@ function clearAlt(id){
   }
 }
 
-// ===== ВСІ ВПРАВИ ДЛЯ ЗАМІНИ (БЕЗ СМАЙЛИКІВ) =====
+// ===== ВСІ ВПРАВИ ДЛЯ ЗАМІНИ =====
 const ALL_EXERCISES = {
   'Груди': [
     'Жим штанги лежачи (горизонтальний)',
@@ -1464,8 +1489,12 @@ function renderMain(){
     const gl = document.createElement('div');
     gl.className = 'group-label';
     
-    // ===== ТІЛЬКИ ТЕКСТ, БЕЗ ЖОДНИХ ІКОНОК =====
-    gl.innerHTML = `<span class="group-name">${g.label}</span>`;
+    // Отримуємо смайлик для групи
+    const emoji = getGroupEmoji(g.label);
+    // Очищаємо назву групи від зайвих символів
+    const cleanName = g.label.replace(/[^\p{L}\p{N}\s\-()]/gu, '').trim().toUpperCase();
+    
+    gl.innerHTML = `<span class="group-name">${emoji} ${cleanName}</span>`;
     main.appendChild(gl);
 
     g.items.forEach(it=>{
