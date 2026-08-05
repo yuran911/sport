@@ -114,10 +114,14 @@
 
   main{ max-width: 720px; margin: 0 auto; padding: 0 12px 16px; }
 
-  /* ===== НАЗВИ ГРУП - ТІЛЬКИ ТЕКСТ, БЕЗ ЖОДНИХ ЗНАЧКІВ ===== */
+  /* ===== НАЗВИ ГРУП З СМАЙЛИКАМИ ===== */
   .group-label{
     margin: 28px 0 14px;
-    padding: 0;
+    padding: 10px 0 8px;
+    border-bottom: 2px solid var(--accent2);
+    display: flex;
+    align-items: center;
+    gap: 12px;
   }
   .group-label .group-name {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -126,6 +130,11 @@
     letter-spacing: 1px;
     text-transform: uppercase;
     color: #7ab8ff;
+  }
+  .group-label .group-line {
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(90deg, var(--accent2), transparent);
   }
 
   .card{
@@ -1459,12 +1468,30 @@ function renderMain(){
   `;
   main.appendChild(progressBar);
 
+  // ===== СМАЙЛИКИ ДЛЯ КОЖНОЇ ГРУПИ =====
+  const groupEmojis = {
+    'Груди': '💪',
+    'Спина': '🔙',
+    'Ноги': '🦵',
+    'Сідниці': '🍑',
+    'Біцепс': '💪',
+    'Трицепс': '💪',
+    'Трапеція': '🔺',
+    'Плечі': '🏋️',
+    'Прес': '🔥',
+    'Руки': '✊'
+  };
+
   day.groups.forEach(g=>{
     const gl = document.createElement('div');
     gl.className = 'group-label';
     
-    // ===== ТІЛЬКИ ЧИСТИЙ ТЕКСТ, БЕЗ ЖОДНИХ ЗНАЧКІВ ПЕРЕД НИМ =====
-    gl.innerHTML = `<span class="group-name">${g.label}</span>`;
+    const emoji = groupEmojis[g.label] || '💪';
+    
+    gl.innerHTML = `
+      <span class="group-name">${emoji} ${g.label}</span>
+      <span class="group-line"></span>
+    `;
     main.appendChild(gl);
 
     g.items.forEach(it=>{
