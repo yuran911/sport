@@ -114,14 +114,10 @@
 
   main{ max-width: 720px; margin: 0 auto; padding: 0 12px 16px; }
 
-  /* ===== НОВИЙ ДИЗАЙН ДЛЯ НАЗВ ГРУП (БЕЗ НЕОНУ ТА ЗАЙВИХ ЗНАЧКІВ) ===== */
+  /* ===== НАЗВИ ГРУП - ТІЛЬКИ ТЕКСТ, БЕЗ ЖОДНИХ ЗНАЧКІВ ===== */
   .group-label{
     margin: 28px 0 14px;
-    padding: 10px 0 8px;
-    border-bottom: 2px solid var(--accent2);
-    display: flex;
-    align-items: center;
-    gap: 12px;
+    padding: 0;
   }
   .group-label .group-name {
     font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -129,12 +125,7 @@
     font-weight: 700;
     letter-spacing: 1px;
     text-transform: uppercase;
-    color: #ffffff;
-  }
-  .group-label .group-line {
-    flex: 1;
-    height: 1px;
-    background: linear-gradient(90deg, var(--accent2), transparent);
+    color: #7ab8ff;
   }
 
   .card{
@@ -1472,11 +1463,8 @@ function renderMain(){
     const gl = document.createElement('div');
     gl.className = 'group-label';
     
-    // ===== НОВИЙ ДИЗАЙН: ПРОСТИЙ ТЕКСТ З ЛІНІЄЮ (БЕЗ НЕОНУ) =====
-    gl.innerHTML = `
-      <span class="group-name">${g.label}</span>
-      <span class="group-line"></span>
-    `;
+    // ===== ТІЛЬКИ ЧИСТИЙ ТЕКСТ, БЕЗ ЖОДНИХ ЗНАЧКІВ ПЕРЕД НИМ =====
+    gl.innerHTML = `<span class="group-name">${g.label}</span>`;
     main.appendChild(gl);
 
     g.items.forEach(it=>{
