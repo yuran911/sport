@@ -1747,6 +1747,7 @@ function getDayProgress(day) {
   return { total, done, percent: total > 0 ? Math.round((done / total) * 100) : 0 };
 }
 
+// ===== ВИПРАВЛЕНА ФУНКЦІЯ =====
 function getLastWorkoutDay() {
   let lastDate = '';
   let lastDayId = null;
@@ -1762,7 +1763,21 @@ function getLastWorkoutDay() {
     for (const g of day.groups) {
       for (const it of g.items) {
         const id = exId(day.id, it.name);
-        const log = lastLogs[id];
+        
+        let log = lastLogs[id];
+        
+        if (!log) {
+          try {
+            const raw = localStorage.getItem('lastlog:' + id);
+            if (raw) {
+              const parsed = JSON.parse(raw);
+              if (parsed && parsed.date) {
+                log = parsed;
+              }
+            }
+          } catch(e) {}
+        }
+        
         if (log && log.date) {
           hasData = true;
           if (log.date > latestDate) latestDate = log.date;
