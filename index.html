@@ -532,7 +532,7 @@
     border: 1px solid var(--line);
     border-radius: 16px;
     padding: 20px;
-    max-width: 650px;
+    max-width: 600px;
     width: 100%;
     max-height: 85vh;
     overflow-y: auto;
@@ -583,29 +583,10 @@
     cursor: pointer;
     min-width: 80px;
     max-width: 200px;
-    transition: all 0.2s;
-  }
-  .debug-modal .content .btn-group button:hover {
-    transform: scale(1.03);
   }
   .debug-modal .content .btn-group .close-debug {
     background: var(--accent2);
     color: #fff;
-  }
-  .debug-modal .content .btn-group .export-btn {
-    background: var(--accent);
-    color: #1a1208;
-  }
-  .debug-modal .content .btn-group .import-btn {
-    background: var(--green);
-    color: #fff;
-  }
-  .debug-modal .content .btn-group .clear-btn {
-    background: var(--red);
-    color: #fff;
-  }
-  .debug-modal .content .file-input-wrap {
-    display: none;
   }
 
   .recovery-modal {
@@ -857,7 +838,7 @@
 
 <header>
   <h1 id="appTitle">
-    <span onclick="forceUpdate()" class="emoji-btn" title="Натисніть для примусового оновлення">
+    <span onclick="clearCacheAndReload()" class="emoji-btn" title="Натисніть для оновлення кешу">
       🏋️
     </span>
     План тренувань
@@ -893,24 +874,6 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 
 <script>
-// ===== ПРИМУСОВЕ ОНОВЛЕННЯ ДЛЯ IPHONE =====
-function forceUpdate() {
-  if (confirm('🔄 Оновити додаток? (очистить кеш)')) {
-    // Очищаємо кеш
-    localStorage.removeItem('app_version');
-    
-    // Створюємо нову версію
-    const today = new Date().toISOString().slice(0,10);
-    const newVersion = today + '-' + Math.random().toString(36).substr(2, 8);
-    localStorage.setItem('app_version', newVersion);
-    
-    // Перезавантажуємо
-    const url = new URL(window.location.href);
-    url.searchParams.set('v', newVersion);
-    window.location.href = url.href;
-  }
-}
-
 // ===== СИСТЕМА ВЕРСІОНУВАННЯ =====
 (function() {
   const today = new Date().toISOString().slice(0,10);
@@ -918,7 +881,7 @@ function forceUpdate() {
   let versionDate = version ? version.split('-')[0] : '';
   
   if (!version || versionDate !== today) {
-    version = today + '-' + Math.random().toString(36).substr(2, 8);
+    version = today + '-' + Math.random().toString(36).substr(2, 6);
     localStorage.setItem('app_version', version);
   }
   
@@ -943,88 +906,11 @@ function forceUpdate() {
 function clearCacheAndReload() {
   if (confirm('🔄 Очистити кеш і перезавантажити сторінку?')) {
     const today = new Date().toISOString().slice(0,10);
-    const newVersion = today + '-' + Math.random().toString(36).substr(2, 8);
+    const newVersion = today + '-' + Math.random().toString(36).substr(2, 6);
     localStorage.setItem('app_version', newVersion);
     const url = new URL(window.location.href);
     url.searchParams.set('v', newVersion);
     window.location.href = url.href;
-  }
-}
-
-// ===== ЕКСПОРТ/ІМПОРТ ДАНИХ =====
-function exportAllData() {
-  const data = {};
-  const keysToExport = [
-    'trenuvannya-profile', 'user_age', 'user_height', 'user_weight', 'user_health',
-    'custom-plan-man', 'custom-plan-woman', 'app_version'
-  ];
-  
-  for (let i = 0; i < localStorage.length; i++) {
-    const key = localStorage.key(i);
-    if (key && (key.startsWith('trenuvannya_') || key.startsWith('lastlog:') || key.startsWith('history:'))) {
-      try {
-        data[key] = localStorage.getItem(key);
-      } catch(e) {}
-    }
-  }
-  
-  for (const key of keysToExport) {
-    if (localStorage.getItem(key) !== null) {
-      data[key] = localStorage.getItem(key);
-    }
-  }
-  
-  const json = JSON.stringify(data, null, 2);
-  const blob = new Blob([json], { type: 'application/json' });
-  const url = URL.createObjectURL(blob);
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'training_data_' + new Date().toISOString().slice(0,10) + '.json';
-  a.click();
-  URL.revokeObjectURL(url);
-  showToast('📤 Дані експортовано!');
-}
-
-function importAllData(file) {
-  const reader = new FileReader();
-  reader.onload = function(e) {
-    try {
-      const data = JSON.parse(e.target.result);
-      let count = 0;
-      for (const [key, value] of Object.entries(data)) {
-        if (typeof value === 'string') {
-          localStorage.setItem(key, value);
-          count++;
-        }
-      }
-      showToast('📥 Імпортовано ' + count + ' ключів! Перезавантажте сторінку.');
-      document.querySelector('.debug-modal')?.remove();
-      setTimeout(() => { location.reload(); }, 1500);
-    } catch(err) {
-      showToast('❌ Помилка імпорту: ' + err.message);
-    }
-  };
-  reader.readAsText(file);
-}
-
-function clearAllData() {
-  if (confirm('⚠️ ВИ ВПЕВНЕНІ? Це ВИДАЛИТЬ ВСІ дані!\n\nЦю дію НЕ МОЖНА скасувати!')) {
-    if (confirm('🗑️ ОСТАННЄ ПОПЕРЕДЖЕННЯ: Видалити всі дані?')) {
-      const keysToKeep = ['app_version'];
-      const keysToRemove = [];
-      for (let i = 0; i < localStorage.length; i++) {
-        const key = localStorage.key(i);
-        if (key && !keysToKeep.includes(key)) {
-          keysToRemove.push(key);
-        }
-      }
-      for (const key of keysToRemove) {
-        localStorage.removeItem(key);
-      }
-      showToast('🗑️ Всі дані видалено! Перезавантажте сторінку.');
-      document.querySelector('.debug-modal')?.remove();
-      setTimeout(() => { location.reload(); }, 1500);
-    }
   }
 }
 
@@ -1683,15 +1569,13 @@ function showRecoveryModal() {
   document.body.appendChild(modal);
 }
 
-// ===== DEBUG З ЕКСПОРТОМ/ІМПОРТОМ =====
+// ===== DEBUG =====
 function showDebugData() {
   const data = {};
   let totalKeys = 0;
   for (let i = 0; i < localStorage.length; i++) {
     const key = localStorage.key(i);
-    if (key && (key.startsWith('trenuvannya_') || key.startsWith('lastlog:') || key.startsWith('history:') || 
-         key === 'user_age' || key === 'user_height' || key === 'user_weight' || key === 'user_health' || key === 'user_health_other' ||
-         key === 'trenuvannya-profile' || key === 'custom-plan-man' || key === 'custom-plan-woman')) {
+    if (key && (key.startsWith('trenuvannya_') || key.startsWith('lastlog:') || key.startsWith('history:'))) {
       try {
         const val = localStorage.getItem(key);
         data[key] = val.length > 300 ? val.substring(0, 300) + '...' : val;
@@ -1720,13 +1604,7 @@ function showDebugData() {
       <div class="info-text">Знайдено ${totalKeys} ключів у localStorage</div>
       ${itemsHtml}
       <div class="btn-group">
-        <button class="export-btn" onclick="exportAllData()">📤 Експорт</button>
-        <button class="import-btn" onclick="document.getElementById('importFileInput').click()">📥 Імпорт</button>
-        <button class="clear-btn" onclick="clearAllData()">🗑️ Очистити</button>
-        <button class="close-debug" onclick="this.closest('.debug-modal').remove()">❌ Закрити</button>
-      </div>
-      <div class="file-input-wrap">
-        <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importAllData(this.files[0])">
+        <button class="close-debug" onclick="this.closest('.debug-modal').remove()">✅ Закрити</button>
       </div>
     </div>
   `;
@@ -1869,7 +1747,6 @@ function getDayProgress(day) {
   return { total, done, percent: total > 0 ? Math.round((done / total) * 100) : 0 };
 }
 
-// ===== ВИПРАВЛЕНА ФУНКЦІЯ =====
 function getLastWorkoutDay() {
   let lastDate = '';
   let lastDayId = null;
@@ -1885,21 +1762,7 @@ function getLastWorkoutDay() {
     for (const g of day.groups) {
       for (const it of g.items) {
         const id = exId(day.id, it.name);
-        
-        let log = lastLogs[id];
-        
-        if (!log) {
-          try {
-            const raw = localStorage.getItem('lastlog:' + id);
-            if (raw) {
-              const parsed = JSON.parse(raw);
-              if (parsed && parsed.date) {
-                log = parsed;
-              }
-            }
-          } catch(e) {}
-        }
-        
+        const log = lastLogs[id];
         if (log && log.date) {
           hasData = true;
           if (log.date > latestDate) latestDate = log.date;
