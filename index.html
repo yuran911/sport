@@ -1,0 +1,2932 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Тренувальний план</title>
+<style>
+  :root{
+    --bg: #0a0c15;
+    --panel: #141824;
+    --panel2: #1a2030;
+    --line: #2a3050;
+    --ink: #ffffff;
+    --muted: #b8c4e0;
+    --accent: #e8a33d;
+    --accent2: #4a90d9;
+    --green: #3cb371;
+    --red: #d9534f;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 1.6;
+    min-height: 100vh;
+  }
+  header{
+    padding: 18px 16px 10px; text-align:center; position:sticky; top:0; z-index:10;
+    background: linear-gradient(180deg, #0a0c15 80%, transparent);
+  }
+  header h1{
+    margin:0; font-size: 1.8rem; letter-spacing:.5px;
+    font-family: Georgia, 'Times New Roman', serif;
+    color: #ffffff;
+    text-shadow: 0 0 20px rgba(0,255,136,0.2), 0 0 60px rgba(0,255,136,0.05);
+    font-weight: 700;
+  }
+  header h1 .emoji-btn {
+    cursor: pointer;
+    display: inline-block;
+    transition: all 0.2s;
+    user-select: none;
+  }
+  header h1 .emoji-btn:hover {
+    transform: scale(1.3);
+    text-shadow: 0 0 30px rgba(0,255,136,0.6);
+  }
+  header h1 .emoji-btn:active {
+    transform: scale(0.85);
+  }
+  header .sub{ 
+    color: #d8ddf0; 
+    font-size: 1rem; 
+    margin-top:6px;
+    font-weight: 400;
+  }
+
+  .week-bar{
+    display:flex; gap:6px; justify-content:center; flex-wrap:wrap;
+    padding: 8px 12px 14px;
+  }
+  .week-bar button{
+    background:var(--panel); border:1px solid var(--line); color: #d8ddf0;
+    padding:8px 14px; border-radius:8px; font-size:.85rem; cursor:pointer;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .week-bar button:hover{
+    background: var(--panel2);
+    border-color: var(--accent2);
+    color: #ffffff;
+  }
+  .week-bar button.active{
+    background: var(--accent); color:#1a1208; border-color:var(--accent); font-weight:700;
+  }
+
+  nav.days{
+    display:flex; gap:8px; padding: 0 12px 12px; justify-content:center;
+  }
+  nav.days button{
+    flex:1; max-width:160px; background:var(--panel2); border:1px solid var(--line);
+    color:#d8ddf0; padding:12px 8px; border-radius:10px; font-size:.9rem; cursor:pointer;
+    font-weight:600;
+    transition: all 0.2s;
+  }
+  nav.days button:hover{
+    background: var(--panel);
+    border-color: var(--accent);
+    color: #ffffff;
+  }
+  nav.days button.active{
+    background: linear-gradient(135deg,#2a3a5c,#1d2130); border-color: var(--accent2);
+    box-shadow: 0 0 0 2px var(--accent2) inset;
+    color: #ffffff;
+  }
+  nav.days button.last-workout {
+    border-color: var(--green) !important;
+    box-shadow: 0 0 20px rgba(60, 179, 113, 0.3) !important;
+    position: relative;
+  }
+  nav.days button.last-workout::after {
+    content: '✅';
+    position: absolute;
+    top: -6px;
+    right: -6px;
+    font-size: 0.7rem;
+    background: var(--bg);
+    border-radius: 50%;
+    padding: 2px;
+  }
+
+  main{ max-width: 720px; margin: 0 auto; padding: 0 12px 16px; }
+
+  .group-label{
+    margin: 28px 0 14px;
+    padding: 8px 0;
+    text-align: center;
+  }
+  .group-label .group-name {
+    display: inline-block;
+    padding: 6px 24px;
+    border-radius: 12px;
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 1.15rem;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #00ff88;
+    text-shadow: 0 0 10px #00ff88, 0 0 20px #00ff88, 0 0 40px rgba(0,255,136,0.3), 0 0 80px rgba(0,255,136,0.1);
+    background: rgba(0,255,136,0.06);
+    border: 1px solid rgba(0,255,136,0.15);
+  }
+
+  .user-profile {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 12px 16px;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+  .user-profile .label {
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+  }
+  .user-profile .value {
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 0.95rem;
+  }
+  .user-profile .edit-btn {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    color: var(--muted);
+    border-radius: 6px;
+    padding: 4px 12px;
+    cursor: pointer;
+    font-size: 0.75rem;
+    transition: all 0.2s;
+    margin-left: auto;
+  }
+  .user-profile .edit-btn:hover {
+    border-color: var(--accent2);
+    color: #ffffff;
+  }
+
+  .card{
+    background: var(--panel); border:1px solid var(--line); border-radius: 14px;
+    padding: 14px 16px; margin-bottom: 12px;
+  }
+  .card.done{ opacity:.5; }
+  .card-top{ display:flex; align-items:flex-start; gap:12px; flex-wrap:wrap; }
+  
+  .ex-name{ 
+    font-weight:700; 
+    font-size:1.05rem; 
+    color: #ffffff; 
+    margin-bottom: 2px;
+  }
+  .ex-meta{ 
+    color: #b8c4e0; 
+    font-size:.85rem; 
+    margin-top:2px;
+    font-weight: 400;
+  }
+  .ex-note{
+    color: var(--accent2);
+    font-size:.75rem;
+    margin-top:2px;
+    font-style: italic;
+  }
+  
+  .ai-tip {
+    font-size: 0.7rem;
+    color: var(--accent);
+    margin-top: 3px;
+    opacity: 0.8;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-weight: 400;
+  }
+  
+  .ex-status {
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    flex-shrink: 0;
+    margin-right: 6px;
+  }
+  .ex-status.done {
+    background: var(--green);
+    box-shadow: 0 0 12px rgba(60, 179, 113, 0.5);
+  }
+  .ex-status.partial {
+    background: var(--accent);
+    box-shadow: 0 0 12px rgba(232, 163, 61, 0.5);
+  }
+  .ex-status.empty {
+    background: var(--line);
+  }
+
+  .day-progress {
+    background: var(--panel2);
+    border-radius: 10px;
+    padding: 8px 14px;
+    margin: 10px 0 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border: 1px solid var(--line);
+  }
+  .day-progress .bar {
+    flex: 1;
+    height: 6px;
+    background: var(--line);
+    border-radius: 3px;
+    overflow: hidden;
+  }
+  .day-progress .bar .fill {
+    height: 100%;
+    background: var(--green);
+    border-radius: 3px;
+    transition: width 0.3s;
+    width: 0%;
+  }
+  .day-progress .text {
+    font-size: 0.8rem;
+    color: var(--muted);
+    white-space: nowrap;
+    font-weight: 500;
+  }
+  .day-progress .text b {
+    color: var(--ink);
+  }
+
+  .week-progress-line{
+    color: #7ab8ff; 
+    font-size:.75rem; 
+    margin-top:6px; 
+    line-height:1.6;
+    word-spacing: 3px;
+    background: rgba(74, 144, 217, 0.08);
+    padding: 4px 8px;
+    border-radius: 6px;
+  }
+  .cur-week{ 
+    color: var(--accent); 
+    font-weight: 700;
+    font-size: .85rem;
+    background: rgba(232,163,61,0.2);
+    padding: 1px 6px;
+    border-radius: 4px;
+  }
+
+  .actions{ margin-left:auto; display:flex; gap:8px; flex:0 0 auto; }
+  .icon-btn{
+    background:var(--panel2); border:1px solid var(--line); color:#d8ddf0;
+    border-radius:8px; padding:8px 12px; font-size:.85rem; cursor:pointer; text-decoration:none;
+    white-space:nowrap;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .icon-btn:hover{ 
+    border-color:var(--accent2); 
+    color: #ffffff;
+    background: var(--panel);
+    transform: scale(1.05);
+  }
+
+  .sets-row{ 
+    display:grid; 
+    grid-template-columns: repeat(6, 1fr);
+    gap:6px; 
+    margin-top:12px; 
+  }
+  .set-input{
+    display:flex; flex-direction:column; gap:3px;
+    position:relative;
+  }
+  .set-input .set-status {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin: 0 auto 2px;
+    transition: all 0.3s;
+  }
+  .set-input .set-status.filled {
+    background: var(--green);
+    box-shadow: 0 0 8px rgba(60, 179, 113, 0.4);
+  }
+  .set-input .set-status.empty {
+    background: var(--line);
+  }
+  .set-input label{ 
+    font-size:.6rem; 
+    color: #b8c4e0;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    text-align:center;
+  }
+  .set-input input{
+    width:100%; background: #0d0f1a; border:1px solid var(--line); color: #ffffff;
+    border-radius:6px; padding:6px 4px; font-size:.8rem; text-align:center;
+    transition: all 0.2s;
+    font-weight: 500;
+  }
+  .set-input input:focus{ 
+    outline:none; 
+    border-color:var(--accent2);
+    box-shadow: 0 0 0 3px rgba(74, 144, 217, 0.25);
+    background: #131625;
+  }
+  .set-input input::placeholder{
+    color: #6a7290;
+    font-weight: 400;
+    font-size: 0.6rem;
+  }
+
+  .last-log{
+    margin-top:10px; font-size:.85rem; color: #d8ddf0;
+    background: #0d0f1a; border-radius:8px; padding:8px 12px; border:1px solid var(--line);
+  }
+  .last-log b{ color: var(--green); font-weight: 700; }
+
+  .alt-wrapper {
+    display: flex;
+    gap: 6px;
+    align-items: center;
+    margin-top: 6px;
+    flex-wrap: wrap;
+  }
+  .alt-wrapper .alt-select {
+    flex: 1;
+    margin-top: 0;
+    min-width: 120px;
+  }
+  .alt-wrapper .icon-btn {
+    padding: 4px 8px;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+  }
+  .clear-alt-btn {
+    background: var(--panel2);
+    border: 1px solid var(--red);
+    color: var(--red);
+    border-radius: 6px;
+    padding: 4px 8px;
+    cursor: pointer;
+    font-size: 0.8rem;
+    flex-shrink: 0;
+    transition: all 0.2s;
+    line-height: 1.4;
+    font-weight: bold;
+  }
+  .clear-alt-btn:hover {
+    background: var(--red);
+    color: #ffffff;
+    border-color: var(--red);
+  }
+
+  .alt-select{
+    width:100%; background: #0d0f1a; border:1px solid var(--line);
+    color: #b8c4e0; border-radius:6px;
+    font-size:.85rem; padding:6px 10px;
+    cursor:pointer; outline:none;
+    -webkit-appearance:none; appearance:none;
+    transition: all 0.2s;
+  }
+  .alt-select:focus{ 
+    border-color:var(--accent); 
+    color:#ffffff;
+    box-shadow: 0 0 0 2px rgba(232,163,61,0.15);
+  }
+  .alt-select option{ 
+    background:var(--panel); 
+    color:#ffffff;
+    padding: 4px;
+  }
+  .alt-select optgroup{
+    background:var(--panel);
+    color: var(--accent);
+    font-weight: 700;
+    font-size: .85rem;
+    padding: 4px 0;
+  }
+  .alt-select optgroup option{
+    padding-left: 12px;
+    font-weight: 400;
+    color: #d8ddf0;
+  }
+
+  .note-box{
+    background: rgba(232,163,61,.1); border:1px solid rgba(232,163,61,.25);
+    border-radius:10px; padding:12px 16px; font-size:.85rem; color: #e8d5a8; margin: 16px 0;
+    line-height: 1.6;
+  }
+
+  .bottom-bar {
+    max-width: 720px;
+    margin: 0 auto;
+    padding: 8px 12px 16px;
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    flex-wrap: wrap;
+    border-top: 1px solid var(--line);
+    margin-top: 8px;
+  }
+  .bottom-btn {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    color: #6a7290;
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    text-decoration: none;
+    font-family: inherit;
+    line-height: 1.2;
+    flex: 0 1 auto;
+    min-width: 48px;
+    justify-content: center;
+  }
+  .bottom-btn:hover {
+    border-color: var(--accent2);
+    color: #ffffff;
+    background: var(--panel);
+    transform: scale(1.05);
+  }
+  .bottom-btn:active {
+    transform: scale(0.9);
+  }
+  .bottom-btn .label {
+    font-size: 0.5rem;
+    font-weight: 600;
+    color: var(--muted);
+    letter-spacing: 0.2px;
+    text-transform: uppercase;
+  }
+  .bottom-btn:hover .label {
+    color: #ffffff;
+  }
+  .bottom-btn.save-btn {
+    border-color: rgba(232,163,61,0.3);
+    color: var(--accent);
+  }
+  .bottom-btn.save-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .bottom-btn.resend-btn {
+    border-color: rgba(74,144,217,0.3);
+    color: var(--accent2);
+  }
+  .bottom-btn.resend-btn:hover {
+    border-color: var(--accent2);
+    color: var(--accent2);
+  }
+  .bottom-btn.import-btn {
+    border-color: rgba(60,179,113,0.3);
+    color: var(--green);
+  }
+  .bottom-btn.import-btn:hover {
+    border-color: var(--green);
+    color: var(--green);
+  }
+  .bottom-btn.debug-btn {
+    border-color: rgba(232,163,61,0.2);
+    color: #7ab8ff;
+  }
+  .bottom-btn.debug-btn:hover {
+    border-color: #7ab8ff;
+    color: #7ab8ff;
+  }
+
+  .toast{
+    position: fixed; bottom: 80px; left:50%; transform:translateX(-50%);
+    background: var(--green); color:#0a0c15; padding:12px 24px; border-radius:12px;
+    font-size:1rem; font-weight:700; opacity:0; transition:opacity .3s; pointer-events:none;
+    box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+    z-index: 200;
+  }
+  .toast.show{ opacity:1; }
+
+  .debug-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.92);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+  }
+  .debug-modal .content {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    padding: 20px;
+    max-width: 650px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .debug-modal .content h2 {
+    color: var(--accent);
+    margin-top: 0;
+    font-size: 1.1rem;
+    text-align: center;
+  }
+  .debug-modal .content .info-text {
+    color: var(--muted);
+    font-size: 0.75rem;
+    text-align: center;
+    margin-bottom: 12px;
+  }
+  .debug-modal .content .key-item {
+    background: var(--bg);
+    border-radius: 6px;
+    padding: 6px 10px;
+    margin-bottom: 4px;
+    font-size: 0.7rem;
+    font-family: monospace;
+    word-break: break-all;
+    border-left: 2px solid var(--accent2);
+  }
+  .debug-modal .content .key-item .key {
+    color: var(--accent2);
+    font-weight: 600;
+  }
+  .debug-modal .content .key-item .value {
+    color: var(--muted);
+  }
+  .debug-modal .content .btn-group {
+    display: flex;
+    gap: 8px;
+    margin-top: 12px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .debug-modal .content .btn-group button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    min-width: 80px;
+    max-width: 200px;
+    transition: all 0.2s;
+  }
+  .debug-modal .content .btn-group button:hover {
+    transform: scale(1.03);
+  }
+  .debug-modal .content .btn-group .close-debug {
+    background: var(--accent2);
+    color: #fff;
+  }
+  .debug-modal .content .btn-group .export-btn {
+    background: var(--accent);
+    color: #1a1208;
+  }
+  .debug-modal .content .btn-group .import-btn {
+    background: var(--green);
+    color: #fff;
+  }
+  .debug-modal .content .btn-group .clear-btn {
+    background: var(--red);
+    color: #fff;
+  }
+  .debug-modal .content .file-input-wrap {
+    display: none;
+  }
+
+  .recovery-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .recovery-modal .content {
+    background: var(--panel);
+    border: 1px solid var(--accent);
+    border-radius: 20px;
+    padding: 24px 28px;
+    max-width: 480px;
+    width: 100%;
+    max-height: 80vh;
+    overflow-y: auto;
+  }
+  .recovery-modal .content h2 {
+    text-align: center;
+    color: var(--accent);
+    margin-top: 0;
+    font-size: 1.4rem;
+  }
+  .recovery-modal .content .emoji-big {
+    font-size: 3rem;
+    text-align: center;
+    display: block;
+  }
+  .recovery-modal .content ul {
+    list-style: none;
+    padding: 0;
+    margin: 16px 0;
+  }
+  .recovery-modal .content ul li {
+    padding: 8px 0;
+    border-bottom: 1px solid var(--line);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95rem;
+  }
+  .recovery-modal .content ul li:last-child {
+    border-bottom: none;
+  }
+  .recovery-modal .content .close-btn {
+    width: 100%;
+    padding: 12px;
+    background: var(--accent);
+    color: #1a1208;
+    border: none;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    margin-top: 12px;
+    transition: all 0.2s;
+  }
+  .recovery-modal .content .close-btn:hover {
+    transform: scale(1.02);
+  }
+
+  .icon-btn.save-ex{ color: var(--accent); border-color: rgba(232,163,61,.3); }
+  .icon-btn.save-ex:hover{ 
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+  .icon-btn.save-ex.saved{ color: var(--green); border-color: rgba(60,179,113,.3); }
+  .icon-btn.cal-btn{ color: var(--accent2); }
+  .icon-btn.cal-btn:hover{ color: #7ab8ff; }
+
+  .modal-overlay{
+    position: fixed; inset:0; background: rgba(0,0,0,.8); z-index:50;
+    display:flex; align-items:flex-end; justify-content:center;
+  }
+  .modal-sheet{
+    background: var(--panel); border:1px solid var(--line); border-radius: 16px 16px 0 0;
+    width:100%; max-width: 720px; max-height: 78vh; overflow-y:auto; padding: 20px 20px 28px;
+  }
+  .modal-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
+  .modal-head h3{ 
+    margin:0; 
+    font-size:1.1rem; 
+    color: #ffffff;
+    font-weight: 700;
+  }
+  .modal-close{
+    background:var(--panel2); border:1px solid var(--line); color:#d8ddf0;
+    border-radius:8px; width:36px; height:36px; cursor:pointer; font-size:1.2rem;
+    transition: all 0.2s;
+    font-weight: bold;
+  }
+  .modal-close:hover{
+    border-color: var(--red);
+    color: #ffffff;
+    background: rgba(217, 83, 79, 0.1);
+  }
+  .hist-row{
+    display:flex; justify-content:space-between; gap:12px; padding:10px 14px;
+    background: #0d0f1a; border-radius:8px; margin-bottom:8px; font-size:.9rem;
+  }
+  .hist-row .hd{ color: #b8c4e0; flex:0 0 auto; font-weight: 500; }
+  .hist-row .hv{ color: #ffffff; text-align:right; font-weight: 600; }
+  .hist-empty{ color:#b8c4e0; font-size:.9rem; text-align:center; padding: 24px 0; }
+
+  .profile-bar{
+    display:flex; gap:10px; justify-content:center; padding: 6px 12px 12px;
+  }
+  .profile-bar button{
+    background:var(--panel2); border:1px solid var(--line); color:#b8c4e0;
+    padding:10px 22px; border-radius:10px; font-size:.9rem; cursor:pointer; font-weight:600;
+    transition: all 0.2s;
+  }
+  .profile-bar button:hover{
+    border-color: var(--accent);
+    color: #ffffff;
+    background: var(--panel);
+  }
+  .profile-bar button.active{
+    background: linear-gradient(135deg,#3a2a1a,#1d2130); border-color: var(--accent);
+    color: #ffffff; box-shadow: 0 0 0 2px var(--accent) inset;
+  }
+
+  .age-modal {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    z-index: 999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+  .age-modal .content {
+    background: var(--panel);
+    border: 1px solid var(--accent2);
+    border-radius: 20px;
+    padding: 28px 32px;
+    max-width: 450px;
+    width: 100%;
+    max-height: 85vh;
+    overflow-y: auto;
+  }
+  .age-modal .content h2 {
+    text-align: center;
+    color: var(--accent2);
+    margin-top: 0;
+    font-size: 1.3rem;
+  }
+  .age-modal .content p {
+    color: var(--muted);
+    text-align: center;
+    font-size: 0.9rem;
+    margin-bottom: 16px;
+  }
+  .age-modal .content .form-group {
+    margin-bottom: 12px;
+  }
+  .age-modal .content .form-group label {
+    display: block;
+    color: var(--muted);
+    font-size: 0.8rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+  }
+  .age-modal .content .form-group input,
+  .age-modal .content .form-group select {
+    width: 100%;
+    padding: 10px 12px;
+    background: #0d0f1a;
+    border: 1px solid var(--line);
+    color: #ffffff;
+    border-radius: 8px;
+    font-size: 1rem;
+    outline: none;
+    transition: all 0.2s;
+    appearance: auto;
+  }
+  .age-modal .content .form-group input:focus,
+  .age-modal .content .form-group select:focus {
+    border-color: var(--accent2);
+    box-shadow: 0 0 0 3px rgba(74,144,217,0.25);
+  }
+  .age-modal .content .form-group select option {
+    background: var(--panel);
+    color: #ffffff;
+  }
+  .age-modal .content .btn-row {
+    display: flex;
+    gap: 10px;
+    margin-top: 16px;
+  }
+  .age-modal .content .btn-row button {
+    flex: 1;
+    padding: 10px;
+    border: none;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .age-modal .content .btn-row .save-age {
+    background: var(--accent2);
+    color: #fff;
+  }
+  .age-modal .content .btn-row .save-age:hover {
+    transform: scale(1.02);
+  }
+  .age-modal .content .btn-row .cancel-age {
+    background: var(--panel2);
+    color: var(--muted);
+    border: 1px solid var(--line);
+  }
+  .age-modal .content .btn-row .cancel-age:hover {
+    border-color: var(--red);
+    color: #ffffff;
+  }
+
+  @media (max-width: 480px) {
+    .sets-row { 
+      grid-template-columns: repeat(3, 1fr);
+    }
+    header h1 { font-size: 1.4rem; }
+    .bottom-btn { padding: 4px 8px; font-size: 0.85rem; min-width: 38px; }
+    .bottom-btn .label { font-size: 0.4rem; }
+    .bottom-bar { padding: 6px 8px 12px; gap: 4px; }
+    .alt-wrapper .icon-btn { padding: 2px 6px; font-size: 0.7rem; }
+    .clear-alt-btn { padding: 2px 6px; font-size: 0.7rem; }
+    .recovery-modal .content { padding: 16px; }
+    nav.days button.last-workout::after { font-size: 0.5rem; top: -4px; right: -4px; }
+    .group-label .group-name { font-size: 0.9rem; padding: 4px 14px; }
+    .user-profile { flex-direction: column; align-items: stretch; gap: 8px; }
+    .user-profile .edit-btn { margin-left: 0; }
+    .age-modal .content { padding: 20px; }
+  }
+</style>
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Тренування">
+<meta name="theme-color" content="#0a0c15">
+<link rel="manifest" href="manifest.json">
+</head>
+<body>
+
+<header>
+  <h1 id="appTitle">
+    <span onclick="clearCacheAndReload()" class="emoji-btn" title="Натисніть для оновлення кешу">
+      🏋️
+    </span>
+    План тренувань
+  </h1>
+  <div class="sub" id="appSub">Завантажте план з Excel</div>
+</header>
+
+<div class="profile-bar" id="profileBar"></div>
+<div class="week-bar" id="weekBar"></div>
+<nav class="days" id="dayNav"></nav>
+
+<main id="main"></main>
+
+<div class="bottom-bar">
+  <button id="saveBtn" class="bottom-btn save-btn" title="Зберегти тренування">
+    💾 <span class="label">зберегти</span>
+  </button>
+  <button id="resendBtn" class="bottom-btn resend-btn" title="Перевідправити звіт">
+    🔄 <span class="label">перевідпр.</span>
+  </button>
+  <button id="importBtn" class="bottom-btn import-btn" title="Завантажити план" onclick="document.getElementById('xlsxInput').click()">
+    📂 <span class="label">завантажити</span>
+  </button>
+  <button id="debugBtn" class="bottom-btn debug-btn" title="Показати збережені дані">
+    🔍 <span class="label">дані</span>
+  </button>
+  <input type="file" id="xlsxInput" accept=".xlsx" style="display:none">
+</div>
+
+<div class="toast" id="toast">Збережено!</div>
+<div id="modalRoot"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+<script>
+// ===== СИСТЕМА ВЕРСІОНУВАННЯ =====
+(function() {
+  const today = new Date().toISOString().slice(0,10);
+  let version = localStorage.getItem('app_version');
+  let versionDate = version ? version.split('-')[0] : '';
+  
+  if (!version || versionDate !== today) {
+    version = today + '-' + Math.random().toString(36).substr(2, 6);
+    localStorage.setItem('app_version', version);
+  }
+  
+  document.querySelectorAll('link[rel="stylesheet"]').forEach(link => {
+    if (link.href && !link.href.includes('v=')) {
+      link.href += (link.href.includes('?') ? '&' : '?') + 'v=' + version;
+    }
+  });
+  
+  document.querySelectorAll('script[src]').forEach(script => {
+    if (script.src && !script.src.includes('v=') && !script.src.includes('xlsx')) {
+      script.src += (script.src.includes('?') ? '&' : '?') + 'v=' + version;
+    }
+  });
+  
+  const manifest = document.querySelector('link[rel="manifest"]');
+  if (manifest && manifest.href && !manifest.href.includes('v=')) {
+    manifest.href += (manifest.href.includes('?') ? '&' : '?') + 'v=' + version;
+  }
+})();
+
+function clearCacheAndReload() {
+  if (confirm('🔄 Очистити кеш і перезавантажити сторінку?')) {
+    const today = new Date().toISOString().slice(0,10);
+    const newVersion = today + '-' + Math.random().toString(36).substr(2, 6);
+    localStorage.setItem('app_version', newVersion);
+    const url = new URL(window.location.href);
+    url.searchParams.set('v', newVersion);
+    window.location.href = url.href;
+  }
+}
+
+// ===== ЕКСПОРТ/ІМПОРТ ДАНИХ =====
+function exportAllData() {
+  const data = {};
+  const keysToExport = [
+    'trenuvannya-profile', 'user_age', 'user_height', 'user_weight', 'user_health',
+    'custom-plan-man', 'custom-plan-woman', 'app_version'
+  ];
+  
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && (key.startsWith('trenuvannya_') || key.startsWith('lastlog:') || key.startsWith('history:'))) {
+      try {
+        data[key] = localStorage.getItem(key);
+      } catch(e) {}
+    }
+  }
+  
+  for (const key of keysToExport) {
+    if (localStorage.getItem(key) !== null) {
+      data[key] = localStorage.getItem(key);
+    }
+  }
+  
+  const json = JSON.stringify(data, null, 2);
+  const blob = new Blob([json], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = 'training_data_' + new Date().toISOString().slice(0,10) + '.json';
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('📤 Дані експортовано!');
+}
+
+function importAllData(file) {
+  const reader = new FileReader();
+  reader.onload = function(e) {
+    try {
+      const data = JSON.parse(e.target.result);
+      let count = 0;
+      for (const [key, value] of Object.entries(data)) {
+        if (typeof value === 'string') {
+          localStorage.setItem(key, value);
+          count++;
+        }
+      }
+      showToast('📥 Імпортовано ' + count + ' ключів! Перезавантажте сторінку.');
+      document.querySelector('.debug-modal')?.remove();
+      setTimeout(() => { location.reload(); }, 1500);
+    } catch(err) {
+      showToast('❌ Помилка імпорту: ' + err.message);
+    }
+  };
+  reader.readAsText(file);
+}
+
+function clearAllData() {
+  if (confirm('⚠️ ВИ ВПЕВНЕНІ? Це ВИДАЛИТЬ ВСІ дані!\n\nЦю дію НЕ МОЖНА скасувати!')) {
+    if (confirm('🗑️ ОСТАННЄ ПОПЕРЕДЖЕННЯ: Видалити всі дані?')) {
+      const keysToKeep = ['app_version'];
+      const keysToRemove = [];
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && !keysToKeep.includes(key)) {
+          keysToRemove.push(key);
+        }
+      }
+      for (const key of keysToRemove) {
+        localStorage.removeItem(key);
+      }
+      showToast('🗑️ Всі дані видалено! Перезавантажте сторінку.');
+      document.querySelector('.debug-modal')?.remove();
+      setTimeout(() => { location.reload(); }, 1500);
+    }
+  }
+}
+
+// ===== ДАНІ ПРОФІЛЮ =====
+let userProfile = {
+  age: parseInt(localStorage.getItem('user_age')) || null,
+  gender: localStorage.getItem('trenuvannya-profile') || 'man',
+  height: parseInt(localStorage.getItem('user_height')) || null,
+  weight: parseInt(localStorage.getItem('user_weight')) || null,
+  health: localStorage.getItem('user_health') || 'none'
+};
+
+function saveFullProfile(age, height, weight, health) {
+  userProfile.age = parseInt(age);
+  userProfile.height = parseInt(height) || null;
+  userProfile.weight = parseInt(weight) || null;
+  userProfile.health = health || 'none';
+  
+  localStorage.setItem('user_age', String(age));
+  localStorage.setItem('user_height', String(height || ''));
+  localStorage.setItem('user_weight', String(weight || ''));
+  localStorage.setItem('user_health', health || 'none');
+  
+  renderUserProfile();
+  renderMain();
+  showToast('✅ Профіль збережено!');
+}
+
+function showProfileModal() {
+  const modal = document.createElement('div');
+  modal.className = 'age-modal';
+  modal.innerHTML = `
+    <div class="content">
+      <h2>👤 Повний профіль</h2>
+      <p>Заповніть дані для точних AI-рекомендацій</p>
+      
+      <div class="form-group">
+        <label>🎂 Вік (років)</label>
+        <input type="number" id="ageInput" min="14" max="100" placeholder="14-100" value="${userProfile.age || ''}">
+      </div>
+      
+      <div class="form-group">
+        <label>📏 Зріст (см)</label>
+        <input type="number" id="heightInput" min="100" max="250" placeholder="наприклад: 175" value="${userProfile.height || ''}">
+      </div>
+      
+      <div class="form-group">
+        <label>⚖️ Вага тіла (кг)</label>
+        <input type="number" id="weightInput" min="30" max="300" placeholder="наприклад: 75" value="${userProfile.weight || ''}">
+      </div>
+      
+      <div class="form-group">
+        <label>🩺 Проблеми зі здоров'ям</label>
+        <select id="healthInput">
+          <option value="none" ${userProfile.health === 'none' ? 'selected' : ''}>✅ Немає проблем</option>
+          <option value="back" ${userProfile.health === 'back' ? 'selected' : ''}>🔴 Проблеми зі спиною</option>
+          <option value="knees" ${userProfile.health === 'knees' ? 'selected' : ''}>🔴 Проблеми з колінами</option>
+          <option value="heart" ${userProfile.health === 'heart' ? 'selected' : ''}>❤️ Проблеми з серцем</option>
+          <option value="pressure" ${userProfile.health === 'pressure' ? 'selected' : ''}>🩸 Гіпертонія</option>
+          <option value="diabetes" ${userProfile.health === 'diabetes' ? 'selected' : ''}>🩸 Діабет</option>
+          <option value="other" ${userProfile.health === 'other' ? 'selected' : ''}>⚠️ Інше (впишіть нижче)</option>
+        </select>
+      </div>
+      
+      <div class="form-group" id="otherHealthGroup" style="${userProfile.health === 'other' ? 'display:block;' : 'display:none;'}">
+        <label>✏️ Вкажіть проблему</label>
+        <input type="text" id="otherHealthInput" placeholder="Наприклад: астма, алергія..." value="${userProfile.health === 'other' ? (localStorage.getItem('user_health_other') || '') : ''}">
+      </div>
+      
+      <div class="btn-row">
+        <button class="save-age" onclick="saveProfileFromModal()">✅ Зберегти</button>
+        <button class="cancel-age" onclick="this.closest('.age-modal').remove()">✕ Скасувати</button>
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+  
+  // Показуємо/ховаємо поле "Інше"
+  const healthSelect = document.getElementById('healthInput');
+  const otherGroup = document.getElementById('otherHealthGroup');
+  
+  healthSelect.addEventListener('change', function() {
+    if (this.value === 'other') {
+      otherGroup.style.display = 'block';
+    } else {
+      otherGroup.style.display = 'none';
+    }
+  });
+  
+  document.getElementById('ageInput').focus();
+  
+  document.getElementById('ageInput').addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') saveProfileFromModal();
+    if (e.key === 'Escape') modal.remove();
+  });
+}
+
+function saveProfileFromModal() {
+  const age = parseInt(document.getElementById('ageInput').value);
+  const height = parseInt(document.getElementById('heightInput').value);
+  const weight = parseInt(document.getElementById('weightInput').value);
+  let health = document.getElementById('healthInput').value;
+  
+  // Якщо вибрано "Інше" - зберігаємо текст
+  if (health === 'other') {
+    const otherText = document.getElementById('otherHealthInput').value.trim();
+    if (otherText) {
+      localStorage.setItem('user_health_other', otherText);
+    } else {
+      showToast('⚠️ Впишіть вашу проблему в поле "Інше"');
+      document.getElementById('otherHealthInput').focus();
+      return;
+    }
+  } else {
+    localStorage.removeItem('user_health_other');
+  }
+  
+  if (!age || age < 14 || age > 100) {
+    showToast('⚠️ Введіть коректний вік (14-100)');
+    document.getElementById('ageInput').focus();
+    return;
+  }
+  
+  saveFullProfile(age, height, weight, health);
+  document.querySelector('.age-modal')?.remove();
+}
+
+function renderUserProfile() {
+  const main = document.getElementById('main');
+  const existing = document.querySelector('.user-profile');
+  if (existing) existing.remove();
+  
+  const profileDiv = document.createElement('div');
+  profileDiv.className = 'user-profile';
+  
+  const genderLabel = userProfile.gender === 'woman' ? '👩 Жінка' : '👨 Чоловік';
+  const ageText = userProfile.age ? userProfile.age + ' років' : '❓ не вказано';
+  const heightText = userProfile.height ? userProfile.height + ' см' : '❓';
+  const weightText = userProfile.weight ? userProfile.weight + ' кг' : '❓';
+  
+  let healthText = '✅ Немає';
+  if (userProfile.health === 'back') healthText = '🔴 Спина';
+  else if (userProfile.health === 'knees') healthText = '🔴 Коліна';
+  else if (userProfile.health === 'heart') healthText = '❤️ Серце';
+  else if (userProfile.health === 'pressure') healthText = '🩸 Тиск';
+  else if (userProfile.health === 'diabetes') healthText = '🩸 Діабет';
+  else if (userProfile.health === 'other') {
+    const otherText = localStorage.getItem('user_health_other') || '⚠️ Інше';
+    healthText = '⚠️ ' + otherText;
+  }
+  
+  let bmiText = '';
+  if (userProfile.height && userProfile.weight) {
+    const heightM = userProfile.height / 100;
+    const bmi = userProfile.weight / (heightM * heightM);
+    bmiText = `  •  📊 ІМТ: ${bmi.toFixed(1)}`;
+    if (bmi < 18.5) bmiText += ' (недостатня вага)';
+    else if (bmi < 25) bmiText += ' (норма)';
+    else if (bmi < 30) bmiText += ' (надлишкова вага)';
+    else bmiText += ' (ожиріння)';
+  }
+  
+  profileDiv.innerHTML = `
+    <span class="label">👤 Профіль:</span>
+    <span class="value">${genderLabel}</span>
+    <span class="label">🎂 Вік:</span>
+    <span class="value">${ageText}</span>
+    <span class="label">📏 Зріст:</span>
+    <span class="value">${heightText}</span>
+    <span class="label">⚖️ Вага:</span>
+    <span class="value">${weightText}</span>
+    <span class="label">🩺 Здоров'я:</span>
+    <span class="value">${healthText}</span>
+    ${bmiText ? `<span class="value" style="font-size:0.8rem;color:var(--accent2);">${bmiText}</span>` : ''}
+    <button class="edit-btn" onclick="showProfileModal()">✏️ редагувати</button>
+  `;
+  
+  const dayNav = document.getElementById('dayNav');
+  dayNav.after(profileDiv);
+}
+
+// ===== СМАЙЛИКИ ДЛЯ ГРУП =====
+const GROUP_EMOJIS = {
+  'ГРУДИ': '💪',
+  'СПИНА': '🔙',
+  'НОГИ': '🦵',
+  'СІДНИЦІ': '🍑',
+  'БІЦЕПС': '💪',
+  'ТРИЦЕПС': '💪',
+  'ТРАПЕЦІЯ': '🔺',
+  'ПЛЕЧІ': '🏋️',
+  'ПРЕС': '🔥',
+  'РУКИ': '✊'
+};
+
+function getGroupEmoji(groupName) {
+  const upperName = groupName.toUpperCase().trim();
+  return GROUP_EMOJIS[upperName] || '💪';
+}
+
+// ===== ВІДЕО-ТУТОРІАЛИ =====
+const VIDEO_TUTORIALS = {
+  'Жим штанги лежачи (горизонтальний)': 'https://www.youtube.com/watch?v=4Y2Zd4TQw4k',
+  'Жим штанги лежачи (похилий)': 'https://www.youtube.com/watch?v=ZmBfXj_R0b0',
+  'Жим гантелей (горизонтальний)': 'https://www.youtube.com/watch?v=VmB1G1K7vqE',
+  'Віджимання на брусах': 'https://www.youtube.com/watch?v=tMyFe-IL7Ks',
+  'Підтягування (широкий хват)': 'https://www.youtube.com/watch?v=eGo4IYlbE5g',
+  'Тяга штанги в нахилі': 'https://www.youtube.com/watch?v=G8l_8chR5BE',
+  'Присідання зі штангою': 'https://www.youtube.com/watch?v=ultWZbUMPLQ',
+  'Станова тяга': 'https://www.youtube.com/watch?v=op9kVnS5lPw',
+  'Жим ногами': 'https://www.youtube.com/watch?v=IZxyjW7VPJQ',
+  'Згинання рук зі штангою стоячи': 'https://www.youtube.com/watch?v=ynPnr6TlQ9E',
+  'Французький жим штангою': 'https://www.youtube.com/watch?v=dX4v7f5n09I',
+  'Шраги зі штангою': 'https://www.youtube.com/watch?v=cJRVVx6ZvOg',
+  'Метелик (Pec-Deck)': 'https://www.youtube.com/watch?v=QENKPHhQVi4',
+  'Тяга верхнього блоку до грудей': 'https://www.youtube.com/watch?v=Y3B8q2p5_9w',
+  'Тяга горизонтального блоку до пояса': 'https://www.youtube.com/watch?v=9Z1r6M_vUq8',
+  'Армійський жим': 'https://www.youtube.com/watch?v=2B4U5wOz-ss',
+  'Махи гантелями в сторони': 'https://www.youtube.com/watch?v=3VcKaXpzqZ8',
+  'Планка класична': 'https://www.youtube.com/watch?v=pSHjTRCQxIw'
+};
+
+function getVideoUrlForExercise(id, defaultName){
+  const altText = (pendingSets[id+'::alt'] || {}).raw || '';
+  const exerciseName = altText || defaultName;
+  
+  if(VIDEO_TUTORIALS[exerciseName]) return VIDEO_TUTORIALS[exerciseName];
+  
+  const keywords = exerciseName.split(' (')[0];
+  for(const [key, url] of Object.entries(VIDEO_TUTORIALS)){
+    if(key.includes(keywords) || keywords.includes(key)){
+      return url;
+    }
+  }
+  return 'https://www.youtube.com/results?search_query=' + encodeURIComponent(exerciseName + ' техніка виконання');
+}
+
+function clearAlt(id){
+  if(pendingSets[id+'::alt']){
+    delete pendingSets[id+'::alt'];
+    renderMain();
+    showToast('✅ Заміну видалено');
+  }
+}
+
+// ===== ВСІ ВПРАВИ ДЛЯ ЗАМІНИ =====
+const ALL_EXERCISES = {
+  'Груди': [
+    'Жим штанги лежачи (горизонтальний)',
+    'Жим штанги лежачи (похилий)',
+    'Жим гантелей (горизонтальний)',
+    'Жим гантелей (похилий)',
+    'Віджимання на брусах',
+    'Віджимання від підлоги',
+    'Метелик (Pec-Deck)',
+    'Зведення рук у кросовері'
+  ],
+  'Спина': [
+    'Підтягування (широкий хват)',
+    'Підтягування (вузький хват)',
+    'Тяга штанги в нахилі',
+    'Тяга верхнього блоку до грудей',
+    'Тяга горизонтального блоку до пояса',
+    'Тяга гантелі однією рукою',
+    'Гіперекстензія',
+    'Станова тяга'
+  ],
+  'Ноги': [
+    'Присідання зі штангою',
+    'Присідання з гантелею',
+    'Присідання в Сміті',
+    'Жим ногами',
+    'Випади (на місці)',
+    'Випади (в русі)',
+    'Болгарські випади',
+    'Румунська тяга',
+    'Згинання ніг у тренажері',
+    'Розгинання ніг у тренажері',
+    'Розведення ніг сидячи',
+    'Зведення ніг сидячи',
+    'Відведення ноги в кросовері (kickbacks)',
+    'Сідничний міст',
+    'Підйоми на носки стоячи',
+    'Підйоми на носки сидячи'
+  ],
+  'Сідниці': [
+    'Тяга ногою в кросовері (kickbacks)',
+    'Сідничний міст',
+  ],
+  'Біцепс': [
+    'Згинання рук зі штангою стоячи',
+    'Згинання рук з гантелями',
+    'Згинання рук на лаві Скотта',
+    'Молот (Hammer curls)',
+    'Згинання рук у блоці',
+    'Концентровані згинання'
+  ],
+  'Трицепс': [
+    'Французький жим штангою',
+    'Французький жим гантелями',
+    'Жим вузьким хватом',
+    'Розгинання на блоці (кросовер)',
+    'Розгинання з гантеллю за головою',
+    'Віджимання на трицепс'
+  ],
+  'Трапеція': [
+    'Шраги зі штангою',
+    'Шраги з гантелями',
+    'Шраги за спиною',
+    'Протяжка (тяга до підборіддя)'
+  ],
+  'Плечі': [
+    'Армійський жим',
+    'Жим гантелей сидячи',
+    'Жим Арнольда',
+    'Махи гантелями в сторони',
+    'Махи в нахилі',
+    'Протяжка (тяга до підборіддя)'
+  ],
+  'Прес': [
+    'Планка класична',
+    'Планка бічна',
+    'Скручування на підлозі',
+    'Скручування на фітболі',
+    'Скручування на лаві',
+    'Підйом ніг у висі',
+    'Підйом ніг лежачи',
+    'Велосипед',
+    'Молитва (блочний прес)',
+    'Вакуум'
+  ],
+  'Руки': [
+    'Згинання кистей зі штангою',
+    'Розгинання кистей зі штангою',
+  ],
+};
+
+// ===== AI-АНАЛІЗ =====
+function aiAnalyze(prevWeight, prevReps, targetReps, history, exerciseName) {
+  const gender = userProfile.gender || 'man';
+  const age = userProfile.age || 30;
+  const height = userProfile.height || 175;
+  const weight = userProfile.weight || 75;
+  const health = userProfile.health || 'none';
+  
+  let ageFactor = 1;
+  if (age < 25) ageFactor = 1.2;
+  else if (age < 35) ageFactor = 1.0;
+  else if (age < 45) ageFactor = 0.85;
+  else if (age < 55) ageFactor = 0.7;
+  else ageFactor = 0.55;
+  
+  let genderFactor = (gender === 'woman') ? 0.7 : 1.0;
+  let baseWeight = gender === 'woman' ? 15 : 25;
+  
+  let weightFactor = 1;
+  if (weight < 60) weightFactor = 0.7;
+  else if (weight < 75) weightFactor = 0.85;
+  else if (weight < 90) weightFactor = 1.0;
+  else if (weight < 110) weightFactor = 1.15;
+  else weightFactor = 1.3;
+  
+  let healthFactor = 1;
+  let healthNote = '';
+  if (health === 'back') {
+    healthFactor = 0.6;
+    healthNote = '🛡️ Обережно з навантаженням на спину!';
+  } else if (health === 'knees') {
+    healthFactor = 0.6;
+    healthNote = '🛡️ Бережіть коліна!';
+  } else if (health === 'heart') {
+    healthFactor = 0.5;
+    healthNote = '❤️ Контролюйте пульс!';
+  } else if (health === 'pressure') {
+    healthFactor = 0.6;
+    healthNote = '🩸 Слідкуйте за тиском!';
+  } else if (health === 'diabetes') {
+    healthFactor = 0.7;
+    healthNote = '🩸 Контролюйте рівень цукру!';
+  } else if (health === 'other') {
+    healthFactor = 0.7;
+    healthNote = '⚠️ Будьте обережні (враховано інші проблеми)!';
+  }
+  
+  let fitnessLevel = 'beginner';
+  let totalHistoryWeight = 0;
+  let historyCount = 0;
+  
+  if (history && history.length > 0) {
+    for (const entry of history) {
+      if (entry.sets) {
+        for (const s of entry.sets) {
+          if (s.w && s.r) {
+            const w = parseFloat(s.w);
+            const r = parseFloat(s.r);
+            if (!isNaN(w) && !isNaN(r)) {
+              totalHistoryWeight += w;
+              historyCount++;
+            }
+          }
+        }
+      }
+    }
+    const avgWeight = historyCount > 0 ? totalHistoryWeight / historyCount : 0;
+    if (avgWeight > 60 * genderFactor) fitnessLevel = 'advanced';
+    else if (avgWeight > 30 * genderFactor) fitnessLevel = 'intermediate';
+    else fitnessLevel = 'beginner';
+  }
+  
+  let recommendedSets = 4;
+  if (fitnessLevel === 'beginner') recommendedSets = 3;
+  else if (fitnessLevel === 'intermediate') recommendedSets = 4;
+  else recommendedSets = 5;
+  
+  if (age > 55) recommendedSets = Math.max(3, recommendedSets - 1);
+  else if (age < 25) recommendedSets = Math.min(6, recommendedSets + 1);
+  if (gender === 'woman') recommendedSets = Math.max(3, recommendedSets - 1);
+  if (health !== 'none') recommendedSets = Math.max(3, recommendedSets - 1);
+  
+  let recommendedWeight = baseWeight * weightFactor * genderFactor * healthFactor;
+  
+  if (history && history.length > 0) {
+    let lastEntry = history[history.length - 1];
+    if (lastEntry && lastEntry.sets) {
+      let lastWeight = 0;
+      let lastReps = 0;
+      let setCount = 0;
+      
+      for (const s of lastEntry.sets) {
+        if (s.w && s.r) {
+          const w = parseFloat(s.w);
+          const r = parseFloat(s.r);
+          if (!isNaN(w) && !isNaN(r)) {
+            lastWeight += w;
+            lastReps += r;
+            setCount++;
+          }
+        }
+      }
+      
+      if (setCount > 0) {
+        const avgWeight = lastWeight / setCount;
+        const avgReps = lastReps / setCount;
+        
+        let progress = 0;
+        if (avgReps >= targetReps) progress = 1;
+        else if (avgReps >= targetReps * 0.7) progress = 0.5;
+        else progress = 0;
+        
+        let step = 1.25 * ageFactor * genderFactor * healthFactor;
+        if (fitnessLevel === 'advanced') step *= 1.5;
+        if (health !== 'none') step = Math.min(step, 1.25);
+        
+        let maxWeight = 200 * weightFactor * genderFactor;
+        if (age > 55) maxWeight = 80 * weightFactor;
+        else if (age > 45) maxWeight = 120 * weightFactor;
+        else if (age > 35) maxWeight = 160 * weightFactor;
+        if (gender === 'woman') maxWeight *= 0.7;
+        if (health !== 'none') maxWeight *= 0.7;
+        
+        if (progress >= 1) {
+          let newWeight = avgWeight + step;
+          if (newWeight > maxWeight) {
+            return {
+              weight: avgWeight,
+              reps: Math.min(targetReps + 2, 15),
+              sets: recommendedSets,
+              action: 'up_reps',
+              message: '🏆 Досягнуто максимуму → +2 повторення' + (healthNote ? ' ' + healthNote : ''),
+              emoji: '🏆',
+              progress: progress,
+              fitnessLevel: fitnessLevel,
+              healthNote: healthNote,
+              totalTonnage: Math.round(avgWeight * avgReps * recommendedSets)
+            };
+          }
+          return {
+            weight: Math.round(newWeight * 2) / 2,
+            reps: targetReps,
+            sets: recommendedSets,
+            action: 'up',
+            message: '✅ Прогрес! +' + step.toFixed(1) + ' кг → ' + Math.round(newWeight * 2) / 2 + ' кг' + (healthNote ? ' ' + healthNote : ''),
+            emoji: '📈',
+            progress: progress,
+            fitnessLevel: fitnessLevel,
+            healthNote: healthNote,
+            totalTonnage: Math.round(Math.round(newWeight * 2) / 2 * targetReps * recommendedSets)
+          };
+        } else if (progress >= 0.5) {
+          return {
+            weight: avgWeight,
+            reps: targetReps,
+            sets: recommendedSets,
+            action: 'none',
+            message: '📊 Тримаємо вагу (' + avgWeight + ' кг) → ' + avgReps + '/' + targetReps + (healthNote ? ' ' + healthNote : ''),
+            emoji: '📊',
+            progress: progress,
+            fitnessLevel: fitnessLevel,
+            healthNote: healthNote,
+            totalTonnage: Math.round(avgWeight * avgReps * recommendedSets)
+          };
+        } else {
+          let newWeight = Math.max(2.5, avgWeight - step * 2);
+          return {
+            weight: Math.round(newWeight * 2) / 2,
+            reps: targetReps,
+            sets: Math.max(3, recommendedSets - 1),
+            action: 'down',
+            message: '⚠️ Знижуємо вагу до ' + Math.round(newWeight * 2) / 2 + ' кг' + (healthNote ? ' ' + healthNote : ''),
+            emoji: '📉',
+            progress: progress,
+            fitnessLevel: fitnessLevel,
+            healthNote: healthNote,
+            totalTonnage: Math.round(Math.round(newWeight * 2) / 2 * targetReps * Math.max(3, recommendedSets - 1))
+          };
+        }
+      }
+    }
+  }
+  
+  let startWeight = Math.round((baseWeight * weightFactor * genderFactor * healthFactor) * 2) / 2;
+  startWeight = Math.max(2.5, Math.min(startWeight, 50));
+  
+  let startMsg = '💡 Почніть з ' + startWeight + ' кг';
+  if (age > 50) startMsg += ' (безпечно для вашого віку)';
+  if (gender === 'woman') startMsg += ' 👩 (жіночий профіль)';
+  if (healthNote) startMsg += ' ' + healthNote;
+  
+  return {
+    weight: startWeight,
+    reps: targetReps,
+    sets: recommendedSets,
+    action: 'start',
+    message: startMsg,
+    emoji: '💡',
+    progress: 0,
+    fitnessLevel: fitnessLevel,
+    healthNote: healthNote,
+    totalTonnage: Math.round(startWeight * targetReps * recommendedSets)
+  };
+}
+
+function getHistoryForExercise(id) {
+  const hist = [];
+  const h = localStorage.getItem('history:' + id);
+  if (h) {
+    try { 
+      const parsed = JSON.parse(h);
+      if (Array.isArray(parsed)) {
+        for (const entry of parsed) {
+          if (entry.sets && entry.sets.length > 0) {
+            const hasData = entry.sets.some(s => s.w && s.r);
+            if (hasData) hist.push(entry);
+          }
+        }
+      }
+    } catch(e) { /* ignore */ }
+  }
+  return hist;
+}
+
+// ===== 365 ПОВІДОМЛЕНЬ =====
+function generateRecoveryMessages() {
+  const itemsVariations = [
+    ['🥩 Білок: 30-40 г (стейк, курка, риба)', '🍚 Вуглеводи: рис або гречка (50-70 г)', '💧 Вода: 500-700 мл', '🥑 Жири: авокадо або горіхи', '😴 Сон: 7-9 годин'],
+    ['🥚 Білок: омлет з 3-4 яєць', '🍞 Вуглеводи: тост з авокадо', '🥤 Протеїновий коктейль', '🫐 Ягоди для антиоксидантів', '💧 Вода: 600-800 мл'],
+    ['🥩 Білок: 200 г курячої грудки', '🍚 Вуглеводи: 150 г вареного рису', '🥑 Жири: оливкова олія в салат', '🍌 Банан для швидких вуглеводів', '💧 Вода: 700 мл'],
+    ['🐟 Білок: 200 г лосося або тунця', '🥔 Вуглеводи: запечена картопля', '🥗 Свіжі овочі для вітамінів', '💧 Вода: 500 мл', '😴 Сон: не менше 8 годин'],
+    ['🧆 Білок: тофу або нут (40 г)', '🍚 Вуглеводи: кіноа або булгур', '🥑 Жири: авокадо', '🥤 Протеїн на рослинній основі', '💧 Вода: 600 мл'],
+    ['🍝 Вуглеводи: паста з твердих сортів пшениці', '🥩 Білок: індичка або курка', '🥦 Овочі на пару', '💧 Вода: 700 мл', '🍉 Фрукти для відновлення глікогену'],
+    ['🥩 Білок: 200 г яловичини', '🍚 Вуглеводи: гречка з грибами', '🥑 Жири: горіхи (20 г)', '💧 Вода: 600 мл', '😴 Сон: 8 годин'],
+    ['🥙 Білок: 2 порції протеїну', '🍌 Вуглеводи: банан + вівсянка', '🥤 Електроліти: ізотонік', '💧 Вода: 500 мл', '😴 Сон: 7 годин'],
+    ['🥩 Білок: 250 г риби або курки', '🍚 Вуглеводи: 200 г рису', '🥑 Жири: оливкова олія', '🥗 Салат зі свіжих овочів', '💧 Вода: 800 мл'],
+    ['🥛 Протеїн: казеїн на ніч', '🍯 Вуглеводи: мед з вівсянкою', '💧 Вода: 400 мл', '😴 Сон: 8-9 годин', '🧘 Розтяжка перед сном'],
+    ['🥩 Білок: 200 г стейка', '🍚 Вуглеводи: 150 г рису', '🥑 Жири: авокадо', '🥤 Протеїн: 30 г', '💧 Вода: 700 мл'],
+    ['🍌 Вуглеводи: 2 банани', '🥚 Білок: яйця (4 шт)', '🥤 Смузі з ягодами', '💧 Вода: 500 мл', '😴 Сон: 7-8 годин'],
+    ['🥩 Білок: домашня курка', '🥔 Вуглеводи: запечена картопля', '🥗 Салат з оливковою олією', '💧 Вода: 600 мл', '🍫 Трохи темного шоколаду'],
+    ['🐟 Білок: тунець або скумбрія', '🍚 Вуглеводи: рис з овочами', '🥑 Жири: оливкова олія', '💧 Вода: 700 мл', '🫐 Ягоди для антиоксидантів'],
+    ['🍝 Вуглеводи: макарони', '🥩 Білок: курка з грибами', '🥦 Броколі на пару', '💧 Вода: 600 мл', '🍌 Банан після тренування'],
+    ['🥩 Білок: 250 г яловичини', '🍚 Вуглеводи: 200 г рису', '🥑 Жири: горіхи', '🥤 Протеїн: 40 г', '💧 Вода: 800 мл'],
+    ['🥗 Білок: салат з тунцем', '🍞 Вуглеводи: житній хліб', '🥑 Жири: авокадо', '💧 Вода: 500 мл', '🍵 Зелений чай'],
+    ['🥩 Білок: 250 г курки', '🍚 Вуглеводи: 250 г рису', '🥑 Жири: оливкова олія', '🥛 Молоко: 300 мл', '💧 Вода: 700 мл'],
+    ['🥩 Білок: 300 г стейка', '🍚 Вуглеводи: 200 г гречки', '🥑 Жири: авокадо', '🥤 Протеїн: 40 г', '💧 Вода: 800 мл'],
+    ['🥩 Білок: курячий суп', '🍚 Вуглеводи: овочі та крупи', '🥑 Жири: оливкова олія', '💧 Вода: 600 мл', '🍞 Хліб з цільного зерна'],
+  ];
+  
+  const titles = [
+    '🥩 Білковий старт', '🍳 Сніданок чемпіона', '🐟 Рибний день', '🍗 Куряча сила',
+    '🥤 Протеїновий шейк', '🍝 Паста-енергія', '🥩 Яловичина + гречка', '🌱 Вегетаріанський день',
+    '🍲 Гарячий суп', '💪 Силовий комплекс', '🛌 Відновлення + сон', '🍌 Бананова енергія',
+    '🥘 Домашня кухня', '🌊 Морське відновлення', '⚡ Енергетичний заряд', '🥇 Чемпіонське відновлення',
+    '🧘 Легке та корисне', '💪 Для набору маси', '🏆 Рекордне відновлення', '🍲 Суп-відновлення',
+    '🔥 Паливо для зростання', '🥙 Швидке відновлення', '💥 Максимум анаболізму', '🍌 Фруктове відновлення',
+    '🔄 Режим відновлення', '🌟 Повний комплекс', '💪 Енергія + сила', '🥩 М\'ясна насолода',
+    '🐟 Омега-3 день', '🥗 Легке відновлення', '🍚 Рисовий день', '🥑 Авокадо-енергія'
+  ];
+  
+  const messages = [];
+  for (let i = 0; i < 365; i++) {
+    const idx = i % titles.length;
+    const itemsIdx = i % itemsVariations.length;
+    messages.push({
+      title: titles[idx] + (i % 7 === 0 ? ' 🌟' : ''),
+      items: itemsVariations[itemsIdx]
+    });
+  }
+  return messages;
+}
+
+const RECOVERY_MESSAGES = generateRecoveryMessages();
+
+function showRecoveryModal() {
+  const now = new Date();
+  const dayOfYear = Math.floor((now - new Date(now.getFullYear(), 0, 0)) / (1000 * 60 * 60 * 24));
+  const index = dayOfYear % RECOVERY_MESSAGES.length;
+  const random = RECOVERY_MESSAGES[index];
+  
+  const modal = document.createElement('div');
+  modal.className = 'recovery-modal';
+  
+  let healthAdvice = '';
+  if (userProfile.health && userProfile.health !== 'none') {
+    const healthMap = {
+      'back': '🛡️ При проблемах зі спиною уникайте різких рухів',
+      'knees': '🛡️ При проблемах з колінами використовуйте наколінники',
+      'heart': '❤️ Контролюйте пульс, не перевищуйте 130 уд/хв',
+      'pressure': '🩸 Слідкуйте за тиском до та після тренування',
+      'diabetes': '🩸 Майте при собі щось солодке',
+      'other': '⚠️ Прислухайтесь до свого організму (враховано інші проблеми)'
+    };
+    healthAdvice = '<p style="color:var(--accent);font-size:0.85rem;">' + (healthMap[userProfile.health] || '⚠️ Будьте обережні') + '</p>';
+  }
+  
+  let ageAdvice = '';
+  if (userProfile.age) {
+    if (userProfile.age > 50) {
+      ageAdvice = '<p style="color:var(--accent);font-size:0.85rem;">🛡️ Для вашого віку рекомендовано більше уваги приділити відновленню</p>';
+    } else if (userProfile.age > 40) {
+      ageAdvice = '<p style="color:var(--accent);font-size:0.85rem;">💪 Гарний вік для тренувань, не забувайте про розтяжку</p>';
+    }
+  }
+  
+  modal.innerHTML = `
+    <div class="content">
+      <span class="emoji-big">${random.title.split(' ')[0]}</span>
+      <h2>${random.title}</h2>
+      <p style="text-align:center;color:var(--muted);margin-bottom:16px;">
+        Тренування завершено! Щоб м'язи росли:
+      </p>
+      ${healthAdvice}
+      ${ageAdvice}
+      <ul>
+        ${random.items.map(item => `<li>${item}</li>`).join('')}
+      </ul>
+      <button class="close-btn" onclick="this.closest('.recovery-modal').remove()">✅ Зрозуміло!</button>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+// ===== DEBUG З ЕКСПОРТОМ/ІМПОРТОМ =====
+function showDebugData() {
+  const data = {};
+  let totalKeys = 0;
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    if (key && (key.startsWith('trenuvannya_') || key.startsWith('lastlog:') || key.startsWith('history:') || 
+         key === 'user_age' || key === 'user_height' || key === 'user_weight' || key === 'user_health' || key === 'user_health_other' ||
+         key === 'trenuvannya-profile' || key === 'custom-plan-man' || key === 'custom-plan-woman')) {
+      try {
+        const val = localStorage.getItem(key);
+        data[key] = val.length > 300 ? val.substring(0, 300) + '...' : val;
+        totalKeys++;
+      } catch(e) {
+        data[key] = '[помилка]';
+      }
+    }
+  }
+  
+  const modal = document.createElement('div');
+  modal.className = 'debug-modal';
+  
+  let itemsHtml = totalKeys === 0 
+    ? '<p style="color:var(--muted);text-align:center;padding:20px 0;">📭 Немає збережених даних</p>'
+    : Object.entries(data).map(([key, value]) => {
+        return `<div class="key-item">
+          <span class="key">${key}</span>
+          <br><span class="value">${value}</span>
+        </div>`;
+      }).join('');
+  
+  modal.innerHTML = `
+    <div class="content">
+      <h2>🔍 Збережені дані</h2>
+      <div class="info-text">Знайдено ${totalKeys} ключів у localStorage</div>
+      ${itemsHtml}
+      <div class="btn-group">
+        <button class="export-btn" onclick="exportAllData()">📤 Експорт</button>
+        <button class="import-btn" onclick="document.getElementById('importFileInput').click()">📥 Імпорт</button>
+        <button class="clear-btn" onclick="clearAllData()">🗑️ Очистити</button>
+        <button class="close-debug" onclick="this.closest('.debug-modal').remove()">❌ Закрити</button>
+      </div>
+      <div class="file-input-wrap">
+        <input type="file" id="importFileInput" accept=".json" style="display:none" onchange="importAllData(this.files[0])">
+      </div>
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+let profile = localStorage.getItem('trenuvannya-profile') || 'man';
+let DAYS_MAN = [];
+let DAYS_WOMAN = [];
+
+function getDays(){ return profile === 'woman' ? DAYS_WOMAN : DAYS_MAN; }
+
+let currentDay = 0;
+let currentWeek = 1;
+let checkedState = {};
+let lastLogs = {};
+let pendingSets = {};
+let savedThisSession = {};
+
+// ===== ЗБЕРІГАННЯ ДАНИХ =====
+const STORAGE_PREFIX = 'trenuvannya_';
+
+function getStorageKey(profileType, key) {
+  return STORAGE_PREFIX + profileType + '_' + key;
+}
+
+function saveAllData(profileType) {
+  try {
+    localStorage.setItem(getStorageKey(profileType, 'pendingSets'), JSON.stringify(pendingSets));
+    localStorage.setItem(getStorageKey(profileType, 'checkedState'), JSON.stringify(checkedState));
+    localStorage.setItem(getStorageKey(profileType, 'savedThisSession'), JSON.stringify(savedThisSession));
+    localStorage.setItem(getStorageKey(profileType, 'currentDay'), String(currentDay));
+    localStorage.setItem(getStorageKey(profileType, 'currentWeek'), String(currentWeek));
+  } catch(e) { console.error('Save error:', e); }
+}
+
+function loadAllData(profileType) {
+  try {
+    const pending = localStorage.getItem(getStorageKey(profileType, 'pendingSets'));
+    if (pending) pendingSets = JSON.parse(pending);
+    else pendingSets = {};
+    
+    const checked = localStorage.getItem(getStorageKey(profileType, 'checkedState'));
+    if (checked) checkedState = JSON.parse(checked);
+    else checkedState = {};
+    
+    const saved = localStorage.getItem(getStorageKey(profileType, 'savedThisSession'));
+    if (saved) savedThisSession = JSON.parse(saved);
+    else savedThisSession = {};
+    
+    const day = localStorage.getItem(getStorageKey(profileType, 'currentDay'));
+    if (day) currentDay = parseInt(day);
+    else currentDay = 0;
+    
+    const week = localStorage.getItem(getStorageKey(profileType, 'currentWeek'));
+    if (week) currentWeek = parseInt(week);
+    else currentWeek = 1;
+  } catch(e) { 
+    console.error('Load error:', e);
+    pendingSets = {};
+    checkedState = {};
+    savedThisSession = {};
+    currentDay = 0;
+    currentWeek = 1;
+  }
+}
+
+function exId(dayId, name){ return dayId + '::' + name; }
+
+async function storageGet(key){
+  try {
+    return localStorage.getItem(key);
+  } catch(e) { return null; }
+}
+async function storageSet(key, value){
+  try {
+    localStorage.setItem(key, value);
+  } catch(e) { /* fall through */ }
+}
+
+async function loadLastLogs(){
+  const days = getDays();
+  if (!days || days.length === 0) return;
+  for(const day of days){
+    if (!day || !day.groups) continue;
+    for(const g of day.groups){
+      for(const it of g.items){
+        const id = exId(day.id, it.name);
+        const raw = await storageGet('lastlog:'+id);
+        if(raw){
+          try{ 
+            const parsed = JSON.parse(raw);
+            if (parsed && parsed.sets && Array.isArray(parsed.sets)) {
+              lastLogs[id] = parsed;
+            }
+          }catch(e){ /* ignore bad data */ }
+        }
+      }
+    }
+  }
+}
+
+function fmtLast(log){
+  if(!log || !log.sets) return null;
+  const sets = log.sets.filter(s=>s.w && s.r).map(s=> `${s.w}/${s.r}`).join(', ');
+  return `${sets}`;
+}
+
+function getLastWeight(id){
+  const log = lastLogs[id];
+  if (!log || !log.sets || log.sets.length === 0) return null;
+  for (const s of log.sets) {
+    if (s.w && s.r) {
+      return { weight: s.w, reps: s.r };
+    }
+  }
+  return null;
+}
+
+function checkExerciseStatus(id) {
+  const sets = pendingSets[id] || [];
+  const filledCount = sets.filter(s => s.raw && s.raw.trim() !== '').length;
+  const totalSets = sets.length || 6;
+  if (filledCount >= totalSets) return 'done';
+  if (filledCount > 0) return 'partial';
+  return 'empty';
+}
+
+function getDayProgress(day) {
+  let total = 0;
+  let done = 0;
+  for (const g of day.groups) {
+    for (const it of g.items) {
+      total++;
+      const id = exId(day.id, it.name);
+      const status = checkExerciseStatus(id);
+      if (status === 'done' || status === 'partial') done++;
+    }
+  }
+  return { total, done, percent: total > 0 ? Math.round((done / total) * 100) : 0 };
+}
+
+// ===== ВИПРАВЛЕНА ФУНКЦІЯ - ШУКАЄ ОСТАННІЙ ЗАПОВНЕНИЙ ДЕНЬ З КІНЦЯ =====
+function getLastWorkoutDay() {
+  const days = getDays();
+  if (!days || days.length === 0) return null;
+  
+  // 1. Спочатку шукаємо в pendingSets (поточні заповнені дані) - з кінця
+  for (let i = days.length - 1; i >= 0; i--) {
+    const day = days[i];
+    if (!day || !day.groups) continue;
+    
+    let hasData = false;
+    for (const g of day.groups) {
+      for (const it of g.items) {
+        const id = exId(day.id, it.name);
+        const sets = pendingSets[id] || [];
+        if (sets.some(s => s.raw && s.raw.trim() !== '')) {
+          hasData = true;
+          break;
+        }
+      }
+      if (hasData) break;
+    }
+    
+    if (hasData) {
+      return day.id;
+    }
+  }
+  
+  // 2. Якщо немає в pendingSets - шукаємо в lastLogs (збережені) - з кінця
+  for (let i = days.length - 1; i >= 0; i--) {
+    const day = days[i];
+    if (!day || !day.groups) continue;
+    
+    let hasData = false;
+    for (const g of day.groups) {
+      for (const it of g.items) {
+        const id = exId(day.id, it.name);
+        const log = lastLogs[id];
+        if (log && log.sets && log.sets.length > 0) {
+          hasData = true;
+          break;
+        }
+      }
+      if (hasData) break;
+    }
+    
+    if (hasData) {
+      return day.id;
+    }
+  }
+  
+  return null;
+}
+
+function renderProfileBar(){
+  const pb = document.getElementById('profileBar');
+  pb.innerHTML = '';
+  const opts = [
+    ['man','🙋‍♂️ Чоловік'],
+    ['woman','🙋‍♀️ Жінка']
+  ];
+  opts.forEach(([val,label])=>{
+    const b = document.createElement('button');
+    b.textContent = label;
+    if(profile===val) b.classList.add('active');
+    b.onclick = ()=>{
+      if(profile===val) return;
+      saveAllData(profile);
+      profile = val;
+      userProfile.gender = val;
+      localStorage.setItem('trenuvannya-profile', profile);
+      loadAllData(profile);
+      updateHeaderText();
+      renderUserProfile();
+      loadLastLogs().then(renderAll);
+    };
+    pb.appendChild(b);
+  });
+}
+
+function updateHeaderText(){
+  const sub = document.getElementById('appSub');
+  if(profile === 'woman'){
+    sub.textContent = 'Жіночий профіль';
+  } else {
+    sub.textContent = 'Чоловічий профіль';
+  }
+}
+
+function renderWeekBar(){
+  const wb = document.getElementById('weekBar');
+  wb.innerHTML = '';
+  if (profile === 'woman') {
+    wb.style.display = 'none';
+    return;
+  }
+  if (DAYS_MAN.length === 0) {
+    wb.style.display = 'none';
+    return;
+  }
+  wb.style.display = 'flex';
+  for(let w=1; w<=8; w++){
+    const b = document.createElement('button');
+    b.textContent = 'Тиж.'+w;
+    if(w===currentWeek) b.classList.add('active');
+    b.onclick = ()=>{
+      if(w !== currentWeek) {
+        pendingSets = {};
+        checkedState = {};
+        savedThisSession = {};
+        currentWeek = w;
+        renderAll();
+        showToast('🔄 Переключено на тиждень ' + w + ', поля очищено');
+      }
+    };
+    wb.appendChild(b);
+  }
+}
+
+function renderDayNav(){
+  const nav = document.getElementById('dayNav');
+  nav.innerHTML = '';
+  const days = getDays();
+  if (!days || days.length === 0) {
+    nav.innerHTML = '<div style="color:var(--muted);text-align:center;padding:10px;">⚠️ Завантажте план з Excel</div>';
+    return;
+  }
+  
+  const lastDayId = getLastWorkoutDay();
+  
+  days.forEach((d, idx)=>{
+    const b = document.createElement('button');
+    b.textContent = d.label.replace(/ — .*$/, '');
+    if(idx===currentDay) b.classList.add('active');
+    
+    if (d.id === lastDayId && idx !== currentDay) {
+      b.classList.add('last-workout');
+    }
+    
+    b.onclick = ()=>{ currentDay = idx; renderDayNav(); renderMain(); };
+    nav.appendChild(b);
+  });
+}
+
+function renderMain(){
+  const days = getDays();
+  const day = days && days.length > 0 ? days[currentDay] : null;
+  const main = document.getElementById('main');
+  main.innerHTML = '';
+
+  renderUserProfile();
+
+  if (!day || !day.groups || day.groups.length === 0) {
+    main.innerHTML += `
+      <div style="text-align:center;padding:40px 20px;color:var(--muted);">
+        <div style="font-size:3rem;margin-bottom:16px;">📂</div>
+        <h2>Завантажте план тренувань</h2>
+        <p>Натисніть кнопку <b>📂 завантажити</b> внизу та виберіть Excel файл</p>
+        <p style="font-size:0.85rem;margin-top:12px;color:var(--line);">Файл має містити аркуші "Чоловік" та "Жінка"</p>
+      </div>
+    `;
+    return;
+  }
+
+  if (userProfile.age) {
+    let ageTip = '';
+    if (userProfile.age > 55) {
+      ageTip = '🛡️ Вам рекомендовано більше уваги приділяти розминці та затримці дихання';
+    } else if (userProfile.age > 45) {
+      ageTip = '💪 Відмінний вік для силових тренувань, слідкуйте за технікою';
+    } else if (userProfile.age < 25) {
+      ageTip = '🔥 Молодий організм швидко відновлюється - можна тренуватися інтенсивніше';
+    }
+    if (ageTip) {
+      const tipBox = document.createElement('div');
+      tipBox.style.cssText = 'background:rgba(74,144,217,0.1);border:1px solid var(--accent2);border-radius:8px;padding:8px 14px;margin-bottom:12px;font-size:0.85rem;color:var(--muted);';
+      tipBox.textContent = '💡 ' + ageTip;
+      main.appendChild(tipBox);
+    }
+  }
+  
+  if (userProfile.health && userProfile.health !== 'none') {
+    const healthTip = {
+      'back': '🛡️ Уникайте різких рухів та великих ваг на спину',
+      'knees': '🛡️ Використовуйте наколінники, уникайте глибоких присідань',
+      'heart': '❤️ Контролюйте пульс, робіть більше пауз між підходами',
+      'pressure': '🩸 Уникайте натужування та затримки дихання',
+      'diabetes': '🩸 Майте при собі глюкометр та щось солодке',
+      'other': '⚠️ Прислухайтесь до свого організму, не перенапружуйтесь'
+    };
+    const tipBox = document.createElement('div');
+    tipBox.style.cssText = 'background:rgba(217,83,79,0.08);border:1px solid var(--red);border-radius:8px;padding:8px 14px;margin-bottom:12px;font-size:0.85rem;color:var(--red);';
+    tipBox.textContent = healthTip[userProfile.health] || '⚠️ Будьте обережні з навантаженнями';
+    main.appendChild(tipBox);
+  }
+
+  const progress = getDayProgress(day);
+  const progressBar = document.createElement('div');
+  progressBar.className = 'day-progress';
+  progressBar.innerHTML = `
+    <span class="text">📊 <b>${progress.done}</b>/${progress.total} виконано</span>
+    <div class="bar"><div class="fill" style="width:${progress.percent}%"></div></div>
+    <span class="text">${progress.percent}%</span>
+  `;
+  main.appendChild(progressBar);
+
+  day.groups.forEach(g=>{
+    const gl = document.createElement('div');
+    gl.className = 'group-label';
+    
+    const emoji = getGroupEmoji(g.label);
+    const cleanName = g.label.replace(/[^\p{L}\p{N}\s\-()]/gu, '').trim().toUpperCase();
+    
+    gl.innerHTML = `<span class="group-name">${emoji} ${cleanName}</span>`;
+    main.appendChild(gl);
+
+    g.items.forEach(it=>{
+      const id = exId(day.id, it.name);
+      const card = document.createElement('div');
+      card.className = 'card';
+      if(checkedState[id]) card.classList.add('done');
+
+      const top = document.createElement('div');
+      top.className = 'card-top';
+
+      const status = checkExerciseStatus(id);
+      const statusDot = document.createElement('span');
+      statusDot.className = 'ex-status ' + status;
+      statusDot.title = status === 'done' ? '✅ Виконано!' : 
+                         status === 'partial' ? '🟡 Частково' : '⬜ Не виконано';
+
+      const info = document.createElement('div');
+      info.style.flex = '1';
+      
+      const nameWrapper = document.createElement('div');
+      nameWrapper.style.display = 'flex';
+      nameWrapper.style.alignItems = 'center';
+      nameWrapper.style.gap = '6px';
+      nameWrapper.appendChild(statusDot);
+      
+      const nameSpan = document.createElement('span');
+      nameSpan.className = 'ex-name';
+      nameSpan.textContent = it.name;
+      nameWrapper.appendChild(nameSpan);
+      
+      info.appendChild(nameWrapper);
+      
+      const metaDiv = document.createElement('div');
+      metaDiv.className = 'ex-meta';
+      let metaText = it.sets + '×' + it.reps;
+      if (it.page) metaText += '  •  📖 ' + it.page;
+      
+      const last = getLastWeight(id);
+      const history = getHistoryForExercise(id);
+      let aiResult = null;
+      let targetReps = parseInt(it.reps) || 10;
+      let aiTip = '';
+      
+      if (last) {
+        aiResult = aiAnalyze(last.weight, last.reps, targetReps, history, it.name);
+        metaText += '  •  🎯 ' + aiResult.weight + ' кг × ' + aiResult.reps;
+        metaText += '  •  🔢 ' + aiResult.sets + ' підходи';
+        if (aiResult.totalTonnage) metaText += '  •  📊 ' + aiResult.totalTonnage + ' кг (тоннаж)';
+        aiTip = aiResult.emoji + ' ' + aiResult.message;
+        if (aiResult.fitnessLevel) {
+          const levelMap = {
+            'beginner': '🇺🇦 Початківець',
+            'intermediate': '🇺🇦 Середній',
+            'advanced': '🇺🇦 Профі'
+          };
+          aiTip += '  •  Рівень: ' + (levelMap[aiResult.fitnessLevel] || aiResult.fitnessLevel);
+        }
+        if (aiResult.healthNote) aiTip += '  •  ' + aiResult.healthNote;
+      } else {
+        aiResult = aiAnalyze(null, null, targetReps, [], it.name);
+        metaText += '  •  🎯 ' + aiResult.weight + ' кг × ' + aiResult.reps;
+        metaText += '  •  🔢 ' + aiResult.sets + ' підходи';
+        aiTip = aiResult.emoji + ' ' + aiResult.message;
+        if (userProfile.age > 50) aiTip += ' 🛡️ (з урахуванням вашого віку)';
+        if (userProfile.gender === 'woman') aiTip += ' 👩 (жіночий профіль)';
+        if (aiResult.healthNote) aiTip += '  •  ' + aiResult.healthNote;
+      }
+      
+      metaDiv.textContent = metaText;
+      info.appendChild(metaDiv);
+      
+      if (aiTip) {
+        const tipDiv = document.createElement('div');
+        tipDiv.className = 'ai-tip';
+        tipDiv.textContent = aiTip;
+        info.appendChild(tipDiv);
+      }
+      
+      if (it.note) {
+        const noteDiv = document.createElement('div');
+        noteDiv.className = 'ex-note';
+        noteDiv.textContent = '💡 ' + it.note;
+        info.appendChild(noteDiv);
+      }
+
+      top.appendChild(info);
+
+      const actions = document.createElement('div');
+      actions.className = 'actions';
+      
+      const vid = document.createElement('a');
+      vid.className = 'icon-btn';
+      vid.href = getVideoUrlForExercise(id, it.name);
+      vid.target = '_blank';
+      vid.textContent = '▶';
+      vid.title = 'Відео-туторіал для вправи';
+      actions.appendChild(vid);
+
+      const calBtn = document.createElement('button');
+      calBtn.className = 'icon-btn cal-btn';
+      calBtn.textContent = '🗓';
+      calBtn.onclick = ()=> openHistory(id, it.name);
+      actions.appendChild(calBtn);
+
+      const saveExBtn = document.createElement('button');
+      saveExBtn.className = 'icon-btn save-ex' + (savedThisSession[id] ? ' saved' : '');
+      saveExBtn.textContent = savedThisSession[id] ? '✓' : '💾';
+      saveExBtn.onclick = ()=> saveExercise(id, it, day.id);
+      actions.appendChild(saveExBtn);
+
+      top.appendChild(actions);
+      card.appendChild(top);
+
+      let displaySets = 6;
+      if (aiResult && aiResult.sets) {
+        displaySets = Math.min(6, Math.max(3, aiResult.sets));
+      }
+      
+      const setsRow = document.createElement('div');
+      setsRow.className = 'sets-row';
+      const nSets = displaySets;
+      
+      if(!pendingSets[id]) {
+        pendingSets[id] = Array.from({ length: 6 }, () => ({ w: '', r: '' }));
+      }
+      
+      for(let s=0; s<nSets; s++){
+        const wrap = document.createElement('div');
+        wrap.className = 'set-input';
+        
+        const statusDotSet = document.createElement('div');
+        statusDotSet.className = 'set-status ' + (pendingSets[id][s]?.raw ? 'filled' : 'empty');
+        wrap.appendChild(statusDotSet);
+        
+        const label = document.createElement('label');
+        label.textContent = it.isTime ? (s+1) : (s+1);
+        wrap.appendChild(label);
+        const input = document.createElement('input');
+        input.placeholder = it.isTime ? 'сек' : (it.bodyweight ? '+кг' : 'вага');
+        input.value = pendingSets[id][s]?.raw || '';
+        input.oninput = (e)=>{
+          pendingSets[id][s].raw = e.target.value;
+          const dot = wrap.querySelector('.set-status');
+          if (dot) {
+            dot.className = 'set-status ' + (e.target.value.trim() ? 'filled' : 'empty');
+          }
+        };
+        wrap.appendChild(input);
+        setsRow.appendChild(wrap);
+      }
+      card.appendChild(setsRow);
+
+      // ===== ЗАМІНА ВПРАВИ =====
+      const altWrapper = document.createElement('div');
+      altWrapper.className = 'alt-wrapper';
+
+      const altSel = document.createElement('select');
+      altSel.className = 'alt-select';
+
+      const defOpt = document.createElement('option');
+      defOpt.value = '';
+      defOpt.textContent = '🔄 Заміна: оберіть іншу вправу';
+      defOpt.disabled = true;
+      defOpt.selected = !(pendingSets[id+'::alt'] || {}).raw;
+      altSel.appendChild(defOpt);
+
+      for (const [group, exercises] of Object.entries(ALL_EXERCISES)) {
+        const optgroup = document.createElement('optgroup');
+        optgroup.label = group;
+        exercises.forEach(exName => {
+          const opt = document.createElement('option');
+          opt.value = exName;
+          opt.textContent = exName;
+          if ((pendingSets[id+'::alt'] || {}).raw === exName) opt.selected = true;
+          optgroup.appendChild(opt);
+        });
+        altSel.appendChild(optgroup);
+      }
+
+      const customOpt = document.createElement('option');
+      customOpt.value = '__custom__';
+      customOpt.textContent = '✏️ Своя вправа (вписати)...';
+      altSel.appendChild(customOpt);
+
+      altSel.onchange = (e)=>{
+        if(e.target.value === '__custom__'){
+          const custom = prompt('Введіть назву вправи:');
+          if(custom && custom.trim()){
+            if(!pendingSets[id+'::alt']) pendingSets[id+'::alt'] = {};
+            pendingSets[id+'::alt'].raw = custom.trim();
+            const newOpt = document.createElement('option');
+            newOpt.value = custom.trim();
+            newOpt.textContent = custom.trim();
+            newOpt.selected = true;
+            altSel.insertBefore(newOpt, customOpt);
+          }else{
+            altSel.value = (pendingSets[id+'::alt'] || {}).raw || '';
+          }
+        }else{
+          if(!pendingSets[id+'::alt']) pendingSets[id+'::alt'] = {};
+          pendingSets[id+'::alt'].raw = e.target.value;
+        }
+      };
+
+      altWrapper.appendChild(altSel);
+
+      const altVideoBtn = document.createElement('a');
+      altVideoBtn.className = 'icon-btn';
+      altVideoBtn.textContent = '🎥';
+      altVideoBtn.title = 'Відео для заміненої вправи';
+      altVideoBtn.target = '_blank';
+      altVideoBtn.style.fontSize = '0.8rem';
+      altVideoBtn.style.padding = '4px 8px';
+      
+      function updateAltVideo() {
+        const altName = (pendingSets[id+'::alt'] || {}).raw || '';
+        if (altName) {
+          altVideoBtn.href = getVideoUrlForExercise(id, it.name);
+          altVideoBtn.style.opacity = '1';
+          altVideoBtn.style.pointerEvents = 'auto';
+          altVideoBtn.title = '🎥 Відео для: ' + altName;
+        } else {
+          altVideoBtn.href = '#';
+          altVideoBtn.style.opacity = '0.3';
+          altVideoBtn.style.pointerEvents = 'none';
+          altVideoBtn.title = 'Спочатку оберіть заміну';
+        }
+      }
+      updateAltVideo();
+
+      const originalOnchange = altSel.onchange;
+      altSel.onchange = function(e) {
+        originalOnchange(e);
+        updateAltVideo();
+      };
+
+      altWrapper.appendChild(altVideoBtn);
+
+      const clearBtn = document.createElement('button');
+      clearBtn.className = 'clear-alt-btn';
+      clearBtn.textContent = '✕';
+      clearBtn.title = 'Видалити заміну';
+      clearBtn.onclick = (e) => {
+        e.stopPropagation();
+        if(pendingSets[id+'::alt']){
+          delete pendingSets[id+'::alt'];
+          updateAltVideo();
+          renderMain();
+          showToast('✅ Заміну видалено');
+        }
+      };
+      altWrapper.appendChild(clearBtn);
+
+      card.appendChild(altWrapper);
+
+      const lastLog = lastLogs[id];
+      if(lastLog){
+        const ll = document.createElement('div');
+        ll.className = 'last-log';
+        ll.innerHTML = '📅 Минулий результат (' + lastLog.date + '): <b>' + fmtLast(lastLog) + '</b>';
+        card.appendChild(ll);
+      }
+
+      main.appendChild(card);
+    });
+  });
+
+  const note = document.createElement('div');
+  note.className = 'note-box';
+  note.innerHTML = '🧠 AI-аналіз враховує: вік, стать, зріст, вагу, проблеми зі здоров\'ям, історію тренувань. 🟢 виконано, 🟡 частково, ⚪ не виконано.';
+  main.appendChild(note);
+}
+
+function renderAll(){
+  renderProfileBar();
+  renderWeekBar();
+  renderDayNav();
+  renderMain();
+}
+
+// ---- TELEGRAM SYNC ----
+const TELEGRAM_TOKEN = '8910047408:AAH-l-AMBmlQmTPuWpBAhDXS59RNyaZ8xPM';
+const CHAT_ID_MAIN = '471234977';
+const CHAT_ID_WOMAN = '278145361';
+
+const TG_QUEUE_KEY = 'tg-queue-v2';
+const TG_SENT_KEY  = 'tg-sent-dates';
+
+function getTgQueue(){
+  try{ return JSON.parse(localStorage.getItem(TG_QUEUE_KEY) || '[]'); }catch(e){ return []; }
+}
+function setTgQueue(q){
+  try{ localStorage.setItem(TG_QUEUE_KEY, JSON.stringify(q)); }catch(e){ }
+}
+function getSentDates(){
+  try{ return JSON.parse(localStorage.getItem(TG_SENT_KEY) || '{}'); }catch(e){ return {}; }
+}
+function markSent(sentKey){
+  const s = getSentDates();
+  s[sentKey] = Date.now();
+  try{ localStorage.setItem(TG_SENT_KEY, JSON.stringify(s)); }catch(e){ }
+}
+function alreadySent(sentKey){
+  return !!getSentDates()[sentKey];
+}
+function clearSent(sentKey){
+  const s = getSentDates();
+  delete s[sentKey];
+  try{ localStorage.setItem(TG_SENT_KEY, JSON.stringify(s)); }catch(e){ }
+}
+
+function queueTelegramMessages(texts, sentKey, chatIds){
+  const q = getTgQueue();
+  q.push({ texts, sentKey, chatIds, ts: Date.now() });
+  if(q.length > 100) q.splice(0, q.length - 100);
+  setTgQueue(q);
+}
+
+async function sendToTelegram(chatId, text){
+  const url = 'https://api.telegram.org/bot' + TELEGRAM_TOKEN + '/sendMessage';
+  const response = await fetch(url, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      chat_id: chatId,
+      text: text,
+      parse_mode: 'HTML'
+    })
+  });
+  if (!response.ok) {
+    const error = await response.text();
+    throw new Error('Telegram API error: ' + response.status + ' - ' + error);
+  }
+  return response.json();
+}
+
+async function sendToChats(text, chatIds){
+  const results = await Promise.allSettled(
+    chatIds.map(chatId => sendToTelegram(chatId, text))
+  );
+  const failed = results.filter(r => r.status === 'rejected');
+  if (failed.length > 0) {
+    console.warn('❌ Не вдалося відправити в ' + failed.length + ' чатів');
+    throw new Error('Failed to send to ' + failed.length + ' chats');
+  }
+  return results;
+}
+
+let tgFlushing = false;
+async function flushTelegramQueue(){
+  if(tgFlushing) return;
+  tgFlushing = true;
+  try{
+    let q = getTgQueue();
+    while(q.length){
+      const item = q[0];
+      try{
+        const textList = Array.isArray(item.texts) ? item.texts : [item.texts || item.text];
+        const chatIds = item.chatIds || [CHAT_ID_MAIN];
+        for(const t of textList){
+          await sendToChats(t, chatIds);
+        }
+        if(item.sentKey) markSent(item.sentKey);
+        q.shift();
+        setTgQueue(q);
+      }catch(e){ 
+        console.warn('⏳ Черга тимчасово недоступна, спробуємо пізніше:', e.message);
+        break;
+      }
+    }
+  } finally { 
+    tgFlushing = false; 
+  }
+}
+
+// ===== СТАТИСТИКА =====
+function calcStats(allSets, day){
+  let totalTonnage = 0;
+  let totalSets = 0;
+  let totalExercises = 0;
+  const records = [];
+
+  for(const g of day.groups){
+    for(const it of g.items){
+      const sets = allSets[it.name];
+      if(!sets || !sets.length) continue;
+      totalExercises++;
+      for(const s of sets){
+        totalSets++;
+        const w = parseFloat(s.w);
+        const r = parseFloat(s.r);
+        if(!isNaN(w) && !isNaN(r)) totalTonnage += w * r;
+      }
+      const id = exId(day.id, it.name);
+      const hist = [];
+      try{
+        const raw = localStorage.getItem('history:' + id);
+        if(raw) hist.push(...JSON.parse(raw));
+      }catch(e){}
+      const today = new Date().toISOString().slice(0,10);
+      let bestPrev = 0;
+      for(const entry of hist){
+        if(entry.date === today) continue;
+        for(const s of (entry.sets||[])){
+          const w = parseFloat(s.w), r = parseFloat(s.r);
+          if(!isNaN(w) && !isNaN(r)){
+            const e1rm = w * (1 + r/30);
+            if(e1rm > bestPrev) bestPrev = e1rm;
+          }
+        }
+      }
+      let todayBest = 0; let todayBestW = 0; let todayBestR = 0;
+      for(const s of sets){
+        const w = parseFloat(s.w), r = parseFloat(s.r);
+        if(!isNaN(w) && !isNaN(r)){
+          const e1rm = w * (1 + r/30);
+          if(e1rm > todayBest){ todayBest = e1rm; todayBestW = w; todayBestR = r; }
+        }
+      }
+      if(todayBest > 0 && todayBest > bestPrev && bestPrev > 0){
+        records.push('🏆 Рекорд: ' + it.name + ' — ' + todayBestW + '×' + todayBestR);
+      }
+    }
+  }
+  return { totalTonnage: Math.round(totalTonnage), totalSets, totalExercises, records };
+}
+
+function buildWorkoutMessage(day, today, numberedLines, stats){
+  const profileLabel = profile === 'woman' ? '🙋‍♀️ Жінка' : '🙋‍♂️ Чоловік';
+  const ageText = userProfile.age ? '🎂 ' + userProfile.age + ' років' : '';
+  const heightText = userProfile.height ? '📏 ' + userProfile.height + ' см' : '';
+  const weightText = userProfile.weight ? '⚖️ ' + userProfile.weight + ' кг' : '';
+  const healthMap = {
+    'none': '✅ Немає',
+    'back': '🔴 Спина',
+    'knees': '🔴 Коліна',
+    'heart': '❤️ Серце',
+    'pressure': '🩸 Тиск',
+    'diabetes': '🩸 Діабет',
+    'other': '⚠️ Інше'
+  };
+  const healthText = userProfile.health ? healthMap[userProfile.health] || '' : '';
+  const weekTxt = (profile === 'man' && DAYS_MAN.length > 0) ? '  •  Тиж.' + currentWeek : '';
+  let msg = '🏋 ' + profileLabel + ' ' + ageText + ' ' + heightText + ' ' + weightText + ' 🩺' + healthText + ' — ' + day.label + weekTxt + '\n📅 ' + today + '\n';
+  msg += '─'.repeat(30) + '\n';
+  msg += numberedLines.join('\n');
+  msg += '\n' + '─'.repeat(30) + '\n';
+  msg += '📊 Підсумок:\n';
+  msg += '💪 Вправ: ' + stats.totalExercises + '\n';
+  msg += '🔢 Підходів: ' + stats.totalSets + '\n';
+  if(stats.totalTonnage > 0) msg += '📈 Тоннаж: ' + stats.totalTonnage + ' кг\n';
+  if(stats.records.length){
+    msg += '\n' + stats.records.join('\n') + '\n';
+  }
+  return msg;
+}
+
+async function logExercise(id, log){
+  lastLogs[id] = log;
+  await storageSet('lastlog:'+id, JSON.stringify(log));
+  let hist = [];
+  const h = await storageGet('history:'+id);
+  if(h){
+    try{ hist = JSON.parse(h); }catch(e){ hist = []; }
+  }
+  hist.push(log);
+  if(hist.length>30) hist = hist.slice(-30);
+  await storageSet('history:'+id, JSON.stringify(hist));
+}
+
+function setsFromPending(id){
+  return (pendingSets[id]||[]).map(s=>{
+    if(!s.raw) return {w:'',r:''};
+    const parts = s.raw.split('/');
+    return {w: parts[0]?.trim()||'', r: parts[1]?.trim()||''};
+  }).filter(s=>s.w || s.r);
+}
+
+async function sendWorkoutReport(force = false){
+  const days = getDays();
+  const day = days && days.length > 0 ? days[currentDay] : null;
+  if (!day || !day.groups) {
+    showToast('⚠️ Спочатку завантажте план тренувань');
+    return false;
+  }
+  
+  const today = new Date().toISOString().slice(0,10);
+  const sentKey = profile + '::' + day.id + '::' + today;
+
+  if(!force && alreadySent(sentKey)){
+    showToast('Звіт за сьогодні вже відправлено в Telegram');
+    return false;
+  }
+
+  if(force){
+    clearSent(sentKey);
+  }
+
+  let any = false;
+  let num = 1;
+  const numberedLines = [];
+  const allSets = {};
+  for(const g of day.groups){
+    for(const it of g.items){
+      const id = exId(day.id, it.name);
+      const sets = setsFromPending(id);
+      if(sets.length){
+        any = true;
+        try{
+          await logExercise(id, {date: today, sets});
+          savedThisSession[id] = true;
+          const setsTxt = sets.map(s=>s.w + '/' + s.r).join(' | ');
+          const altText = (pendingSets[id+'::alt'] || {}).raw || '';
+          const nameLine = altText ? it.name + ' → ' + altText : it.name;
+          numberedLines.push(num + '. ' + nameLine + '\n   ' + setsTxt);
+          num++;
+          allSets[it.name] = sets;
+        }catch(e){ console.error('storage error', e); }
+      }
+    }
+  }
+  
+  if(any){
+    const stats = calcStats(allSets, day);
+    const text = buildWorkoutMessage(day, today, numberedLines, stats);
+    
+    let chatIds = [];
+    if(profile === 'woman'){
+      chatIds = [CHAT_ID_MAIN, CHAT_ID_WOMAN];
+    } else {
+      chatIds = [CHAT_ID_MAIN];
+    }
+    
+    queueTelegramMessages([text], sentKey, chatIds);
+    flushTelegramQueue();
+    showToast(force ? '🔄 Звіт перевідправлено!' : '💪 Тренування збережено!');
+    if(!force) renderMain();
+    
+    setTimeout(() => showRecoveryModal(), 500);
+    
+    return true;
+  } else {
+    showToast('Немає даних для збереження');
+    return false;
+  }
+}
+
+async function saveWorkout(){
+  await sendWorkoutReport(false);
+  saveAllData(profile);
+}
+
+async function resendWorkout(){
+  const days = getDays();
+  const day = days && days.length > 0 ? days[currentDay] : null;
+  if (!day || !day.groups) {
+    showToast('⚠️ Спочатку завантажте план тренувань');
+    return;
+  }
+  const today = new Date().toISOString().slice(0,10);
+  
+  let hasData = false;
+  for(const g of day.groups){
+    for(const it of g.items){
+      const id = exId(day.id, it.name);
+      const sets = setsFromPending(id);
+      if(sets.length){
+        hasData = true;
+        break;
+      }
+    }
+    if(hasData) break;
+  }
+  
+  if(!hasData){
+    showToast('Немає даних для перевідправки');
+    return;
+  }
+  
+  if(confirm('Перевідправити звіт за ' + today + '?')){
+    await sendWorkoutReport(true);
+    saveAllData(profile);
+  }
+}
+
+async function saveExercise(id, it, dayId){
+  const today = new Date().toISOString().slice(0,10);
+  const sets = setsFromPending(id);
+  if(!sets.length){
+    showToast('Заповніть хоча б один сет');
+    return;
+  }
+  try{
+    await logExercise(id, {date: today, sets});
+    savedThisSession[id] = true;
+    showToast(it.name + ' — збережено локально');
+    renderMain();
+    saveAllData(profile);
+  }catch(e){
+    console.error('storage error', e);
+    showToast('Помилка збереження');
+  }
+}
+
+async function getHistory(id){
+  const h = await storageGet('history:'+id);
+  if(!h) return [];
+  try{ return JSON.parse(h); }catch(e){ return []; }
+}
+
+async function openHistory(id, name){
+  const hist = await getHistory(id);
+  const root = document.getElementById('modalRoot');
+  const overlay = document.createElement('div');
+  overlay.className = 'modal-overlay';
+  overlay.onclick = (e)=>{ if(e.target===overlay) closeModal(); };
+
+  const sheet = document.createElement('div');
+  sheet.className = 'modal-sheet';
+
+  const head = document.createElement('div');
+  head.className = 'modal-head';
+  head.innerHTML = '<h3>🗓 Історія — ' + name + '</h3>';
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'modal-close';
+  closeBtn.textContent = '✕';
+  closeBtn.onclick = closeModal;
+  head.appendChild(closeBtn);
+  sheet.appendChild(head);
+
+  if(!hist.length){
+    const empty = document.createElement('div');
+    empty.className = 'hist-empty';
+    empty.textContent = 'Записів ще немає. Збережіть перше тренування цієї вправи.';
+    sheet.appendChild(empty);
+  }else{
+    [...hist].reverse().forEach(log=>{
+      const row = document.createElement('div');
+      row.className = 'hist-row';
+      const setsTxt = (log.sets||[]).map(s=>s.w + '/' + s.r).join(', ');
+      row.innerHTML = '<span class="hd">📅 ' + log.date + '</span><span class="hv">' + setsTxt + '</span>';
+      sheet.appendChild(row);
+    });
+  }
+
+  overlay.appendChild(sheet);
+  root.appendChild(overlay);
+}
+
+function closeModal(){
+  const root = document.getElementById('modalRoot');
+  root.innerHTML = '';
+}
+
+function showToast(msg){
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(()=> t.classList.remove('show'), 3000);
+}
+
+document.getElementById('saveBtn').onclick = saveWorkout;
+document.getElementById('resendBtn').onclick = resendWorkout;
+
+document.getElementById('debugBtn').onclick = showDebugData;
+
+// ===== ІМПОРТ EXCEL =====
+function importXlsx(file){
+  const reader = new FileReader();
+  reader.onload = (e)=>{
+    try{
+      const data = new Uint8Array(e.target.result);
+      const wb = XLSX.read(data, {type:'array'});
+
+      function parseSheet(sheetName, prefix){
+        const ws = wb.Sheets[sheetName];
+        if(!ws) {
+          console.warn('Аркуш "' + sheetName + '" не знайдено');
+          return null;
+        }
+        const rows = XLSX.utils.sheet_to_json(ws, {header:1, defval:''});
+        
+        let headerRow = -1;
+        for(let i=0; i<rows.length; i++){
+          const row = rows[i];
+          if(!row || row.length === 0) continue;
+          const firstCell = String(row[0] || '').toLowerCase();
+          if(firstCell.includes('день')){
+            headerRow = i;
+            break;
+          }
+        }
+        
+        if(headerRow === -1){
+          console.warn('Не знайдено заголовки в аркуші "' + sheetName + '"');
+          return null;
+        }
+
+        const days = {1:[], 2:[], 3:[]};
+        const groups = {1:{}, 2:{}, 3:{}};
+        
+        for(let r = headerRow + 1; r < rows.length; r++){
+          const row = rows[r];
+          if(!row || row.length === 0) continue;
+          
+          const day = parseInt(row[0]);
+          if(![1,2,3].includes(day)) continue;
+          
+          const group = String(row[1] || '').trim();
+          const name = String(row[2] || '').trim();
+          const sets = parseInt(row[3]) || 3;
+          const reps = String(row[4] || '10-12').trim();
+          const page = String(row[5] || '').trim();
+          const note = String(row[6] || '').trim();
+          
+          if(!name) continue;
+          
+          const isTime = reps.includes('сек') || note.includes('час');
+          const isBody = note.includes('власна вага') || note.includes('bodyweight');
+          
+          if(!groups[day][group]) groups[day][group] = [];
+          groups[day][group].push({
+            name: name,
+            sets: sets,
+            reps: reps,
+            page: page || undefined,
+            isTime: isTime || undefined,
+            bodyweight: isBody || undefined,
+            note: note || undefined
+          });
+        }
+
+        const result = [1,2,3].map(dayNum => {
+          const dayGroups = groups[dayNum] || {};
+          return {
+            id: (prefix || '') + 'd' + dayNum,
+            label: 'День ' + dayNum,
+            groups: Object.entries(dayGroups).map(([label, items]) => ({label, items}))
+          };
+        });
+        
+        const hasData = result.some(d => d.groups.length > 0);
+        if(!hasData) return null;
+        
+        return result;
+      }
+
+      const manDays = parseSheet('Чоловік', '');
+      const womanDays = parseSheet('Жінка', 'w');
+
+      if(!manDays && !womanDays){
+        showToast('❌ Помилка: аркуші "Чоловік" / "Жінка" не знайдено');
+        return;
+      }
+
+      if(manDays){
+        localStorage.setItem('custom-plan-man', JSON.stringify(manDays));
+        DAYS_MAN = manDays;
+        console.log('✅ Завантажено чоловічий план:', DAYS_MAN.length, 'днів');
+      }
+      
+      if(womanDays){
+        localStorage.setItem('custom-plan-woman', JSON.stringify(womanDays));
+        DAYS_WOMAN = womanDays;
+        console.log('✅ Завантажено жіночий план:', DAYS_WOMAN.length, 'днів');
+      }
+
+      if(profile === 'man' && DAYS_MAN.length === 0 && DAYS_WOMAN.length > 0){
+        profile = 'woman';
+        userProfile.gender = 'woman';
+        localStorage.setItem('trenuvannya-profile', 'woman');
+      } else if(profile === 'woman' && DAYS_WOMAN.length === 0 && DAYS_MAN.length > 0){
+        profile = 'man';
+        userProfile.gender = 'man';
+        localStorage.setItem('trenuvannya-profile', 'man');
+      }
+
+      currentDay = 0;
+      pendingSets = {};
+      savedThisSession = {};
+      checkedState = {};
+      lastLogs = {};
+      
+      loadLastLogs().then(() => {
+        renderAll();
+        const manCount = DAYS_MAN.length || 0;
+        const womanCount = DAYS_WOMAN.length || 0;
+        showToast('✅ План завантажено! Чоловік: ' + manCount + ' днів, Жінка: ' + womanCount + ' днів');
+      });
+      
+    }catch(err){
+      console.error('Помилка імпорту:', err);
+      showToast('❌ Помилка читання файлу: ' + err.message);
+    }
+  };
+  reader.readAsArrayBuffer(file);
+}
+
+function loadCustomPlans(){
+  try {
+    const man = localStorage.getItem('custom-plan-man');
+    if(man){
+      const parsed = JSON.parse(man);
+      if(parsed && parsed.length > 0){
+        DAYS_MAN = parsed;
+      }
+    }
+    
+    const woman = localStorage.getItem('custom-plan-woman');
+    if(woman){
+      const parsed = JSON.parse(woman);
+      if(parsed && parsed.length > 0){
+        DAYS_WOMAN = parsed;
+      }
+    }
+  } catch(e) {
+    console.error('Помилка завантаження збереженого плану:', e);
+  }
+}
+
+document.getElementById('xlsxInput').addEventListener('change', (e)=>{
+  const file = e.target.files[0];
+  if(file) {
+    importXlsx(file);
+  }
+  e.target.value = '';
+});
+
+// ===== ІНІЦІАЛІЗАЦІЯ =====
+(async function init(){
+  const savedAge = localStorage.getItem('user_age');
+  const savedHeight = localStorage.getItem('user_height');
+  const savedWeight = localStorage.getItem('user_weight');
+  const savedHealth = localStorage.getItem('user_health');
+  
+  if (savedAge) userProfile.age = parseInt(savedAge);
+  if (savedHeight) userProfile.height = parseInt(savedHeight);
+  if (savedWeight) userProfile.weight = parseInt(savedWeight);
+  if (savedHealth) userProfile.health = savedHealth;
+  
+  loadCustomPlans();
+  loadAllData(profile);
+  updateHeaderText();
+  
+  try{
+    await loadLastLogs();
+  }catch(e){ console.error(e); }
+  
+  renderAll();
+  flushTelegramQueue();
+  
+  if (!userProfile.age) {
+    setTimeout(() => {
+      showProfileModal();
+    }, 1000);
+  }
+})();
+
+window.addEventListener('online', flushTelegramQueue);
+</script>
+</body>
+</html>
